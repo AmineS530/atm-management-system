@@ -1,8 +1,6 @@
 #include "atm_sys.h"
 
-static const char *USERS = "./data/users.txt";
-
-void loginMenu(char a[50], char pass[50])
+void regMenu(char a[50], char pass[50])
 {
     struct termios oflags, nflags;
 
@@ -30,29 +28,4 @@ void loginMenu(char a[50], char pass[50])
         perror("tcsetattr");
         return exit(1);
     }
-}
-
-const char *getPassword(User u)
-{
-    FILE *fp;
-    User userChecker;
-
-    if ((fp = fopen(USERS , "r")) == NULL)
-    {
-        printf("Error! opening file");
-        exit(1);
-    }
-
-    while (fscanf(fp, "%s %s", userChecker.name, userChecker.password) != EOF)
-    {
-        if (strcmp(userChecker.name, u.name) == 0)
-        {
-            fclose(fp);
-            char *buff = userChecker.password;
-            return buff;
-        }
-    }
-
-    fclose(fp);
-    return "no user found";
 }

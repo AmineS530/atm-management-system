@@ -1,6 +1,10 @@
+#ifndef ATM_SYS_H
+#define ATM_SYS_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <termios.h>
 
 typedef struct s_date
 {
@@ -38,3 +42,8 @@ const char *getPassword(User u);
 void createNewAcc(User u);
 void mainMenu(User u);
 void checkAllAccounts(User u);
+
+// other
+void exitErr(char *str);
+void printOptions(int input);
+#endif

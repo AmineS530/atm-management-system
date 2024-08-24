@@ -1,19 +1,35 @@
-#include "header.h"
+#include "atm_sys.h"
+
+void printOptions(int input)
+{
+    if (input == 1)
+        printf("\n\n\t\t============== ATM ==============\n\n"
+               "\n\t\t-->> Feel free to choose one of the options below <<--\n"
+               "\n\t\t[1]- Create a new account\n"
+               "\n\t\t[2]- Update account information\n"
+               "\n\t\t[3]- Check accounts\n"
+               "\n\t\t[4]- Check list of owned account\n"
+               "\n\t\t[5]- Make Transaction\n"
+               "\n\t\t[6]- Remove existing account\n"
+               "\n\t\t[7]- Transfer ownership\n"
+               "\n\t\t[8]- Exit\n");
+
+    if (input == 2)
+        printf("\n\t\t============== ATM ==============\n"
+               "\n\t\t-->> Feel free to login / register :\n"
+               "\n\t\t[1]- login\n"
+               "\n\t\t[2]- register\n"
+               "\n\t\t[3]- exit\n");
+    if (input == 3)
+        printf("\n\n\t\t============== ATM SYS ==============\n"
+               "\n\t      Thanks for using out ATM managment system\n\n");
+}
 
 void mainMenu(User u)
 {
     int option;
     system("clear");
-    printf("\n\n\t\t======= ATM =======\n\n"
-           "\n\t\t-->> Feel free to choose one of the options below <<--\n"
-           "\n\t\t[1]- Create a new account\n"
-           "\n\t\t[2]- Update account information\n"
-           "\n\t\t[3]- Check accounts\n"
-           "\n\t\t[4]- Check list of owned account\n"
-           "\n\t\t[5]- Make Transaction\n"
-           "\n\t\t[6]- Remove existing account\n"
-           "\n\t\t[7]- Transfer ownership\n"
-           "\n\t\t[8]- Exit\n");
+    printOptions(1);
     scanf("%d", &option);
 
     switch (option)
@@ -45,8 +61,7 @@ void mainMenu(User u)
         // here
         break;
     case 8:
-        exit(1);
-        break;
+        exitErr("\t\t\tExiting the program...");
     default:
         printf("Invalid operation!\n");
     }
@@ -57,11 +72,7 @@ void initMenu(User *u)
     int r = 0;
     int option;
     system("clear");
-    printf("\n\n\t\t======= ATM =======\n"
-           "\n\t\t-->> Feel free to login / register :\n"
-           "\n\t\t[1]- login\n"
-           "\n\t\t[2]- register\n"
-           "\n\t\t[3]- exit\n");
+    printOptions(2);
     while (!r)
     {
         scanf("%d", &option);
@@ -75,8 +86,7 @@ void initMenu(User *u)
             }
             else
             {
-                printf("\nWrong password!! or User Name\n");
-                exit(1);
+                exitErr("\n\t\tWrong password!! or User Name\n");
             }
             r = 1;
             break;
@@ -86,9 +96,11 @@ void initMenu(User *u)
             r = 1;
             break;
         case 3:
-            exit(1);
+            exitErr("\t\t\tExiting the program...");
         default:
-            printf("Insert a valid operation!\n");
+            system("clear");
+            printf("\t\tPlease Insert a valid operation!\n");
+            printOptions(2);
             break;
         }
     }
@@ -96,9 +108,7 @@ void initMenu(User *u)
 
 void forexit()
 {
-    system("clear");
-    printf("\n\t\t============== ATM SYS ==============\n"
-    "\n\t      Thanks for using out ATM managment system\n\n");
+    printOptions(3);
 }
 
 int main()

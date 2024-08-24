@@ -1,6 +1,6 @@
-#include "header.h"
+#include "atm_sys.h"
 
-const char *RECORDS = "./data/records.txt";
+static const char *RECORDS = "./data/records.txt";
 
 int getAccountFromFile(FILE *ptr, char name[50], Record *r)
 {
