@@ -22,7 +22,7 @@ void printOptions(int input)
                "\n\t\t[3]- exit\n");
     if (input == 3)
         printf("\n\n\t\t============== ATM SYS ==============\n"
-               "\n\t      Thanks for using out ATM managment system\n\n");
+               "\n\t      Thanks for using our ATM managment system\n\n");
 }
 
 void mainMenu(User u)
