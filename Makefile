@@ -9,21 +9,29 @@ SRC = src/main.c \
 
 OBJ = $(SRC:.c=.o)
 
-%.o: src/atm_sys.h
+SQLITE3_PATH=src/sqlite/
 
-all : $(APP)
+all: sqlite $(APP)
 
-$(APP) : $(OBJ) src/atm_sys.h
+sqlite:
+	@echo "\033[1;38;5;155mBuilding $@ library... \033[0m"
+	@make -C $(SQLITE3_PATH) --silent
+	@echo "\033[1;38;5;155mslibsqlite.a Created \033[0m"
+
+$(APP): $(OBJ)
 	@echo "\033[1;38;5;155mBuilding $@... \033[0m"
-	@$(CC) -o $@.exec $(OBJ)
-clean :
+	@$(CC) $(CFLAGS) -o $@.exec $(OBJ) $(SQLITE3_PATH)/libsqlite3.a
+
+clean:
 	@echo "\033[1;38;5;196mDeleting object files from the directory...\033[0m"
 	@rm -f $(OBJ)
+	@make -C $(SQLITE3_PATH) clean --silent
 
-fclean : clean
+fclean: clean
 	@echo "\033[1;38;5;196mRemoving The ATM Managment System from path...\033[0m"
-	@rm $(APP)
+	@rm $(APP).exec
+	@make -C $(SQLITE3_PATH) fclean --silent
 
-re : clean all
+re: fclean all
 
-.PHONY: all clean fclean
+.PHONY: clean fclean re
