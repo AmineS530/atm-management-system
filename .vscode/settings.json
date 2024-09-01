@@ -59,6 +59,7 @@
   "files.associations": {
     "stdio.h": "c",
     "stdlib.h": "c",
-    "atm_sys.h": "c"
+    "atm_sys.h": "c",
+    "*.a": "c"
   }
 }

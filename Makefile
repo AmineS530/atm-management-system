@@ -1,6 +1,6 @@
 CC = gcc
 
-APP = atm
+APP = ATM
 
 SRC = src/main.c \
 	src/system.c \
@@ -9,14 +9,13 @@ SRC = src/main.c \
 
 OBJ = $(SRC:.c=.o)
 
-all : atm
-	
 %.o: src/atm_sys.h
+
+all : $(APP)
 
 $(APP) : $(OBJ) src/atm_sys.h
 	@echo "\033[1;38;5;155mBuilding $@... \033[0m"
-	@$(CC) -o atm $(OBJ) src/atm_sys.h
-
+	@$(CC) -o $@.exec $(OBJ)
 clean :
 	@echo "\033[1;38;5;196mDeleting object files from the directory...\033[0m"
 	@rm -f $(OBJ)

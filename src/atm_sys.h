@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
+#include "sqlite/sqlite3ext.h"
 
 typedef struct s_date
 {
