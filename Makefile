@@ -23,12 +23,12 @@ $(APP): $(OBJ)
 
 clean:
 	@echo "\033[1;38;5;196mDeleting object files from the directory...\033[0m"
-	@rm -f $(OBJ)
+	@rm -fr $(OBJ)
 	@make -C $(SQLITE3_PATH) clean --silent
 
 fclean: clean
 	@echo "\033[1;38;5;196mRemoving The ATM Management System from path...\033[0m"
-	@rm $(APP).exec
+	@rm -fr $(APP).exec
 	@make -C $(SQLITE3_PATH) fclean --silent
 
 re: fclean all
