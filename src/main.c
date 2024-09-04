@@ -114,30 +114,30 @@ void forexit()
 int main()
 {
     User u;
-  /*  sqlite3 *db;
-    char *errMsg = 0;
+ 
+    /* sqlite3 *db;
+     char *errMsg = 0;
 
-    int resCode = sqlite3_open("data/DATA.db", &db);
-    if (resCode != SQLITE_OK)
-    {
-        fprintf(stderr, "error: %s", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        return 1;
-    }
+     int resCode = sqlite3_open("data/DATA.db", &db);
+     if (resCode != SQLITE_OK)
+     {
+         fprintf(stderr, "error: %s", sqlite3_errmsg(db));
+         sqlite3_close(db);
+         return 1;
+     }
 
-    char *sql = "CREATE TABLE Data(Id INTEGER PRIMARY KEY, Name TEXT);";
-    resCode = sqlite3_exec(db, sql, 0, 0, &errMsg);
-    if (resCode != SQLITE_OK)
-    {
-        fprintf(stderr, "error: %s",errMsg);
-        sqlite3_free(errMsg);
-        sqlite3_close(db);
-        return 1;
-    }
-    sqlite3_close(db);*/
-    /*
+     char *sql = "CREATE TABLE Data(Id INTEGER PRIMARY KEY, Name TEXT);";
+     resCode = sqlite3_exec(db, sql, 0, 0, &errMsg);
+     if (resCode != SQLITE_OK)
+     {
+         fprintf(stderr, "error: %s",errMsg);
+         sqlite3_free(errMsg);
+         sqlite3_close(db);
+         return 1;
+     }
+     sqlite3_close(db);*/
     atexit(forexit);
-     initMenu(&u);
-     mainMenu(u);*/
+    initMenu(&u);
+    mainMenu(u);
     return 0;
 }

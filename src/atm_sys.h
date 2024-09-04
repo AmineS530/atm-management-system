@@ -6,6 +6,9 @@
 #include <string.h>
 #include <termios.h>
 #include "sqlite/sqlite3.h"
+#include <openssl/sha.h>
+
+#define HASH_SIZE SHA256_DIGEST_LENGTH
 
 typedef struct s_date
 {

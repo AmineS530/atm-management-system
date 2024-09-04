@@ -2,7 +2,7 @@ CC = cc
 
 CFLAGS = -c
 
-NAME = libsqlite3.a
+NAME = sqlite3
 
 AR = ar rcs
 
@@ -18,13 +18,14 @@ all: $(NAME)
 	@$(CC) $(CFLAGS) $< -o $@
 
 $(NAME): $(OBJ) sqlite3.h
-	$(AR)  $@ $^
+	@echo "\033[1;38;5;155mBuilding $@ library... \033[0m"
+	$(AR)  lib$@.a $^
 
 clean:
-	rm -rf $(OBJ)
+	@rm -rf $(OBJ)
 
 fclean: clean
-	rm -rf $(NAME)
+	@rm -rf $(NAME)
 
 re: fclean all
 
