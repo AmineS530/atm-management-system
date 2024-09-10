@@ -14,7 +14,7 @@ int getAccountFromFile(FILE *ptr, char name[50], Record *r)
                   &r->deposit.year,
                   r->country,
                   &r->phone,
-                  &r->amount,
+                  &r->balance,
                   r->accountType) != EOF;
 }
 
@@ -30,7 +30,7 @@ void saveAccountToFile(FILE *ptr, User u, Record r)
             r.deposit.year,
             r.country,
             r.phone,
-            r.amount,
+            r.balance,
             r.accountType);
 }
 
@@ -125,7 +125,7 @@ noAccount:
     printf("\nEnter the phone number:");
     scanf("%d", &r.phone);
     printf("\nEnter amount to deposit: $");
-    scanf("%lf", &r.amount);
+    scanf("%lf", &r.balance);
     printf("\nChoose the type of account:\n\t-> saving\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:");
     scanf("%s", r.accountType);
 
@@ -134,7 +134,7 @@ noAccount:
     fclose(pf);
     success(u);
 }
-
+ 
 void checkAllAccounts(User u)
 {
     char userName[100];
@@ -156,7 +156,7 @@ void checkAllAccounts(User u)
                    r.deposit.year,
                    r.country,
                    r.phone,
-                   r.amount,
+                   r.balance,
                    r.accountType);
         }
     }

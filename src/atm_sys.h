@@ -25,7 +25,7 @@ typedef struct s_record
     int phone;
     char accountType[10];
     int accountNbr;
-    double amount;
+    double balance;
     Date deposit;
     Date withdraw;
 } Record;
