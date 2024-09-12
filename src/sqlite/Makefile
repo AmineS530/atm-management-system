@@ -37,7 +37,7 @@ getSqlite:
 
 clean:
 	@rm -rf $(OBJ)
-	@rm -rf $(CFILES) sqlite3ext.h
+	@rm -rf $(CFILES) sqlite3ext.h sqlite3.h
 
 fclean: clean
 	@rm -rf lib$(NAME).a
