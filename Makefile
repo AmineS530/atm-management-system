@@ -15,7 +15,6 @@ all: sqlite $(APP)
 
 sqlite:
 	@make -C $(SQLITE3_PATH) --silent
-	@echo "\033[1;38;5;155mlibsqlite.a Created \033[0m"
 
 $(APP): $(OBJ)
 	@echo "\033[1;38;5;155mBuilding $@... \033[0m"
