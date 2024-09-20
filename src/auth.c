@@ -36,6 +36,9 @@ const char *getPassword(User u)
 {
     FILE *fp;
     User userChecker;
+  //  sqlite3_exec()
+  // SELECT username FROM users;
+  // 
 
     if ((fp = fopen(USERS , "r")) == NULL)
     {

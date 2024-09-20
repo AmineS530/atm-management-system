@@ -6,7 +6,7 @@
 #include <string.h>
 #include <termios.h>
 #include "sqlite/sqlite3.h"
-//#include <openssl/sha.h>
+#include <openssl/sha.h>
 
 #define HASH_SIZE SHA256_DIGEST_LENGTH
 
@@ -16,7 +16,7 @@ typedef struct s_date
 } Date;
 
 // all fields for each record of an account
-typedef struct s_record
+typedef struct s_records
 {
     int id;
     int userId;
@@ -28,7 +28,7 @@ typedef struct s_record
     double balance;
     Date deposit;
     Date withdraw;
-} Record;
+} Records;
 
 typedef struct s_User
 {
@@ -36,6 +36,12 @@ typedef struct s_User
     char name[50];
     char password[50];
 } User;
+
+typedef struct s_data{
+    sqlite3 *db;
+    Records records;
+    User users;
+} Data;
 
 // authentication functions
 void loginMenu(char a[50], char pass[50]);
@@ -50,4 +56,8 @@ void checkAllAccounts(User u);
 // other
 void exitErr(char *str);
 void printOptions(int input);
+
+// todo
+void UpdateAccInfo(User u);
+
 #endif
