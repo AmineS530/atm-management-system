@@ -50,20 +50,16 @@ void UpdateAccInfo(User u)
 // TODO : add your **Make transaction** function
 void MakeTransaction(User u)
 {
-
 }
 // TODO : add your **Transfer owner** function
 void TransferOwnership(User u)
 {
-
 }
 // TODO : add your **Check the details of existing accounts** function
 void CheckExistingaccs(User u)
 {
-
 }
 // TODO : add your **Remove existing account** function
 void RemoveAcc(User u)
 {
-    
 }

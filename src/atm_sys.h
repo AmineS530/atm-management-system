@@ -6,10 +6,10 @@
 #include <string.h>
 #include <termios.h>
 #include "sqlite/sqlite3.h"
-#include <openssl/sha.h>
+#include <time.h>
 
-#define HASH_SIZE SHA256_DIGEST_LENGTH
-
+#define SALT_SIZE 16
+#define HASH_SIZE 32 // SHA-256 digest size
 typedef struct s_date
 {
     int month, day, year;
@@ -37,7 +37,8 @@ typedef struct s_User
     char password[50];
 } User;
 
-typedef struct s_data{
+typedef struct s_data
+{
     sqlite3 *db;
     Records records;
     User users;
