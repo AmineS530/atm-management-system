@@ -28,7 +28,7 @@ typedef struct s_records
     double balance;
     Date deposit;
     Date withdraw;
-} Records;
+} Record;
 
 typedef struct s_User
 {
@@ -40,7 +40,7 @@ typedef struct s_User
 typedef struct s_data
 {
     sqlite3 *db;
-    Records records;
+    Record records;
     User users;
 } Data;
 

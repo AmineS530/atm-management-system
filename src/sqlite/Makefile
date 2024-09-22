@@ -30,7 +30,7 @@ $(NAME): $(OBJ) sqlite3.h
 getSqlite:
 	@if [ ! -f "libsqlite3.a" ]; then \
 		wget https://www.sqlite.org/2024/sqlite-amalgamation-3460100.zip 2>/dev/null && \
-		unzip sqlite-amalgamation-3460100.zip >/dev/null && \
+		unzip -qq sqlite-amalgamation-3460100.zip && \
 		cd sqlite-amalgamation-3460100 && mv * ../ && cd .. && \
 		rm -fr sqlite-amalgamation-3460100.zip sqlite-amalgamation-3460100 ; \
 	fi
