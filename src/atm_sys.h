@@ -53,7 +53,7 @@ int checkPassword(sqlite3 *db, User *usr);
 // system function
 void createNewAcc(sqlite3 *db, User u);
 void mainMenu(sqlite3 *db, User u);
-void checkAllAccounts(sqlite3 *db, User u);
+void checkAllAccounts(sqlite3 *db, User *usr);
 
 // other
 void exitErr(char *str);

@@ -66,7 +66,7 @@ int checkPassword(sqlite3 *db, User *usr) {
         hash_password((const char *)usr->password, salt, computed_hashed_password);
 
         // Compare the computed hashed password with the stored one
-        if (memcmp(computed_hashed_password, stored_hashed_password, HASH_SIZE) == 0) {
+        if (compare_hashes(computed_hashed_password, stored_hashed_password) == 0) {
             sqlite3_finalize(stmt); // Clean up the statement
             return 1; // Password matches, return 1
         } else {

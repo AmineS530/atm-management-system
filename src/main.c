@@ -46,7 +46,7 @@ void mainMenu(sqlite3 *db, User u)
         // here
         break;
     case 4:
-        checkAllAccounts(db, u);
+        checkAllAccounts(db, &u);
         break;
     case 5:
         // student TODO : add your **Make transaction** function
@@ -91,6 +91,7 @@ void initMenu(sqlite3 *db, User *u)
             r = 1;
             break;
         case 2:
+            registerMenu(u->name, u->password);
             if (!username_exists(db, u->name))
             {
                 registerUser(db, u->name, u->password);

@@ -135,31 +135,74 @@ noAccount:
     success(u);
 }
  
-void checkAllAccounts(sqlite3 *db, User u)
-{
-    char userName[100];
-    Record r;
+void checkAllAccounts(sqlite3 *db, User *usr) {
+    const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType FROM records WHERE username = ?";
+    sqlite3_stmt *stmt;
+    
+    system("clear");
+    printf("\t\t====== All accounts for user: %s =====\n\n", usr->name);
 
-    FILE *pf = fopen(RECORDS, "r");
+    // Prepare the SQL query
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        return;
+    }
+
+    // Bind the username to the SQL query
+    sqlite3_bind_text(stmt, 1, usr->name, -1, SQLITE_STATIC);
+
+    // Execute the query and process the results
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        // Retrieve each column
+        int accNbr = sqlite3_column_int(stmt, 0);
+        const unsigned char *created_at = sqlite3_column_text(stmt, 1);
+        const unsigned char *country = sqlite3_column_text(stmt, 2);
+        const unsigned char *phone = sqlite3_column_text(stmt, 3);
+        float balance = sqlite3_column_double(stmt, 4);
+        const unsigned char *accountType = sqlite3_column_text(stmt, 5);
+
+        // Print the account details
+        printf("_____________________\n");
+        printf("Account number: %d\n", accNbr);
+        printf("Created Date: %s\n", created_at);
+        printf("Country: %s\n", country);
+        printf("Phone number: %s\n", phone);
+        printf("Balance: $%.2f\n", balance);
+        printf("Type Of Account: %s\n", accountType);
+        printf("\n");
+    }
+
+    // Finalize the statement to avoid memory leaks
+    sqlite3_finalize(stmt);
+}
+
+
+void registerMenu(char a[50], char pass[50])
+{
+    struct termios oflags, nflags;
 
     system("clear");
-    printf("\t\t====== All accounts from user, %s =====\n\n", u.name);
-    while (getAccountFromFile(pf, userName, &r))
+    printf("\n\n\n\t\t\t\t   Bank Management System\n\t\t\t\t\tUser Login: ");
+    scanf("%s", a);
+
+    // disabling echo
+    tcgetattr(fileno(stdin), &oflags);
+    nflags = oflags;
+    nflags.c_lflag &= ~ECHO;
+    nflags.c_lflag |= ECHONL;
+
+    if (tcsetattr(fileno(stdin), TCSANOW, &nflags) != 0)
     {
-        if (strcmp(userName, u.name) == 0)
-        {
-            printf("_____________________\n");
-            printf("\nAccount number:%d\nDeposit Date:%d/%d/%d \ncountry:%s \nPhone number:%d \nAmount deposited: $%.2f \nType Of Account:%s\n",
-                   r.accountNbr,
-                   r.deposit.day,
-                   r.deposit.month,
-                   r.deposit.year,
-                   r.country,
-                   r.phone,
-                   r.balance,
-                   r.accountType);
-        }
+        perror("tcsetattr");
+        return exit(1);
     }
-    fclose(pf);
-    success(u);
+    printf("\n\n\n\n\n\t\t\t\tEnter the password to login:");
+    scanf("%s", pass);
+
+    // restore terminal
+    if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
+    {
+        perror("tcsetattr");
+        return exit(1);
+    }
 }
