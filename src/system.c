@@ -47,7 +47,7 @@ void stayOrReturn(int notGood, void f(User u), User u)
         if (option == 0)
             f(u);
         else if (option == 1)
-            mainMenu(u);
+            mainMenu(NULL,u);
         else if (option == 2)
             exit(0);
         else
@@ -64,7 +64,7 @@ void stayOrReturn(int notGood, void f(User u), User u)
     if (option == 1)
     {
         system("clear");
-        mainMenu(u);
+        mainMenu(NULL,u);
     }
     else
     {
@@ -83,7 +83,7 @@ invalid:
     system("clear");
     if (option == 1)
     {
-        mainMenu(u);
+        mainMenu(NULL,u);
     }
     else if (option == 0)
     {
@@ -96,7 +96,7 @@ invalid:
     }
 }
 
-void createNewAcc(User u)
+void createNewAcc(sqlite3 *db, User u)
 {
     Record r;
     Record cr;
@@ -135,7 +135,7 @@ noAccount:
     success(u);
 }
  
-void checkAllAccounts(User u)
+void checkAllAccounts(sqlite3 *db, User u)
 {
     char userName[100];
     Record r;

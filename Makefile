@@ -5,7 +5,8 @@ APP = ATM
 SRC = src/main.c \
 	src/system.c \
 	src/auth.c \
-	src/errors.c
+	src/errors.c \
+	src/todo.c
 
 OBJ = $(SRC:.c=.o)
 

@@ -47,12 +47,13 @@ typedef struct s_data
 // authentication functions
 void loginMenu(char a[50], char pass[50]);
 void registerMenu(char a[50], char pass[50]);
-const char *getPassword(User u);
+void registerUser(sqlite3 *db, const char *username, const char *password);
+int checkPassword(sqlite3 *db, User *usr);
 
 // system function
-void createNewAcc(User u);
-void mainMenu(User u);
-void checkAllAccounts(User u);
+void createNewAcc(sqlite3 *db, User u);
+void mainMenu(sqlite3 *db, User u);
+void checkAllAccounts(sqlite3 *db, User u);
 
 // other
 void exitErr(char *str);

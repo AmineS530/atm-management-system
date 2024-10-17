@@ -25,7 +25,7 @@ void printOptions(int input)
                "\n\t      Thanks for using our ATM managment system\n\n");
 }
 
-void mainMenu(User u)
+void mainMenu(sqlite3 *db, User u)
 {
     int option;
     system("clear");
@@ -35,7 +35,7 @@ void mainMenu(User u)
     switch (option)
     {
     case 1:
-        createNewAcc(u);
+        createNewAcc(db, u);
         break;
     case 2:
         // student TODO : add your **Update account information** function
@@ -46,7 +46,7 @@ void mainMenu(User u)
         // here
         break;
     case 4:
-        checkAllAccounts(u);
+        checkAllAccounts(db, u);
         break;
     case 5:
         // student TODO : add your **Make transaction** function
@@ -67,7 +67,7 @@ void mainMenu(User u)
     }
 }
 
-void initMenu(User *u)
+void initMenu(sqlite3 *db, User *u)
 {
     int r = 0;
     int option;
@@ -80,7 +80,7 @@ void initMenu(User *u)
         {
         case 1:
             loginMenu(u->name, u->password);
-            if (strcmp(u->password, getPassword(*u)) == 0)
+            if (checkPassword(db, u))
             {
                 printf("\n\nPassword Match!");
             }
@@ -91,8 +91,13 @@ void initMenu(User *u)
             r = 1;
             break;
         case 2:
-            // student TODO : add your **Registration** function
-            // here
+            if (!username_exists(db, u->name))
+            {
+                registerUser(db, u->name, u->password);
+            } else {
+                 exitErr("\n\t\t Please choose another username\n");
+            }
+
             r = 1;
             break;
         case 3:
@@ -115,29 +120,20 @@ int main()
 {
     User u;
 
-    /* sqlite3 *db;
-     char *errMsg = 0;
+    sqlite3 *db;
+    char *errMsg = 0;
 
-     int resCode = sqlite3_open("data/DATA.db", &db);
-     if (resCode != SQLITE_OK)
-     {
-         fprintf(stderr, "error: %s", sqlite3_errmsg(db));
-         sqlite3_close(db);
-         return 1;
-     }
+    int resCode = sqlite3_open("data/DATA.db", &db);
+    if (resCode != SQLITE_OK)
+    {
+        fprintf(stderr, "error: %s", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        return 1;
+    }
 
-     char *sql = "CREATE TABLE Data(Id INTEGER PRIMARY KEY, Name TEXT);";
-     resCode = sqlite3_exec(db, sql, 0, 0, &errMsg);
-     if (resCode != SQLITE_OK)
-     {
-         fprintf(stderr, "error: %s",errMsg);
-         sqlite3_free(errMsg);
-         sqlite3_close(db);
-         return 1;
-     }
-     sqlite3_close(db);*/
     atexit(forexit);
-    initMenu(&u);
-    mainMenu(u);
+    initMenu(db, &u);
+    mainMenu(db, u);
+    sqlite3_close(db);
     return 0;
 }
