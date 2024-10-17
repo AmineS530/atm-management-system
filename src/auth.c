@@ -1,7 +1,5 @@
 #include "atm_sys.h"
 
-static const char *USERS = "./data/users.txt";
-
 void loginMenu(char a[50], char pass[50])
 {
     struct termios oflags, nflags;

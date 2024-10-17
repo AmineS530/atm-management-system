@@ -1,0 +1,4 @@
+change remaining funcs to work with sqlite,
+clean up code,
+put password related funcs in one file to avoid confusion
+update the header

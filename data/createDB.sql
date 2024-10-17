@@ -1,13 +1,13 @@
 CREATE TABLE records (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userID INTEGER NOT NULL,
+    username TEXT NOT NULL UNIQUE,
+    accNbr TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     country TEXT NOT NULL,
     phone TEXT NOT NULL,
     accType TEXT NOT NULL,
-    accNbr TEXT NOT NULL UNIQUE,
     balance FLOAT NOT NULL,
-    username TEXT NOT NULL UNIQUE,
     created_at DATE DEFAULT CURRENT_DATE
 );
 
