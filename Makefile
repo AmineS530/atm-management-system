@@ -1,11 +1,16 @@
 CC = gcc
 
+CFLAGS = -Wall -Werror
+
 APP = ATM
 
 SRC = src/main.c \
+	src/menus.c \
 	src/system.c \
 	src/auth.c \
 	src/errors.c \
+	src/encrypt.c \
+	src/utils.c \
 	src/todo.c
 
 OBJ = $(SRC:.c=.o)
