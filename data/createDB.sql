@@ -33,5 +33,5 @@ INSERT INTO records (userID, name, country, phone, accType, accNbr, balance, use
 (3, 'Alice Jones', 'UK', '+447700900123', 'Checking', '345678901234', 1575.90, 'alice_jones', '2023-08-03 12:00:00'),
 (4, 'Bob Lee', 'Australia', '+61412345678', 'Savings', '456789012345', 3200.21, 'bob_lee', '2023-08-04 14:15:00'),
 (5, 'Charlie Brown', 'Germany', '+491234567890', 'Checking', '567890123456', 950.08, 'charlie_brown', '2023-08-05 09:30:00'),
-(6, 'test Brown', 'Germany', '+491234567890', 'Checking', '56781230123456', 950.08, '123', '2023-08-05 09:30:00');
+(6, 'mouad salmi', 'Morocco', '+491234567890', 'Savings', '4206969420', 99999.99, 'msalmi', '2023-08-05 09:30:00');
 

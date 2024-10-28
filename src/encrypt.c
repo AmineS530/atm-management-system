@@ -11,7 +11,7 @@ void generate_salt(unsigned char salt[SALT_SIZE])
 }
 
 // Simple SHA-256 implementation (basic one, replace with your own or other library if needed)
-void simple_sha256(const unsigned char *input, size_t len, unsigned char output[HASH_SIZE])
+void XOR_hash(const unsigned char *input, size_t len, unsigned char output[HASH_SIZE])
 {
     // Simplified version of a hash, replace with actual SHA-256 if you can
     for (size_t i = 0; i < len; i++)
@@ -30,7 +30,7 @@ void hash_password(const char *password, const unsigned char *salt, unsigned cha
     memcpy(salted_password + SALT_SIZE, password, strlen(password));
 
     // Simple hash the salted password (replace with SHA-256 as needed)
-    simple_sha256(salted_password, SALT_SIZE + strlen(password), output);
+    XOR_hash(salted_password, SALT_SIZE + strlen(password), output);
 }
 
 // Function to print data in hexadecimal format

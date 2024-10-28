@@ -5,11 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <termios.h>
-#include "sqlite/sqlite3.h"
 #include <time.h>
+#include "sqlite/sqlite3.h"
 
+#define DB_PATH "data/DATA.db"
 #define SALT_SIZE 16
-#define HASH_SIZE 32 // SHA-256 digest size
+#define HASH_SIZE 32
 typedef struct s_date
 {
     int month, day, year;
@@ -47,7 +48,7 @@ typedef struct s_data
 // authentication functions
 void loginMenu(char a[50], char pass[50]);
 void registerMenu(char a[50], char pass[50]);
-void registerUser(sqlite3 *db, const char *username, const char *password);
+void registerUser(sqlite3 *db, User *usr);
 int checkPassword(sqlite3 *db, User *usr);
 
 // system function

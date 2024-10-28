@@ -94,9 +94,11 @@ void initMenu(sqlite3 *db, User *u)
             registerMenu(u->name, u->password);
             if (!username_exists(db, u->name))
             {
-                registerUser(db, u->name, u->password);
-            } else {
-                 exitErr("\n\t\t Please choose another username\n");
+                registerUser(db, u);
+            }
+            else
+            {
+                exitErr("\n\t\t Please choose another username\n");
             }
 
             r = 1;
@@ -124,7 +126,7 @@ int main()
     sqlite3 *db;
     char *errMsg = 0;
 
-    int resCode = sqlite3_open("data/DATA.db", &db);
+    int resCode = sqlite3_open(DB_PATH, &db);
     if (resCode != SQLITE_OK)
     {
         fprintf(stderr, "error: %s", sqlite3_errmsg(db));
@@ -132,9 +134,9 @@ int main()
         return 1;
     }
 
-    atexit(forexit);
+   atexit(forexit);
     initMenu(db, &u);
-    mainMenu(db, u);
+   mainMenu(db, u);
     sqlite3_close(db);
     return 0;
 }

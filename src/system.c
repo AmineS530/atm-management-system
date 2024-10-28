@@ -47,7 +47,7 @@ void stayOrReturn(int notGood, void f(User u), User u)
         if (option == 0)
             f(u);
         else if (option == 1)
-            mainMenu(NULL,u);
+            mainMenu(NULL, u);
         else if (option == 2)
             exit(0);
         else
@@ -64,7 +64,7 @@ void stayOrReturn(int notGood, void f(User u), User u)
     if (option == 1)
     {
         system("clear");
-        mainMenu(NULL,u);
+        mainMenu(NULL, u);
     }
     else
     {
@@ -83,7 +83,7 @@ invalid:
     system("clear");
     if (option == 1)
     {
-        mainMenu(NULL,u);
+        mainMenu(NULL, u);
     }
     else if (option == 0)
     {
@@ -134,16 +134,18 @@ noAccount:
     fclose(pf);
     success(u);
 }
- 
-void checkAllAccounts(sqlite3 *db, User *usr) {
+
+void checkAllAccounts(sqlite3 *db, User *usr)
+{
     const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType FROM records WHERE username = ?";
     sqlite3_stmt *stmt;
-    
+
     system("clear");
     printf("\t\t====== All accounts for user: %s =====\n\n", usr->name);
 
     // Prepare the SQL query
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
+    {
         printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
@@ -152,7 +154,8 @@ void checkAllAccounts(sqlite3 *db, User *usr) {
     sqlite3_bind_text(stmt, 1, usr->name, -1, SQLITE_STATIC);
 
     // Execute the query and process the results
-    while (sqlite3_step(stmt) == SQLITE_ROW) {
+    while (sqlite3_step(stmt) == SQLITE_ROW)
+    {
         // Retrieve each column
         int accNbr = sqlite3_column_int(stmt, 0);
         const unsigned char *created_at = sqlite3_column_text(stmt, 1);
@@ -175,7 +178,6 @@ void checkAllAccounts(sqlite3 *db, User *usr) {
     // Finalize the statement to avoid memory leaks
     sqlite3_finalize(stmt);
 }
-
 
 void registerMenu(char a[50], char pass[50])
 {

@@ -1,0 +1,88 @@
+Attempted login at Mon Oct 28 16:47:12 2024
+
+Username: 1
+Entered Password: 1
+Retrieved Salt: 8713a462918d756ea000db7e31cfb4a2
+Stored Hashed Password: c35776706ef2756ea8630e3d9c9ab4a231d1a542000000001812d643ad550000
+Computed Hashed Password: 8713a462918d756ea000db7e31cfb4a231000000000000000000000000000000
+Password Match Result: NO MATCH
+Attempted login at Mon Oct 28 16:48:59 2024
+
+Username: 1
+Entered Password: 1
+Retrieved Salt: 8713a462918d756ea000db7e31cfb4a2
+Stored Hashed Password: c35776706ef2756ea8630e3d9c9ab4a231d1a542000000001812d643ad550000
+Computed Hashed Password: 8713a462918d756ea000db7e31cfb4a231000000000000000000000000000000
+Password Match Result: NO MATCH
+Attempted login at Mon Oct 28 17:04:23 2024
+
+Username: 1
+Entered Password: 1
+Retrieved Salt: 8713a462918d756ea000db7e31cfb4a2
+Stored Hashed Password: c35776706ef2756ea8630e3d9c9ab4a231d1a542000000001812d643ad550000
+Computed Hashed Password: 8713a462918d756ea000db7e31cfb4a231000000000000000000000000000000
+Password Match Result: NO MATCH
+Attempted login at Mon Oct 28 17:06:23 2024
+
+Username: 1
+Entered Password: 1
+Retrieved Salt: 8713a462918d756ea000db7e31cfb4c3
+Stored Hashed Password: c35776706ef2756ea8630e3d9c9ab4a231d1a542000000001812d643ad550000
+Computed Hashed Password: 8713a462918d756ea000db7e31cfb4c331000000000000000000000000000000
+Password Match Result: NO MATCH
+Attempted login at Mon Oct 28 17:07:26 2024
+
+Username: 1
+Entered Password: 1
+Retrieved Salt: 8713a462918d756ea000db7e31cfb4a2
+Stored Hashed Password: c35776706ef2756ea8630e3d9c9ab4a231d1a542000000001812d643ad550000
+Computed Hashed Password: 8713a462918d756ea000db7e31cfb4a231000000000000000000000000000000
+Password Match Result: NO MATCH
+Attempted login at Mon Oct 28 17:11:33 2024
+
+Username: 1
+Entered Password: 1
+Retrieved Salt: 8713a462918d756ea000db7e31cfb4a2
+Stored Hashed Password: c35776706ef2756ea8630e3d9c9ab4a231d1a542000000001812d643ad550000
+Computed Hashed Password: 8713a462918d756ea000db7e31cfb4a231000000000000000000000000000000
+Password Match Result: NO MATCH
+Attempted login at Mon Oct 28 17:11:52 2024
+
+Username: 1
+Entered Password: 1
+Retrieved Salt: 8713a462918d756ea000db7e31cfb4a2
+Stored Hashed Password: c35776706ef2756ea8630e3d9c9ab4a231d1a542000000001812d643ad550000
+Computed Hashed Password: 8713a462918d756ea000db7e31cfb4a231000000000000000000000000000000
+Password Match Result: NO MATCH
+Attempted login at Mon Oct 28 17:14:58 2024
+
+Username: 111
+Entered Password: 111
+Retrieved Salt: 03c518a691530a7ea98b9b452e010e66
+Stored Hashed Password: 03c5180000000000000000000000000000000000000000000000000000000000
+Computed Hashed Password: 03c5180000000000000000000000000000000000000000000000000000000000
+Password Match Result: MATCH
+Attempted login at Mon Oct 28 17:15:10 2024
+
+Username: 123
+Entered Password: 123
+Retrieved Salt: 3467580bdf14f211a1b3be156a29152e
+Stored Hashed Password: c090c243216bf211a9d04d9b6074152e3143c68d000000000812f48e0a5d0000
+Computed Hashed Password: 3467580000000000000000000000000000000000000000000000000000000000
+Password Match Result: NO MATCH
+Attempted login at Mon Oct 28 17:15:54 2024
+
+Username: 1111
+Entered Password: 1111
+Retrieved Salt: d88065551e8571fd11b15e6607d4de7d
+Stored Hashed Password: d880655500000000000000000000000000000000000000000000000000000000
+Computed Hashed Password: d880655500000000000000000000000000000000000000000000000000000000
+Password Match Result: MATCH
+Attempted login at Mon Oct 28 17:16:18 2024
+
+Username: 1
+Entered Password: 1
+Retrieved Salt: f69f50c02ac9e23f8942441bd0e2c819
+Stored Hashed Password: f69f50c02ac9e23f8942441bd0e2c81931000000000000000000000000000000
+Computed Hashed Password: f69f50c02ac9e23f8942441bd0e2c81931000000000000000000000000000000
+Password Match Result: MATCH
