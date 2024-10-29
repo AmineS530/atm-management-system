@@ -37,6 +37,7 @@ int main() {
 
     return 0;
 }
+/*
 // Example of using prepared statements in SQLite (no need for manual sanitization)
 const char *sql = "SELECT * FROM users WHERE username = ?";
 sqlite3_stmt *stmt;
@@ -46,3 +47,4 @@ if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) == SQLITE_OK) {
     sqlite3_bind_text(stmt, 1, user_input, -1, SQLITE_STATIC);
     // Now execute the query without worry of SQL injection
 }
+*/
