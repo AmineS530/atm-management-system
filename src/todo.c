@@ -1,21 +1,24 @@
 #include "atm_sys.h"
 
-//  TODO : add your **Update account information** function
+//  TODO :  **Update account information** function
 void UpdateAccInfo(User *usr, sqlite3 *db)
 {
-    const char *sql = "SELECT country, phone FROM records WHERE username = ?";
+    const char *sql = "UPDATE country = ?, phone= ?, FROM records WHERE username = ?";
     sqlite3_stmt *stmt;
 
-    // Prepare the SQL query
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
         printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
 
-    sqlite3_bind_text(stmt, 1, usr->name, -1, SQLITE_STATIC);
+    // sqlite3_bind_text(stmt, 1, country, -1, SQLITE_STATIC);
+    // sqlite3_bind_text(stmt, 2, usr->name, -1, SQLITE_STATIC);
+    // sqlite3_bind_text(stmt, 3, usr->name, -1, SQLITE_STATIC);
+    //  while (sqlite3_step(stmt) != SQLITE_DONE)
+    //  {
 
-
+    //  }
 
     sqlite3_finalize(stmt);
 }

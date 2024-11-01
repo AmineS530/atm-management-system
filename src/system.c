@@ -63,7 +63,6 @@ void stayOrReturn(int notGood, void f(User u), User u)
     }
     if (option == 1)
     {
-        system("clear");
         mainMenu(NULL, u);
     }
     else
@@ -81,20 +80,18 @@ invalid:
     printf("Enter 1 to go to the main menu and 0 to exit!\n");
     scanf("%d", &option);
     system("clear");
+
     if (option == 1)
-    {
         mainMenu(NULL, u);
-    }
     else if (option == 0)
-    {
         exit(1);
-    }
     else
     {
         printf("Insert a valid operation!\n");
         goto invalid;
     }
 }
+
 
 void createNewAcc(sqlite3 *db, User u)
 {
@@ -135,6 +132,7 @@ noAccount:
     success(u);
 }
 
+// check all accounts for a user
 void checkAllAccounts(sqlite3 *db, User *usr)
 {
     const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType FROM records WHERE username = ?";
@@ -143,20 +141,16 @@ void checkAllAccounts(sqlite3 *db, User *usr)
     system("clear");
     printf("\t\t====== All accounts for user: %s =====\n\n", usr->name);
 
-    // Prepare the SQL query
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
         printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
 
-    // Bind the username to the SQL query
     sqlite3_bind_text(stmt, 1, usr->name, -1, SQLITE_STATIC);
 
-    // Execute the query and process the results
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        // Retrieve each column
         int accNbr = sqlite3_column_int(stmt, 0);
         const unsigned char *created_at = sqlite3_column_text(stmt, 1);
         const unsigned char *country = sqlite3_column_text(stmt, 2);
@@ -164,7 +158,6 @@ void checkAllAccounts(sqlite3 *db, User *usr)
         float balance = sqlite3_column_double(stmt, 4);
         const unsigned char *accountType = sqlite3_column_text(stmt, 5);
 
-        // Print the account details
         printf("_____________________\n");
         printf("Account number: %d\n", accNbr);
         printf("Created Date: %s\n", created_at);
@@ -175,6 +168,5 @@ void checkAllAccounts(sqlite3 *db, User *usr)
         printf("\n");
     }
 
-    // Finalize the statement to avoid memory leaks
     sqlite3_finalize(stmt);
 }

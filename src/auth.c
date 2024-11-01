@@ -1,5 +1,6 @@
 #include "atm_sys.h"
 
+//  gets salt and hashed password from db and compares it with the user entered password
 int checkPassword(sqlite3 *db, User *usr)
 {
     const char *sql = "SELECT salt, passwd FROM users WHERE username = ?";
@@ -8,47 +9,40 @@ int checkPassword(sqlite3 *db, User *usr)
     unsigned char stored_hashed_password[HASH_SIZE];
     unsigned char computed_hashed_password[HASH_SIZE] = {0}; // Store the hash of the user-entered password
 
-    // Prepare the SQL query
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
         printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
-        return 0; // Return 0 to indicate failure
+        return 0;
     }
 
-    // Bind the username from the User struct to the SQL query
     sqlite3_bind_text(stmt, 1, usr->name, -1, SQLITE_STATIC);
 
-    // Execute the query and check if a row is returned
     if (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        // Get the salt and stored hashed password from the database
         const void *salt_blob = sqlite3_column_blob(stmt, 0);
         const void *hashed_blob = sqlite3_column_blob(stmt, 1);
 
         int salt_size = sqlite3_column_bytes(stmt, 0);
         int hashed_size = sqlite3_column_bytes(stmt, 1);
 
-        // Copy the salt and stored hashed password into local buffers
         memcpy(salt, salt_blob, salt_size);
         memcpy(stored_hashed_password, hashed_blob, hashed_size);
 
         // Hash the entered password with the retrieved salt
-        hash_password((const char *)usr->password, salt, computed_hashed_password);
+        hash_password(usr->password, salt, computed_hashed_password);
 
         // Compare the computed hash and the stored hash using memcmp
         if (memcmp(computed_hashed_password, stored_hashed_password, HASH_SIZE) == 0)
         {
-            sqlite3_finalize(stmt); // Clean up the statement
+            sqlite3_finalize(stmt); 
             return 1;               // Password matches, return 1
         }
         else
         {
-            sqlite3_finalize(stmt); // Clean up the statement
+            sqlite3_finalize(stmt); 
             return 0;               // Password does not match
         }
     }
-
-    // No matching username found
-    sqlite3_finalize(stmt); // Clean up
-    return 0;               // Return 0 on failure
+    sqlite3_finalize(stmt);
+    return 0;
 }

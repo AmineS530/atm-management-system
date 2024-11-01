@@ -11,6 +11,8 @@
 #define DB_PATH "data/DATA.db"
 #define SALT_SIZE 16
 #define HASH_SIZE 32
+#define STRING_TO_SCAN "%49s"
+
 typedef struct s_date
 {
     int month, day, year;
@@ -21,8 +23,8 @@ typedef struct s_records
 {
     int id;
     int userId;
-    char name[100];
-    char country[100];
+    char name[50];
+    char country[50];
     int phone;
     char accountType[10];
     int accountNbr;
@@ -47,8 +49,7 @@ typedef struct s_data
 
 // authentication functions
 int checkPassword(sqlite3 *db, User *usr);
-void hash_password(const char *password, const unsigned char *salt, unsigned char output[HASH_SIZE]);
-int compare_hashes(unsigned char hash1[HASH_SIZE], unsigned char hash2[HASH_SIZE]);
+void hash_password(char *password, const unsigned char *salt, unsigned char output[HASH_SIZE]);
 
 // menus
 void initMenu(sqlite3 *db, User *usr);
@@ -67,6 +68,6 @@ void printOptions(int input);
 int username_exists(sqlite3 *db, User usr);
 
 // todo
-void UpdateAccInfo(User u);
+void UpdateAccInfo(User *usr, sqlite3 *db);
 
 #endif

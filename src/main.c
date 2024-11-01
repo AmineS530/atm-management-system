@@ -2,15 +2,15 @@
 
 void forexit()
 {
+  //  system("clear");
     printOptions(3);
 }
 
 int main()
 {
-    User u;
-
+    atexit(forexit);
+    User usr;
     sqlite3 *db;
-   // char *errMsg = 0;
 
     int resCode = sqlite3_open(DB_PATH, &db);
     if (resCode != SQLITE_OK)
@@ -20,9 +20,8 @@ int main()
         return 1;
     }
 
-    atexit(forexit);
-    initMenu(db, &u);
-    mainMenu(db, u);
+    initMenu(db, &usr);
+    mainMenu(db, usr);
     sqlite3_close(db);
     return 0;
 }
