@@ -13,3 +13,5 @@ sanitize input and redo sqlite functions
 user in main function doesnt need to be a pointer
 
 print error if no account for the user
+
+add logs
