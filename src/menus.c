@@ -5,7 +5,8 @@ void loginMenu(User *usr)
     struct termios oflags, nflags;
 
     system("clear");
-    printf("\n\n\n\t\t\t\t   Bank Management System\n\t\t\t\t\tUser Login: ");
+    printf("\n\n\t\t\t\tAccount Login\n");
+    printf("\n\t\t\tBank Management System\n\n\t\t[-] User Login: ");
     scanf(STRING_TO_SCAN, usr->name);
 
     tcgetattr(fileno(stdin), &oflags);
@@ -18,7 +19,7 @@ void loginMenu(User *usr)
         perror("tcsetattr");
         return exit(1);
     }
-    printf("\n\n\n\t\t\t\tEnter the password to login:");
+    printf("\n\t\t[-] Enter the password to login:");
     scanf(STRING_TO_SCAN, usr->password);
 
     if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
@@ -33,7 +34,8 @@ void registerMenu(User *usr, char pass[50])
     struct termios oflags, nflags;
 
     system("clear");
-    printf("\n\n\n\t\t\t\t   Bank Management System\n\t\t\t\t\tUser Login: ");
+    printf("\n\n\t\t\t\tNew Account Registration\n");
+    printf("\n\t\t\t\tBank Management System\n\t\t\t[-] Username: ");
     scanf(STRING_TO_SCAN, usr->name);
 
     tcgetattr(fileno(stdin), &oflags);
@@ -47,10 +49,10 @@ void registerMenu(User *usr, char pass[50])
         return exit(1);
     }
 
-    printf("\n\n\n\t\t\tEnter the password to the new account:");
+    printf("\n\t\t\t[-] Enter the password to the new account:");
     scanf(STRING_TO_SCAN, usr->password);
 
-    printf("\n\n\n\t\t\t\tRe-Enter the password:");
+    printf("\n\t\t\t[-] Re-Enter the password:");
     scanf(STRING_TO_SCAN, pass);
 
     // restore terminal
@@ -66,18 +68,17 @@ void mainMenu(sqlite3 *db, User u)
     int option;
 
     system("clear");
-    printOptions(1);
+    printOptions(2, u.name);
     scanf("%d", &option);
 
     switch (option)
     {
     case 1:
-        createNewAcc(db, u);
+      //  createNewAcc(db, u);
         break;
     case 2:
         //  TODO : add your **Update account information** function
-
-        // UpdateAccInfo(&u, db);
+        UpdateAccInfo(&u, db);
         break;
     case 3:
         //  TODO : add your **Check the details of existing accounts** function
@@ -117,7 +118,7 @@ void initMenu(sqlite3 *db, User *usr)
     char pass[50];
 
     system("clear");
-    printOptions(2);
+    printOptions(1, NULL);
     while (!r)
     {
         scanf("%d", &option);
@@ -126,7 +127,7 @@ void initMenu(sqlite3 *db, User *usr)
         case 1:
             loginMenu(usr);
             if (checkPassword(db, usr))
-                printf("\n\nPassword Match!");
+                printf("\n\nLogin successful!");
             else
                 exitErr("\n\t\tWrong password!! or User Name\n");
             r = 1;
@@ -146,7 +147,7 @@ void initMenu(sqlite3 *db, User *usr)
         default:
             system("clear");
             printf("\t\tPlease Insert a valid operation!\n");
-            printOptions(2);
+            printOptions(1, NULL);
             break;
         }
     }

@@ -1,38 +1,37 @@
 #include "atm_sys.h"
 
-static const char *RECORDS = "./data/records.txt";
 
-int getAccountFromFile(FILE *ptr, char name[50], Record *r)
-{
-    return fscanf(ptr, "%d %d %s %d %d/%d/%d %s %d %lf %s",
-                  &r->id,
-                  &r->userId,
-                  name,
-                  &r->accountNbr,
-                  &r->deposit.month,
-                  &r->deposit.day,
-                  &r->deposit.year,
-                  r->country,
-                  &r->phone,
-                  &r->balance,
-                  r->accountType) != EOF;
-}
+// int getAccountFromFile(FILE *ptr, char name[50], Record *r)
+// {
+//     return fscanf(ptr, "%d %d %s %d %d/%d/%d %s %s %lf %s",
+//                   &r->id,
+//                   &r->userId,
+//                   name,
+//                   &r->accountNbr,
+//                   &r->deposit.month,
+//                   &r->deposit.day,
+//                   &r->deposit.year,
+//                   r->country,
+//                   &r->phone,
+//                   &r->balance,
+//                   r->accountType) != EOF;
+// }
 
-void saveAccountToFile(FILE *ptr, User u, Record r)
-{
-    fprintf(ptr, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n\n",
-            r.id,
-            u.id,
-            u.name,
-            r.accountNbr,
-            r.deposit.month,
-            r.deposit.day,
-            r.deposit.year,
-            r.country,
-            r.phone,
-            r.balance,
-            r.accountType);
-}
+// void saveAccountToFile(FILE *ptr, User u, Record r)
+// {
+//     fprintf(ptr, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n\n",
+//             r.id,
+//             u.id,
+//             u.name,
+//             r.accountNbr,
+//             r.deposit.month,
+//             r.deposit.day,
+//             r.deposit.year,
+//             r.country,
+//             r.phone,
+//             r.balance,
+//             r.accountType);
+// }
 
 void stayOrReturn(int notGood, void f(User u), User u)
 {
@@ -93,44 +92,7 @@ invalid:
 }
 
 
-void createNewAcc(sqlite3 *db, User u)
-{
-    Record r;
-    Record cr;
-    char userName[50];
-    FILE *pf = fopen(RECORDS, "a+");
 
-noAccount:
-    system("clear");
-    printf("\t\t\t===== New record =====\n");
-
-    printf("\nEnter today's date(mm/dd/yyyy):");
-    scanf("%d/%d/%d", &r.deposit.month, &r.deposit.day, &r.deposit.year);
-    printf("\nEnter the account number:");
-    scanf("%d", &r.accountNbr);
-
-    while (getAccountFromFile(pf, userName, &cr))
-    {
-        if (strcmp(userName, u.name) == 0 && cr.accountNbr == r.accountNbr)
-        {
-            printf("✖ This Account already exists for this user\n\n");
-            goto noAccount;
-        }
-    }
-    printf("\nEnter the country:");
-    scanf("%s", r.country);
-    printf("\nEnter the phone number:");
-    scanf("%d", &r.phone);
-    printf("\nEnter amount to deposit: $");
-    scanf("%lf", &r.balance);
-    printf("\nChoose the type of account:\n\t-> saving\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:");
-    scanf("%s", r.accountType);
-
-    saveAccountToFile(pf, u, r);
-
-    fclose(pf);
-    success(u);
-}
 
 // check all accounts for a user
 void checkAllAccounts(sqlite3 *db, User *usr)

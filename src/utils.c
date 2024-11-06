@@ -1,9 +1,10 @@
 #include "atm_sys.h"
 
-void printOptions(int input)
+void printOptions(int input, char *name)
 {
-    if (input == 1)
-        printf("\n\n\t\t============== ATM ==============\n\n"
+    if (input == 2)
+        printf("\n\t\t============== ATM ==============\n\t\t"
+               "\n\t\t||\t Welcome %s!\t ||\n"
                "\n\t\t-->> Choose one of the options below <<--\n"
                "\n\t\t[1]- Create a new account\n"
                "\n\t\t[2]- Update account information\n"
@@ -12,8 +13,9 @@ void printOptions(int input)
                "\n\t\t[5]- Make Transaction\n"
                "\n\t\t[6]- Remove existing account\n"
                "\n\t\t[7]- Transfer ownership\n"
-               "\n\t\t[8]- Exit\n");
-    if (input == 2)
+               "\n\t\t[8]- Exit\n",
+               to_upper(name));
+    if (input == 1)
         printf("\n\t\t============== ATM ==============\n"
                "\n\t\t  -->>  login / register <<--\n"
                "\n\t\t[1]- login\n"
@@ -44,4 +46,14 @@ int username_exists(sqlite3 *db, User usr)
 
     sqlite3_finalize(stmt);
     return exists > 0;
+}
+
+char *to_upper(char *str)
+{
+    for (size_t i = 0; i < strlen(str); i++)
+    {
+        if (str[i] >= 'a' && str[i] <= 'z')
+            str[i] -= 32;
+    }
+    return (str);
 }

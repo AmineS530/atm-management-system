@@ -57,6 +57,8 @@
   "C_Cpp_Runner.useLinkTimeOptimization": false,
   "C_Cpp_Runner.msvcSecureNoWarnings": false,
   "files.associations": {
-    "atm_sys.h": "c"
+    "atm_sys.h": "c",
+    "ctype.h": "c",
+    "sqlite3.h": "c"
   }
 }

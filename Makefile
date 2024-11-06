@@ -11,6 +11,7 @@ SRC = src/main.c \
 	src/errors.c \
 	src/encrypt.c \
 	src/utils.c \
+	src/input_utils.c \
 	src/todo.c
 
 SQLITE3_PATH = src/sqlite

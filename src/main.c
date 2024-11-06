@@ -3,7 +3,7 @@
 void forexit()
 {
   //  system("clear");
-    printOptions(3);
+    printOptions(3, NULL);
 }
 
 int main()

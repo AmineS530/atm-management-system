@@ -24,8 +24,8 @@ typedef struct s_records
     int id;
     int userId;
     char name[50];
-    char country[50];
-    int phone;
+    char country[30];
+    char phone[20];
     char accountType[10];
     int accountNbr;
     double balance;
@@ -64,10 +64,15 @@ void checkAllAccounts(sqlite3 *db, User *usr);
 
 // other
 void exitErr(char *str);
-void printOptions(int input);
+void printOptions(int input, char *name);
 int username_exists(sqlite3 *db, User usr);
 
 // todo
 void UpdateAccInfo(User *usr, sqlite3 *db);
+
+//input utils 
+int check_phone_numb(char *phone);
+int check_country(char *country);
+char *to_upper(char *str);
 
 #endif

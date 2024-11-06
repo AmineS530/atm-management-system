@@ -28,19 +28,13 @@ int checkPassword(sqlite3 *db, User *usr)
         memcpy(salt, salt_blob, salt_size);
         memcpy(stored_hashed_password, hashed_blob, hashed_size);
 
-        // Hash the entered password with the retrieved salt
         hash_password(usr->password, salt, computed_hashed_password);
 
         // Compare the computed hash and the stored hash using memcmp
         if (memcmp(computed_hashed_password, stored_hashed_password, HASH_SIZE) == 0)
         {
-            sqlite3_finalize(stmt); 
-            return 1;               // Password matches, return 1
-        }
-        else
-        {
-            sqlite3_finalize(stmt); 
-            return 0;               // Password does not match
+            sqlite3_finalize(stmt);
+            return 1;
         }
     }
     sqlite3_finalize(stmt);

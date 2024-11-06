@@ -1,6 +1,8 @@
 change remaining funcs to work with sqlite
+    - create account
+        + prompt to fill records struct before inserting in db
+        + functions to check each input
 
-clean up code
 
 put password related funcs in one file to avoid confusion
 
@@ -15,3 +17,8 @@ user in main function doesnt need to be a pointer
 print error if no account for the user
 
 add logs
+
+clean up code
+
+remove extra library imports and create functions manually if possible
+
