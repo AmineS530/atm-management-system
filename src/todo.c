@@ -50,9 +50,8 @@ void UpdateAccInfo(User *usr, sqlite3 *db)
     int prompt;
     int err;
     const char *sql = NULL;
-
-invalid:
     system("clear");
+invalid:
     printf("\t\t====== Update Account Informations =====\n\n");
     printf("\t\tOptions:\n\n\t\t[1] Update Country\n\t\t[2] Update Phone-Number\n\n\t\tYour input: ");
     scanf("%d", &prompt);
@@ -68,7 +67,9 @@ invalid:
     }
     else
     {
-        return;
+        system("clear");
+        // can store this in a var that start empty so its appear under update acc info txt or re add text here
+        printf("\n   | [+] Non-Valid input |\n\n");
         goto invalid;
     }
 

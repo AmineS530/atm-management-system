@@ -4,7 +4,7 @@
 int check_phone_numb(char *phone)
 {
     printf("\n\n\t\tplease enter phone number in the following format:\n"
-           "+<Country Code><phone number>\n\t\texample: +919876543210\n"
+           "\t\t+<Country Code><phone number>\n\t\texample: +919876543210\n"
            "New Number:");
     scanf("%20s", phone);
     int inputLen = strlen(phone);
