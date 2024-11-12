@@ -2,6 +2,12 @@
 
 void printOptions(int input, char *name)
 {
+    if (input == 1)
+        printf("\n\t\t============== ATM ==============\n"
+               "\n\t\t  -->>  login / register <<--\n"
+               "\n\t\t[1]- login\n"
+               "\n\t\t[2]- register\n"
+               "\n\t\t[3]- exit\n");
     if (input == 2)
         printf("\n\t\t============== ATM ==============\n\t\t"
                "\n\t\t||\t Welcome %s!\t ||\n"
@@ -15,15 +21,9 @@ void printOptions(int input, char *name)
                "\n\t\t[7]- Transfer ownership\n"
                "\n\t\t[8]- Exit\n",
                to_upper(name));
-    if (input == 1)
-        printf("\n\t\t============== ATM ==============\n"
-               "\n\t\t  -->>  login / register <<--\n"
-               "\n\t\t[1]- login\n"
-               "\n\t\t[2]- register\n"
-               "\n\t\t[3]- exit\n");
     if (input == 3)
-        printf("\n\n\t\t============== ATM SYS ==============\n"
-               "\n\t      Thanks for using our ATM managment system\n\n");
+        printf("\n\n\t\t============== ATM ==============\n"
+               "\n\t\t   Thanks for using our ATM managment system\n\n");
 }
 
 // Function to check if username already exists
