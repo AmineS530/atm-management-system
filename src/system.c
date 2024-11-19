@@ -92,8 +92,6 @@ invalid:
 }
 
 
-
-
 // check all accounts for a user
 void checkAllAccounts(sqlite3 *db, User *usr)
 {

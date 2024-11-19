@@ -3,7 +3,7 @@
 //  gets salt and hashed password from db and compares it with the user entered password
 int checkPassword(sqlite3 *db, User *usr)
 {
-    const char *sql = "SELECT salt, passwd FROM users WHERE username = ?";
+    const char *sql = "SELECT id, salt, passwd FROM users WHERE username = ?";
     sqlite3_stmt *stmt;
     unsigned char salt[SALT_SIZE];
     unsigned char stored_hashed_password[HASH_SIZE];
@@ -19,11 +19,12 @@ int checkPassword(sqlite3 *db, User *usr)
 
     if (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        const void *salt_blob = sqlite3_column_blob(stmt, 0);
-        const void *hashed_blob = sqlite3_column_blob(stmt, 1);
+        usr->id = sqlite3_column_int(stmt, 0);
+        const void *salt_blob = sqlite3_column_blob(stmt, 1);
+        const void *hashed_blob = sqlite3_column_blob(stmt, 2);
 
-        int salt_size = sqlite3_column_bytes(stmt, 0);
-        int hashed_size = sqlite3_column_bytes(stmt, 1);
+        int salt_size = sqlite3_column_bytes(stmt, 1);
+        int hashed_size = sqlite3_column_bytes(stmt, 2);
 
         memcpy(salt, salt_blob, salt_size);
         memcpy(stored_hashed_password, hashed_blob, hashed_size);

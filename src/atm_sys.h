@@ -12,7 +12,7 @@
 #define SALT_SIZE 16
 #define HASH_SIZE 32
 #define STRING_TO_SCAN "%49s"
-
+#define MAX_STR_LEN 50
 typedef struct s_date
 {
     int month, day, year;
@@ -40,12 +40,12 @@ typedef struct s_User
     char password[50];
 } User;
 
-typedef struct s_data
-{
-    sqlite3 *db;
-    Record records;
-    User users;
-} Data;
+// typedef struct s_data
+// {
+//     sqlite3 *db;
+//     Record records;
+//     User users;
+// } Data;
 
 // authentication functions
 int checkPassword(sqlite3 *db, User *usr);
@@ -69,6 +69,10 @@ int username_exists(sqlite3 *db, User usr);
 
 // todo
 void UpdateAccInfo(User *usr, sqlite3 *db);
+void get_full_name(Record *info);
+int safeInput(char *buffer, size_t size);
+
+
 
 //input utils 
 int check_phone_numb(char *phone);

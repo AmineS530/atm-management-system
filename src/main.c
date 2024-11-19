@@ -10,7 +10,7 @@ void init(){
     {
         fprintf(stderr, "error: %s", sqlite3_errmsg(db));
         sqlite3_close(db);
-        return 1;
+        exit(EXIT_FAILURE);
     }
     atexit(forexit);
 }
