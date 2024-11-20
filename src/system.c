@@ -71,7 +71,7 @@ void stayOrReturn(int notGood, void f(User u), User u)
     }
 }
 
-void success(User u)
+void success(User usr)
 {
     int option;
     printf("\n✔ Success!\n\n");
@@ -81,7 +81,7 @@ invalid:
     system("clear");
 
     if (option == 1)
-        mainMenu(NULL, u);
+        mainMenu(NULL, usr);
     else if (option == 0)
         exit(1);
     else

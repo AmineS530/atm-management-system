@@ -14,10 +14,7 @@
 #define HASH_SIZE 32
 #define STRING_TO_SCAN "%49s"
 #define MAX_STR_LEN 50
-
-// account types
-// place holder : https://stackoverflow.com/questions/5309859/how-to-define-an-array-of-functions-in-c
-const char *accountType[5] = {"current", "savings", "fixed01", "fixed02", "fixed03"};
+#define MAX_ACCOUNTS 256
 
 // all fields for each record of an account
 typedef struct s_records
@@ -27,7 +24,7 @@ typedef struct s_records
     char name[50];
     char country[30];
     char phone[20];
-    char accountType[10];
+    char *accountType;
     int accountNbr;
     double balance;
     struct tm *deposit;
@@ -39,6 +36,7 @@ typedef struct s_User
     int id;
     char name[50];
     char password[50];
+    int *accountIds;
 } User;
 
 // typedef struct s_data
@@ -73,8 +71,8 @@ void UpdateAccInfo(User *usr, sqlite3 *db);
 void get_account_type(Record *info);
 void get_full_name(Record *info);
 int safeInput(char *buffer, size_t size);
-
-
+void get_balance(Record *info);
+void get_account_nbr(Record *info);
 
 //input utils 
 int check_phone_numb(char *phone);

@@ -74,7 +74,7 @@ void mainMenu(sqlite3 *db, User u)
     switch (option)
     {
     case 1:
-      //  createNewAcc(db, u);
+        createNewAcc(db, u);
         break;
     case 2:
         //  TODO : add your **Update account information** function

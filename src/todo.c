@@ -1,4 +1,8 @@
 #include "atm_sys.h"
+// account types
+// place holder : https://stackoverflow.com/questions/5309859/how-to-define-an-array-of-functions-in-c
+
+const char *accountTypes[5] = {"Current", "Savings", "Fixed01", "Fixed02", "Fixed03"};
 
 // static const char *RECORDS = "./data/records.txt";
 
@@ -42,12 +46,14 @@
 //     success(u);
 // }
 
-int fillInfo(sqlite3 *db, User usr)
+Record fillInfo(sqlite3 *db, User usr)
 {
     Record info;
     int err;
-    time_t timestamp = time(NULL);
+    time_t timestamp;
+
     info.userId = usr.id;
+    get_account_nbr(&info);
     get_full_name(&info);
 checkphone:
     err = check_phone_numb(info.phone);
@@ -66,34 +72,30 @@ checkcountry:
         goto checkcountry;
     }
     get_account_type(&info);
-    // info.balance = get_balance(info);
+    get_balance(&info);
+    timestamp = time(NULL);
     info.deposit = localtime(&timestamp);
-    return 1;
+    return info;
 }
 
 void get_full_name(Record *info)
 {
 invalid:
+system("clear");
     printf("Enter your full name: ");
     if (!safeInput(info->name, MAX_STR_LEN) && strlen(info->name) > 0 && strlen(info->name) < MAX_STR_LEN)
-    {
         goto invalid;
-    }
 }
 
 int safeInput(char *buffer, size_t size)
 {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
     if (fgets(buffer, size, stdin) != NULL)
     {
         size_t len = strlen(buffer);
         if (len > 0 && buffer[len - 1] == '\n')
             buffer[len - 1] = '\0';
-        else
-        {
-            int c;
-            while ((c = getchar()) != '\n' && c != EOF)
-                ;
-        }
         return 1;
     }
     else
@@ -103,18 +105,32 @@ int safeInput(char *buffer, size_t size)
         1;
     }
 }
+void get_account_nbr(Record *info){
+    system("clear");
+    int valid = 0;
+    while (!valid)
+    {
+        printf("Enter account number: ");
+        if (scanf("%d", &info->accountNbr) != 1)
+            printf("✖ Invalid input! Please enter a valid number.\n");
+        else if (info->accountNbr < 0 || info->accountNbr > MAX_ACCOUNTS)
+            printf("✖ Invalid account number! Please enter a number between 0 and %d.\n", MAX_ACCOUNTS);
+        else
+            valid = 1;
+    }
+}
 
 void get_account_type(Record *info)
 {
     int input = 0;
-
+system("clear");
 invalid:
     printf("Enter account type:"
            "\n\t\t[1] current"
            "\n\t\t[2] savings: interest rate 7%%"
            "\n\t\t[3] fixed01(1 year account): interest rate 4%%"
            "\n\t\t[4] fixed02(2 year account): interest rate 5%%"
-           "\n\t\t[5] fixed03(3 year account): interest rate 8%%");
+           "\n\t\t[5] fixed03(3 year account): interest rate 8%%\n");
     scanf("%d", &input);
     if (input < 1 || input > 5)
     {
@@ -122,24 +138,61 @@ invalid:
         printf("Invalid account type!\n");
         goto invalid;
     }
-    info->accountType = (char *)(accountType[input]);
-    printf("Account type: %s\n", info->accountType);
+    info->accountType = (char *)accountTypes[input-1];
 };
 
-void get_balance(Record *info) {
-    printf("Enter balance: ");
-    scanf("%le", &info->balance);
-};
-
-void createNewAcc(sqlite3 *db, User u)
+void get_balance(Record *info)
 {
-    const char *sql = "INSERT INTO records (userID, username, accNbr, name ,country, phone, balance, accType, balance) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    int valid = 0;
+
+    while (!valid)
+    {
+        printf("Enter balance: ");
+        if (scanf("%le", &info->balance) != 1)
+            printf("✖ Invalid input! Please enter a valid number.\n");
+        else if (info->balance < 0)
+            printf("✖ Balance cannot be negative. Try again.\n");
+        else
+            valid = 1;
+    }
+}
+
+void createNewAcc(sqlite3 *db, User usr)
+{
+    // SQL query to insert data into the `records` table
+    const char *sql = "INSERT INTO records (userID, accNbr, fullname, country, phone, balance, accType) VALUES (?, ?, ?, ?, ?, ?, ?)";
     sqlite3_stmt *stmt;
+    Record info;
+
+    // Prepare the SQL statement
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
         printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
+
+    // Call a helper function to fill the Record structure
+    info = fillInfo(db, usr);
+
+    // Bind values to the prepared statement
+    sqlite3_bind_int(stmt, 1, usr.id);
+    sqlite3_bind_int(stmt, 2, info.accountNbr);
+    sqlite3_bind_text(stmt, 3, info.name, -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 4, info.country, -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 5, info.phone, -1, SQLITE_STATIC);
+    sqlite3_bind_double(stmt, 6, info.balance);
+    sqlite3_bind_text(stmt, 7, info.accountType, -1, SQLITE_STATIC);
+
+    if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
+        printf("Error executing statement: %s\n", sqlite3_errmsg(db));
+    }
+    else
+    {
+        printf("New account created successfully!\n");
+    }
+
+    sqlite3_finalize(stmt);
 }
 
 //  TODO :  **Update account information** function
