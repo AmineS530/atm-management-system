@@ -6,6 +6,7 @@
 #include <string.h>
 #include <termios.h>
 #include <time.h>
+
 #include "sqlite/sqlite3.h"
 
 #define DB_PATH "data/DATA.db"
@@ -13,10 +14,10 @@
 #define HASH_SIZE 32
 #define STRING_TO_SCAN "%49s"
 #define MAX_STR_LEN 50
-typedef struct s_date
-{
-    int month, day, year;
-} Date;
+
+// account types
+// place holder : https://stackoverflow.com/questions/5309859/how-to-define-an-array-of-functions-in-c
+const char *accountType[5] = {"current", "savings", "fixed01", "fixed02", "fixed03"};
 
 // all fields for each record of an account
 typedef struct s_records
@@ -29,8 +30,8 @@ typedef struct s_records
     char accountType[10];
     int accountNbr;
     double balance;
-    Date deposit;
-    Date withdraw;
+    struct tm *deposit;
+    struct tm *withdraw;
 } Record;
 
 typedef struct s_User
@@ -69,6 +70,7 @@ int username_exists(sqlite3 *db, User usr);
 
 // todo
 void UpdateAccInfo(User *usr, sqlite3 *db);
+void get_account_type(Record *info);
 void get_full_name(Record *info);
 int safeInput(char *buffer, size_t size);
 

@@ -46,51 +46,90 @@ int fillInfo(sqlite3 *db, User usr)
 {
     Record info;
     int err;
-
+    time_t timestamp = time(NULL);
     info.userId = usr.id;
     get_full_name(&info);
+checkphone:
     err = check_phone_numb(info.phone);
     if (err == 0)
-        return 0;
+    {
+        system("clear");
+        printf("Phone number is not valid!\n");
+        goto checkphone;
+    }
+checkcountry:
     err = check_country(info.country);
     if (err == 0)
-        return 0;
-    // info.accountType = get_account_type(info);
+    {
+        system("clear");
+        printf("Country is not valid!\n");
+        goto checkcountry;
+    }
+    get_account_type(&info);
     // info.balance = get_balance(info);
-    getdate(&info.deposit);
+    info.deposit = localtime(&timestamp);
     return 1;
 }
 
 void get_full_name(Record *info)
 {
-    invalid:
+invalid:
     printf("Enter your full name: ");
-    if (!safeInput(info->name, MAX_STR_LEN)){
-       goto invalid;
+    if (!safeInput(info->name, MAX_STR_LEN) && strlen(info->name) > 0 && strlen(info->name) < MAX_STR_LEN)
+    {
+        goto invalid;
     }
 }
 
-
-int safeInput(char *buffer, size_t size) {
-    if (fgets(buffer, size, stdin) != NULL) {
-        // Remove trailing newline, if any
+int safeInput(char *buffer, size_t size)
+{
+    if (fgets(buffer, size, stdin) != NULL)
+    {
         size_t len = strlen(buffer);
-        if (len > 0 && buffer[len - 1] == '\n') {
+        if (len > 0 && buffer[len - 1] == '\n')
             buffer[len - 1] = '\0';
-        } else {
-            // Clear the remaining buffer if input exceeds size
+        else
+        {
             int c;
-            while ((c = getchar()) != '\n' && c != EOF);
+            while ((c = getchar()) != '\n' && c != EOF)
+                ;
         }
-        return 1; // Input successful
-    } else {
+        return 1;
+    }
+    else
+    {
         buffer[0] = '\0'; // Clear buffer in case of error
-        return 0; // Input failed
+        return 0;
+        1;
     }
 }
-void get_name(Record *info) {};
-void get_balance(Record *info) {};
-void get_account_type(Record *info) {};
+
+void get_account_type(Record *info)
+{
+    int input = 0;
+
+invalid:
+    printf("Enter account type:"
+           "\n\t\t[1] current"
+           "\n\t\t[2] savings: interest rate 7%%"
+           "\n\t\t[3] fixed01(1 year account): interest rate 4%%"
+           "\n\t\t[4] fixed02(2 year account): interest rate 5%%"
+           "\n\t\t[5] fixed03(3 year account): interest rate 8%%");
+    scanf("%d", &input);
+    if (input < 1 || input > 5)
+    {
+        system("clear");
+        printf("Invalid account type!\n");
+        goto invalid;
+    }
+    info->accountType = (char *)(accountType[input]);
+    printf("Account type: %s\n", info->accountType);
+};
+
+void get_balance(Record *info) {
+    printf("Enter balance: ");
+    scanf("%le", &info->balance);
+};
 
 void createNewAcc(sqlite3 *db, User u)
 {
