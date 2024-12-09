@@ -57,7 +57,7 @@ void loginMenu(User *usr);
 void registerMenu(User *usr, char pass[50]);
 
 // system function
-void registerUser(sqlite3 *db, User *usr);
+int registerUser(sqlite3 *db, User *usr);
 void createNewAcc(sqlite3 *db, User u);
 void checkAllAccounts(sqlite3 *db, User *usr);
 
@@ -65,6 +65,7 @@ void checkAllAccounts(sqlite3 *db, User *usr);
 void exitErr(char *str);
 void printOptions(int input, char *name);
 int username_exists(sqlite3 *db, User usr);
+void success(User usr);
 
 // todo
 void UpdateAccInfo(User *usr, sqlite3 *db);

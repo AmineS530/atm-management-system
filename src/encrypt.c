@@ -18,12 +18,12 @@ void hash_password(char *password, const unsigned char *salt, unsigned char outp
 
     // Initialize output to zero
     memset(output, 0, HASH_SIZE);
-    for (size_t i = 0; i < strlen(password)+SALT_SIZE; i++)
+    for (size_t i = 0; i < strlen(password) + SALT_SIZE; i++)
         output[i % HASH_SIZE] ^= salted_password[i];
 }
 
 // Register a new user
-void registerUser(sqlite3 *db, User *usr)
+int registerUser(sqlite3 *db, User *usr)
 {
     unsigned char salt[SALT_SIZE];
     unsigned char hashed_password[HASH_SIZE];
@@ -36,10 +36,7 @@ void registerUser(sqlite3 *db, User *usr)
     sqlite3_stmt *stmt;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
-    {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
-        return;
-    }
+        return printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db)) * 0;
 
     sqlite3_bind_text(stmt, 1, usr->name, -1, SQLITE_STATIC);
     sqlite3_bind_blob(stmt, 2, salt, SALT_SIZE, SQLITE_STATIC);
@@ -51,4 +48,5 @@ void registerUser(sqlite3 *db, User *usr)
         printf("User successfully registered!\n");
 
     sqlite3_finalize(stmt);
+    return 1;
 }

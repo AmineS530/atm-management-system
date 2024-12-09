@@ -1,7 +1,7 @@
 CREATE TABLE records (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     userID INTEGER NOT NULL,
-    accNbr TEXT NOT NULL UNIQUE,
+    accNbr INTEGER NOT NULL UNIQUE,
     fullname TEXT NOT NULL,
     country TEXT NOT NULL,
     phone TEXT NOT NULL,
@@ -32,4 +32,4 @@ INSERT INTO records (userID, fullname, country, phone, accType, accNbr, balance,
 (3, 'Alice Jones', 'UK', '+447700900123', 'Checking', '345678901234', 1575.90,  '2023-08-03 12:00:00'),
 (4, 'Bob Lee', 'Australia', '+61412345678', 'Savings', '456789012345', 3200.21, '2023-08-04 14:15:00'),
 (5, 'Charlie Brown', 'Germany', '+491234567890', 'Checking', '567890123456', 950.08, '2023-08-05 09:30:00'),
-(6, 'mouad salmi', 'Morocco', '+491234567890', 'Savings', '4206969420', 99999.99, '2023-08-05 09:30:00');
+(6, 'mouad salmi', 'Morocco', '+491234567890', 'Savings', '4206969420', 99999.99, '2024-08-05 09:30:00');

@@ -15,10 +15,9 @@ int check_phone_numb(char *phone)
         return printf("\n\n\t\tphone number must start with +<Country code>\n") * 0;
 
     for (int i = 1; i < inputLen; i++)
-    {
         if (phone[i] < '0' || phone[i] > '9')
             return printf("\n\n\t\tphone number must only contain digits\n") * 0;
-    }
+
     return 1;
 }
 
@@ -36,9 +35,7 @@ int check_country(char *country)
     if (inputLen < 4 || inputLen > 28)
         return printf("\n\n\t\tError: Invalid country name\n") * 0;
     for (int i = 0; i < inputLen; i++)
-    {
         if (!is_alpha(country[i]) && country[i] != ' ')
             return printf("\n\n\t\tInvalid format: country name must only contain letters and spaces\n") * 0;
-    }
     return 1;
 }

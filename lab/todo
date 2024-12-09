@@ -3,23 +3,29 @@ change remaining funcs to work with sqlite
         + prompt to fill records struct before inserting in db
         + functions to check each input
 
-
 put password related funcs in one file to avoid confusion
+    - wip
 
 figure the use of stay or return and success
+    - situational
 
 update the header
+    - lmfao forgor what to update
 
 sanitize input and redo sqlite functions
+    -no injection working for now
 
 user in main function doesnt need to be a pointer
+    - done
 
 print error if no account for the user
+    - wip
 
 add logs
+    -to-to do
 
 clean up code
+    - do what
 
 remove extra library imports and create functions manually if possible
-
-add a return to init menu after register to get userid when creating acc after registering
+    - arry

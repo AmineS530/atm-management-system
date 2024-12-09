@@ -4,8 +4,6 @@
 
 const char *accountTypes[5] = {"Current", "Savings", "Fixed01", "Fixed02", "Fixed03"};
 
-// static const char *RECORDS = "./data/records.txt";
-
 // //TODO : **Create new account** function
 // void createNewAcc(sqlite3 *db, User u)
 // {
@@ -16,35 +14,12 @@ const char *accountTypes[5] = {"Current", "Savings", "Fixed01", "Fixed02", "Fixe
 
 // noAccount:
 //     system("clear");
-//     printf("\t\t\t===== New record =====\n");
+//
 
 //     printf("\nEnter today's date(mm/dd/yyyy):");
 //     scanf("%d/%d/%d", &r.deposit.month, &r.deposit.day, &r.deposit.year);
 //     printf("\nEnter the account number:");
 //     scanf("%d", &r.accountNbr);
-
-//     while (getAccountFromFile(pf, userName, &cr))
-//     {
-//         if (strcmp(userName, u.name) == 0 && cr.accountNbr == r.accountNbr)
-//         {
-//             printf("✖ This Account already exists for this user\n\n");
-//             goto noAccount;
-//         }
-//     }
-//     printf("\nEnter the country:");
-//     scanf("%s", r.country);
-//     printf("\nEnter the phone number:");
-//     scanf("%d", &r.phone);
-//     printf("\nEnter amount to deposit: $");
-//     scanf("%lf", &r.balance);
-//     printf("\nChoose the type of account:\n\t-> saving\n\t-> current\n\t-> fixed01(for 1 year)\n\t-> fixed02(for 2 years)\n\t-> fixed03(for 3 years)\n\n\tEnter your choice:");
-//     scanf("%s", r.accountType);
-
-//     saveAccountToFile(pf, u, r);
-
-//     fclose(pf);
-//     success(u);
-// }
 
 Record fillInfo(sqlite3 *db, User usr)
 {
@@ -56,6 +31,7 @@ Record fillInfo(sqlite3 *db, User usr)
     get_account_nbr(&info);
     get_full_name(&info);
 checkphone:
+    printf("\t\t\t===== New record =====\n");
     err = check_phone_numb(info.phone);
     if (err == 0)
     {
@@ -64,6 +40,7 @@ checkphone:
         goto checkphone;
     }
 checkcountry:
+    printf("\t\t\t===== New record =====\n");
     err = check_country(info.country);
     if (err == 0)
     {
@@ -81,7 +58,8 @@ checkcountry:
 void get_full_name(Record *info)
 {
 invalid:
-system("clear");
+    system("clear");
+    printf("\t\t\t===== New record =====\n");
     printf("Enter your full name: ");
     if (!safeInput(info->name, MAX_STR_LEN) && strlen(info->name) > 0 && strlen(info->name) < MAX_STR_LEN)
         goto invalid;
@@ -90,7 +68,8 @@ system("clear");
 int safeInput(char *buffer, size_t size)
 {
     int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while ((c = getchar()) != '\n' && c != EOF)
+        ;
     if (fgets(buffer, size, stdin) != NULL)
     {
         size_t len = strlen(buffer);
@@ -102,29 +81,28 @@ int safeInput(char *buffer, size_t size)
     {
         buffer[0] = '\0'; // Clear buffer in case of error
         return 0;
-        1;
     }
 }
-void get_account_nbr(Record *info){
+void get_account_nbr(Record *info)
+{
+invalid:
     system("clear");
-    int valid = 0;
-    while (!valid)
-    {
-        printf("Enter account number: ");
-        if (scanf("%d", &info->accountNbr) != 1)
-            printf("✖ Invalid input! Please enter a valid number.\n");
-        else if (info->accountNbr < 0 || info->accountNbr > MAX_ACCOUNTS)
-            printf("✖ Invalid account number! Please enter a number between 0 and %d.\n", MAX_ACCOUNTS);
-        else
-            valid = 1;
-    }
+    printf("\t\t\t===== New record =====\n");
+    printf("Enter account number: ");
+    if (scanf("%d", &info->accountNbr) != 1)
+        printf("✖ Invalid input! Please enter a valid number.\n");
+    else if (info->accountNbr < 0 || info->accountNbr > MAX_ACCOUNTS)
+        printf("✖ Invalid account number! Please enter a number between 0 and %d.\n", MAX_ACCOUNTS);
+    else
+        goto invalid;
 }
 
 void get_account_type(Record *info)
 {
     int input = 0;
-system("clear");
 invalid:
+    printf("\t\t\t===== New record =====\n");
+    system("clear");
     printf("Enter account type:"
            "\n\t\t[1] current"
            "\n\t\t[2] savings: interest rate 7%%"
@@ -138,22 +116,20 @@ invalid:
         printf("Invalid account type!\n");
         goto invalid;
     }
-    info->accountType = (char *)accountTypes[input-1];
+    info->accountType = (char *)accountTypes[input - 1];
 };
 
 void get_balance(Record *info)
 {
-    int valid = 0;
-
-    while (!valid)
+invalid:
+    printf("\t\t\t===== New record =====\n");
+    system("clear");
+    printf("Enter balance: ");
+    if (scanf("%le", &info->balance) != 1 || info->balance < 0)
     {
-        printf("Enter balance: ");
-        if (scanf("%le", &info->balance) != 1)
-            printf("✖ Invalid input! Please enter a valid number.\n");
-        else if (info->balance < 0)
-            printf("✖ Balance cannot be negative. Try again.\n");
-        else
-            valid = 1;
+        printf("✖ Invalid input! Please enter a valid balance.\n");
+        sleepsec(3);
+        goto invalid;
     }
 }
 
@@ -184,13 +160,9 @@ void createNewAcc(sqlite3 *db, User usr)
     sqlite3_bind_text(stmt, 7, info.accountType, -1, SQLITE_STATIC);
 
     if (sqlite3_step(stmt) != SQLITE_DONE)
-    {
         printf("Error executing statement: %s\n", sqlite3_errmsg(db));
-    }
     else
-    {
         printf("New account created successfully!\n");
-    }
 
     sqlite3_finalize(stmt);
 }

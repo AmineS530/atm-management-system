@@ -75,10 +75,12 @@ void mainMenu(sqlite3 *db, User u)
     {
     case 1:
         createNewAcc(db, u);
+        success(u);
         break;
     case 2:
         //  TODO : add your **Update account information** function
         UpdateAccInfo(&u, db);
+        success(u);
         break;
     case 3:
         //  TODO : add your **Check the details of existing accounts** function
@@ -87,6 +89,7 @@ void mainMenu(sqlite3 *db, User u)
         break;
     case 4:
         checkAllAccounts(db, &u);
+        success(u);
         break;
     case 5:
         //  TODO : add your **Make transaction** function
@@ -137,9 +140,13 @@ void initMenu(sqlite3 *db, User *usr)
             if (!strcmp(usr->password, pass) == 0)
                 exitErr("\n\t\t passwords do not match\n");
             if (!username_exists(db, *usr))
-                registerUser(db, usr);
-            else
-                exitErr("\n\t\t Please choose another username\n");
+                if (registerUser(db, usr))
+                {
+                    just_a_menu();
+                    initMenu(db, usr);
+                }
+                else
+                    exitErr("\n\t\t Please choose another username\n");
             r = 1;
             break;
         case 3:
@@ -150,5 +157,25 @@ void initMenu(sqlite3 *db, User *usr)
             printOptions(1, NULL);
             break;
         }
+    }
+}
+
+void just_a_menu()
+{
+    system("clear");
+    printf("\n\t\t============== ATM ==============\n"
+           "\n\t\t  Account Created Successfully\n"
+           "\n\t Login to acess your new account\n\n");
+    sleepsec(5);
+}
+
+void sleepsec(int seconds)
+{
+    if (seconds < 0)
+        sleep(1);
+    while (seconds-- > 0)
+    {
+        sleep(1);
+        printf("\t\tRedirecting in %d seconds...\n", seconds);
     }
 }

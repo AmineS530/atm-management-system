@@ -61,9 +61,7 @@ void stayOrReturn(int notGood, void f(User u), User u)
         scanf("%d", &option);
     }
     if (option == 1)
-    {
         mainMenu(NULL, u);
-    }
     else
     {
         system("clear");
@@ -95,7 +93,7 @@ invalid:
 // check all accounts for a user
 void checkAllAccounts(sqlite3 *db, User *usr)
 {
-    const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType FROM records WHERE username = ?";
+    const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType FROM records WHERE userID = ?";
     sqlite3_stmt *stmt;
 
     system("clear");
@@ -107,7 +105,7 @@ void checkAllAccounts(sqlite3 *db, User *usr)
         return;
     }
 
-    sqlite3_bind_text(stmt, 1, usr->name, -1, SQLITE_STATIC);
+    sqlite3_bind_int(stmt, 1, usr->id);
 
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {

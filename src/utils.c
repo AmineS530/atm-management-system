@@ -23,7 +23,7 @@ void printOptions(int input, char *name)
                to_upper(name));
     if (input == 3)
         printf("\n\n\t\t============== ATM ==============\n"
-               "\n\t\t   Thanks for using our ATM managment system\n\n");
+               "\n\t\t The ATM System Have Been Closed\n");
 }
 
 // Function to check if username already exists
