@@ -32,7 +32,7 @@ src/sqlite/sqlite3.c
 *.dylib
 
 # Executables
-*.exec
+*.exec*
 *.out
 *.app
 *.hex
