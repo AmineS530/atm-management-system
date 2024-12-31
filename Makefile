@@ -1,7 +1,5 @@
 CC = gcc
 
-#CFLAGS = -Wall -Werror
-
 APP = ATM
 
 SRC = src/main.c \

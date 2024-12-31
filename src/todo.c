@@ -39,6 +39,7 @@ checkphone:
         printf("Phone number is not valid!\n");
         goto checkphone;
     }
+    system("clear");
 checkcountry:
     printf("\t\t\t===== New record =====\n");
     err = check_country(info.country);
@@ -51,7 +52,7 @@ checkcountry:
     get_account_type(&info);
     get_balance(&info);
     timestamp = time(NULL);
-    info.deposit = localtime(&timestamp);
+    info.deposit = asctime(gmtime(&timestamp));
     return info;
 }
 
@@ -101,8 +102,8 @@ void get_account_type(Record *info)
 {
     int input = 0;
 invalid:
-    printf("\t\t\t===== New record =====\n");
     system("clear");
+    printf("\t\t\t===== New record =====\n");
     printf("Enter account type:"
            "\n\t\t[1] current"
            "\n\t\t[2] savings: interest rate 7%%"
@@ -122,13 +123,13 @@ invalid:
 void get_balance(Record *info)
 {
 invalid:
-    printf("\t\t\t===== New record =====\n");
     system("clear");
+    printf("\t\t\t===== New record =====\n");
     printf("Enter balance: ");
     if (scanf("%le", &info->balance) != 1 || info->balance < 0)
     {
         printf("✖ Invalid input! Please enter a valid balance.\n");
-        sleepsec(3);
+        sleep_sec(3);
         goto invalid;
     }
 }

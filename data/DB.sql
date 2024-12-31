@@ -7,7 +7,7 @@ CREATE TABLE records (
     phone TEXT NOT NULL,
     accType TEXT NOT NULL,
     balance DOUBLE NOT NULL,
-    created_at DATE DEFAULT CURRENT_DATE
+    created_at DATE DEFAULT CURRENT_TIMESTAMP
 );
 
 

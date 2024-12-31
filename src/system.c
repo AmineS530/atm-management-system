@@ -1,39 +1,6 @@
 #include "atm_sys.h"
 
-
-// int getAccountFromFile(FILE *ptr, char name[50], Record *r)
-// {
-//     return fscanf(ptr, "%d %d %s %d %d/%d/%d %s %s %lf %s",
-//                   &r->id,
-//                   &r->userId,
-//                   name,
-//                   &r->accountNbr,
-//                   &r->deposit.month,
-//                   &r->deposit.day,
-//                   &r->deposit.year,
-//                   r->country,
-//                   &r->phone,
-//                   &r->balance,
-//                   r->accountType) != EOF;
-// }
-
-// void saveAccountToFile(FILE *ptr, User u, Record r)
-// {
-//     fprintf(ptr, "%d %d %s %d %d/%d/%d %s %d %.2lf %s\n\n",
-//             r.id,
-//             u.id,
-//             u.name,
-//             r.accountNbr,
-//             r.deposit.month,
-//             r.deposit.day,
-//             r.deposit.year,
-//             r.country,
-//             r.phone,
-//             r.balance,
-//             r.accountType);
-// }
-
-void stayOrReturn(int notGood, void f(User u), User u)
+void stayOrReturn( sqlite3 *db ,int notGood, void f(User u), User u)
 {
     int option;
     if (notGood == 0)
@@ -46,7 +13,7 @@ void stayOrReturn(int notGood, void f(User u), User u)
         if (option == 0)
             f(u);
         else if (option == 1)
-            mainMenu(NULL, u);
+            mainMenu(db, u);
         else if (option == 2)
             exit(0);
         else
@@ -61,7 +28,7 @@ void stayOrReturn(int notGood, void f(User u), User u)
         scanf("%d", &option);
     }
     if (option == 1)
-        mainMenu(NULL, u);
+        mainMenu(db, u);
     else
     {
         system("clear");
@@ -69,7 +36,7 @@ void stayOrReturn(int notGood, void f(User u), User u)
     }
 }
 
-void success(User usr)
+void success(sqlite3 *db, User usr)
 {
     int option;
     printf("\n✔ Success!\n\n");
@@ -79,7 +46,7 @@ invalid:
     system("clear");
 
     if (option == 1)
-        mainMenu(NULL, usr);
+        mainMenu(db, usr);
     else if (option == 0)
         exit(1);
     else
@@ -113,7 +80,7 @@ void checkAllAccounts(sqlite3 *db, User *usr)
         const unsigned char *created_at = sqlite3_column_text(stmt, 1);
         const unsigned char *country = sqlite3_column_text(stmt, 2);
         const unsigned char *phone = sqlite3_column_text(stmt, 3);
-        float balance = sqlite3_column_double(stmt, 4);
+        double balance = sqlite3_column_double(stmt, 4);
         const unsigned char *accountType = sqlite3_column_text(stmt, 5);
 
         printf("_____________________\n");

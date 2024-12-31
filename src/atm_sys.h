@@ -27,7 +27,7 @@ typedef struct s_records
     char *accountType;
     int accountNbr;
     double balance;
-    struct tm *deposit;
+    char *deposit;
     struct tm *withdraw;
 } Record;
 
@@ -54,7 +54,7 @@ void hash_password(char *password, const unsigned char *salt, unsigned char outp
 void initMenu(sqlite3 *db, User *usr);
 void mainMenu(sqlite3 *db, User u);
 void loginMenu(User *usr);
-void registerMenu(User *usr, char pass[50]);
+void registerMenu(sqlite3 *db, User *usr);
 
 // system function
 int registerUser(sqlite3 *db, User *usr);
@@ -65,7 +65,12 @@ void checkAllAccounts(sqlite3 *db, User *usr);
 void exitErr(char *str);
 void printOptions(int input, char *name);
 int username_exists(sqlite3 *db, User usr);
-void success(User usr);
+void success(sqlite3 *db, User usr);
+void stayOrReturn( sqlite3 *db ,int notGood, void f(User u), User u);
+void sleep_sec(int seconds);
+void just_a_menu();
+
+
 
 // todo
 void UpdateAccInfo(User *usr, sqlite3 *db);

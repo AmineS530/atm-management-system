@@ -59,6 +59,7 @@
   "files.associations": {
     "atm_sys.h": "c",
     "ctype.h": "c",
-    "sqlite3.h": "c"
+    "sqlite3.h": "c",
+    "termios.h": "c"
   }
 }
