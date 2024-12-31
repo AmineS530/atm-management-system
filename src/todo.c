@@ -179,7 +179,11 @@ void UpdateAccInfo(User *usr, sqlite3 *db)
     system("clear");
 invalid:
     printf("\t\t====== Update Account Informations =====\n\n");
-    printf("\t\tOptions:\n\n\t\t[1] Update Country\n\t\t[2] Update Phone-Number\n\n\t\tYour input: ");
+    printf("\t\tOptions:\n\n\t\t"
+            "[1] Update Country\n\t\t"
+            "[2] Update Phone-Number\n\n\t\t"
+            "[3] Exit\n\n\t\t"
+            "Your input: ");
     scanf("%d", &prompt);
     if (prompt == 1)
     {
@@ -191,6 +195,8 @@ invalid:
         sql = "UPDATE records SET phone = ? WHERE username = ?";
         err = check_phone_numb(input);
     }
+    else if (prompt == 3)
+        mainMenu(db, *usr);
     else
     {
         system("clear");
