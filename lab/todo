@@ -29,3 +29,6 @@ clean up code
 
 remove extra library imports and create functions manually if possible
     - arry
+
+check if accnbr already exist or not
+change accnbr to be text

@@ -52,6 +52,7 @@ invalid:
     else
     {
         printf("Insert a valid operation!\n");
+        clear_buffer();
         goto invalid;
     }
 }
@@ -76,7 +77,7 @@ void checkAllAccounts(sqlite3 *db, User *usr)
 
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        int accNbr = sqlite3_column_int(stmt, 0);
+        long accNbr = sqlite3_column_int(stmt, 0);
         const unsigned char *created_at = sqlite3_column_text(stmt, 1);
         const unsigned char *country = sqlite3_column_text(stmt, 2);
         const unsigned char *phone = sqlite3_column_text(stmt, 3);
@@ -84,7 +85,7 @@ void checkAllAccounts(sqlite3 *db, User *usr)
         const unsigned char *accountType = sqlite3_column_text(stmt, 5);
 
         printf("_____________________\n");
-        printf("Account number: %d\n", accNbr);
+        printf("Account number: %ld\n", accNbr);
         printf("Created Date: %s\n", created_at);
         printf("Country: %s\n", country);
         printf("Phone number: %s\n", phone);

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <termios.h>
 #include <time.h>
+#include <limits.h>
 
 #include "sqlite/sqlite3.h"
 
@@ -14,7 +15,7 @@
 #define HASH_SIZE 32
 #define STRING_TO_SCAN "%49s"
 #define MAX_STR_LEN 50
-#define MAX_ACCOUNTS 256
+#define MAX_ACCOUNTS 8
 
 // all fields for each record of an account
 typedef struct s_records
@@ -36,7 +37,8 @@ typedef struct s_User
     int id;
     char name[50];
     char password[50];
-    int *accountIds;
+    long accountIds[MAX_ACCOUNTS];
+    int accCount;
 } User;
 
 // typedef struct s_data
@@ -70,19 +72,19 @@ void stayOrReturn( sqlite3 *db ,int notGood, void f(User u), User u);
 void sleep_sec(int seconds);
 void just_a_menu();
 
-
-
 // todo
 void UpdateAccInfo(User *usr, sqlite3 *db);
 void get_account_type(Record *info);
 void get_full_name(Record *info);
-int safeInput(char *buffer, size_t size);
 void get_balance(Record *info);
 void get_account_nbr(Record *info);
+void getAccNbrs(User *usr, sqlite3 *db);
 
 //input utils 
 int check_phone_numb(char *phone);
 int check_country(char *country);
 char *to_upper(char *str);
+int safeInput(char *buffer, size_t size);
+void clear_buffer(void);
 
 #endif

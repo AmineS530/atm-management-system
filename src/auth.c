@@ -35,6 +35,7 @@ int checkPassword(sqlite3 *db, User *usr)
         if (memcmp(computed_hashed_password, stored_hashed_password, HASH_SIZE) == 0)
         {
             sqlite3_finalize(stmt);
+            getAccNbrs(usr, db);
             return 1;
         }
     }

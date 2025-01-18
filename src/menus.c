@@ -33,6 +33,7 @@ void registerMenu(sqlite3 *db, User *usr)
 {
     struct termios oflags, nflags;
     char pass[50];
+    int err_prompt = 0;
 
 invald_username:
     system("clear");
@@ -43,9 +44,23 @@ invald_username:
     {
         system("clear");
         printf("\n\t\t\t[-] Username already exists!\n");
-        sleep_sec(3);
-        // ask to retry or back to menu
-        goto invald_username;
+    invalid:
+        printf("\n\t\t\t[-] enter 0 to retry or 1 to return to menu: ");
+        scanf("%d", &err_prompt);
+        switch (err_prompt)
+        {
+            case 0:
+                sleep_sec(3);
+                goto invald_username;
+                break;
+            case 1:
+                sleep_sec(3);
+                return initMenu(db, usr);
+                break;
+            default:
+                printf("Insert a valid operation!\n");
+                goto invalid;
+        }
     }
 
     tcgetattr(fileno(stdin), &oflags);
@@ -90,7 +105,6 @@ void mainMenu(sqlite3 *db, User u)
         success(db,u);
         break;
     case 2:
-        //  TODO : add your **Update account information** function
         UpdateAccInfo(&u, db);
         success(db,u);
         break;
@@ -149,9 +163,7 @@ void initMenu(sqlite3 *db, User *usr)
             break;
         case 2:
             registerMenu(db ,usr);
-            if (!username_exists(db, *usr))
-                if (registerUser(db, usr))
-                {
+            if (registerUser(db, usr)) {
                     just_a_menu();
                     initMenu(db, usr);
                 }
@@ -184,7 +196,7 @@ void sleep_sec(int seconds)
         sleep(1);
     while (seconds-- > 0)
     {
+        printf("\t\t [-] Redirecting in %d seconds...\n", seconds+1);
         sleep(1);
-        printf("\t\tRedirecting in %d seconds...\n", seconds);
     }
 }
