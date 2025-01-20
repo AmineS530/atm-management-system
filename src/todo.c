@@ -4,22 +4,9 @@
 
 const char *accountTypes[5] = {"Current", "Savings", "Fixed01", "Fixed02", "Fixed03"};
 
-// //TODO : **Create new account** function
-// void createNewAcc(sqlite3 *db, User u)
-// {
-//     Record r;
-//     Record cr;
-//     char userName[50];
-//     FILE *pf = fopen(RECORDS, "a+");
-
-// noAccount:
-//     system("clear");
-//
-
 //     printf("\nEnter today's date(mm/dd/yyyy):");
 //     scanf("%d/%d/%d", &r.deposit.month, &r.deposit.day, &r.deposit.year);
-//     printf("\nEnter the account number:");
-//     scanf("%d", &r.accountNbr);
+
 
 Record fillInfo(sqlite3 *db, User usr)
 {
@@ -88,15 +75,15 @@ int safeInput(char *buffer, size_t size)
 
 void get_account_nbr(Record *info)
 {
-    int accountNbr;
+    long accountNbr;
 invalid:
     system("clear");
     printf("\t\t\t===== New record =====\n");
     printf("Enter account number: ");
-    if (scanf("%d", &info->accountNbr) != 1)
+    if (scanf("%ld", &info->accountNbr) != 1)
         printf("✖ Invalid input! Please enter a valid number.\n");
     else if (info->accountNbr < 0 || info->accountNbr > LONG_MAX - 1)
-        printf("✖ Invalid account number! Please enter a number between 0 and %d.\n", MAX_ACCOUNTS);
+        printf("✖ Invalid account number!\n");
     else
         goto invalid;
 }
@@ -137,6 +124,7 @@ invalid:
     }
 }
 
+// //TODO : **Create new account** function
 void createNewAcc(sqlite3 *db, User usr)
 {
     if (usr.accCount >= MAX_ACCOUNTS)
@@ -163,7 +151,7 @@ void createNewAcc(sqlite3 *db, User usr)
 
     // Bind values to the prepared statement
     sqlite3_bind_int(stmt, 1, usr.id);
-    sqlite3_bind_int(stmt, 2, info.accountNbr);
+    sqlite3_bind_int64(stmt, 2, info.accountNbr);
     sqlite3_bind_text(stmt, 3, info.name, -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 4, info.country, -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 5, info.phone, -1, SQLITE_STATIC);
@@ -179,18 +167,20 @@ void createNewAcc(sqlite3 *db, User usr)
 }
 
 //  TODO :  **Update account information** function
-void UpdateAccInfo(User *usr, sqlite3 *db)
+void UpdateAccInfo(User usr, sqlite3 *db)
 {
     char input[30];
     sqlite3_stmt *stmt;
     int prompt, choice;
-    int err;
-    const char *sql,*sqlold = NULL;
-    const char *old;
+    int err = 0;
+    char sql[MAX_STR_LEN], sqlold[MAX_STR_LEN];
+    const char *query = NULL;
+    char old_val[MAX_STR_LEN];
+    memset(old_val, 0, MAX_STR_LEN);
     system("clear");
-    // display accnbrs and ask for which one to use
-    for (int i = 0; i < usr->accCount && usr->accountIds[i]; i++)
-        printf("[%d] Account number: %ld\n", i, usr->accountIds[i]);
+
+    for (int i = 0; i < usr.accCount && usr.accountIds[i]; i++)
+        printf("[%d] Account number: %ld\n", i, usr.accountIds[i]);
     
     while (1)
     {
@@ -198,8 +188,8 @@ void UpdateAccInfo(User *usr, sqlite3 *db)
         printf("Enter account number: ");
         if (scanf("%d", &choice) != 1)
             printf("✖ Invalid input! Please enter a valid number.\n");
-        else if (choice < 0 || choice > (usr->accCount - 1)) {
-            printf("✖ Invalid option! Please enter a number between 0 and %d.\n", usr->accCount - 1);
+        else if (choice < 0 || choice > (usr.accCount - 1)) {
+            printf("✖ Invalid option! Please enter a number between 0 and %d.\n", usr.accCount - 1);
         }
         else
             break;
@@ -209,7 +199,7 @@ invalid:
     prompt = -1;
     clear_buffer();
     printf("\t\t====== Update Account Informations =====\n\n");
-    printf("\t\tselected account number: %ld\n", usr->accountIds[choice]);
+    printf("\t\tselected account number: %ld\n", usr.accountIds[choice]);
     printf("\t\tOptions:\n\n\t\t"
             "[1] Update Country\n\t\t"
             "[2] Update Phone-Number\n\n\t\t"
@@ -218,18 +208,25 @@ invalid:
     scanf("%d", &prompt);
     if (prompt == 1)
     {
-        sqlold = "SELECT country FROM records WHERE accNbr = ?";
-        sql = "UPDATE records SET country = ? WHERE accNbr = ?";
-        err = check_country(input);
+        query = "country";
+        do {
+            err = check_country(input);
+            system("clear");
+            printf("\t\t\t===== New record =====\n");
+        } while (err != 1);
+        
     }
     else if (prompt == 2)
     {
-        sqlold = "SELECT phone FROM records WHERE accNbr = ?";
-        sql = "UPDATE records SET phone = ? WHERE accNbr = ?";
-        err = check_phone_numb(input);
+        query = "phone";
+        do {
+            err = check_phone_numb(input);
+            system("clear");
+            printf("\t\t\t===== New record =====\n");
+        } while (err != 1);
     }
     else if (prompt == 3)
-        mainMenu(db, *usr);
+        mainMenu(db, usr);
     else
     {
         system("clear");
@@ -237,25 +234,25 @@ invalid:
         printf("\n   | [+] Non-Valid input |\n\n");
         goto invalid;
     }
-
-    if (sqlite3_prepare_v2(db, sqlold, -1, &stmt, NULL) != SQLITE_OK)
-    {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+    snprintf(sqlold, sizeof(sqlold), "SELECT %s FROM records WHERE accNbr = ?", query);
+    if (sqlite3_prepare_v2(db, sqlold, -1, &stmt, NULL) != SQLITE_OK) {
+        fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
-
-    sqlite3_bind_int(stmt, 1, usr->accountIds[choice]);
-    if (sqlite3_step(stmt) == SQLITE_ROW)
-        old = sqlite3_column_text(stmt, 0);
+    sqlite3_bind_int64(stmt, 1, usr.accountIds[choice]);
+    if (sqlite3_step(stmt) == SQLITE_ROW) {
+        const char *old = sqlite3_column_text(stmt, 0);
+        strncpy(old_val, (const char *)old, sizeof(old_val) - 1);
+    } 
     sqlite3_finalize(stmt);
-
+    snprintf(sql, sizeof(sql), "UPDATE records SET %s = ? WHERE accNbr = ?", query);
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
         printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
     sqlite3_bind_text(stmt, 1, input, -1, SQLITE_STATIC);
-    sqlite3_bind_int(stmt, 2, usr->accountIds[choice]);
+    sqlite3_bind_int64(stmt, 2, usr.accountIds[choice]);
     if (sqlite3_step(stmt) != SQLITE_DONE || err == 0)
     {
         system("clear");
@@ -264,7 +261,8 @@ invalid:
     sqlite3_finalize(stmt);
     printf("Account information updated successfully!\n"
            "old value: %s\n"
-           "new value: %s\n", old, input);
+           "new value: %s\n", old_val, input);
+    sleep_sec(3);
 }
 
 // TODO : add your **Make transaction** function
@@ -278,8 +276,77 @@ void TransferOwnership(User *usr, sqlite3 *db)
 }
 
 // TODO : add your **Check the details of existing accounts** function
-void CheckExistingaccs(User u, sqlite3 *db)
+void CheckExistingaccs(User usr, sqlite3 *db)
 {
+    const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType "
+                  "FROM records WHERE userID = ? AND accNbr = ?";
+    sqlite3_stmt *stmt;
+    int choice;
+
+    for (int i = 0; i < usr.accCount && usr.accountIds[i]; i++)
+        printf("[%d] Account number: %ld\n", i, usr.accountIds[i]);
+
+     while (1)
+    {
+        choice = -1;
+        printf("Enter account number: ");
+        if (scanf("%d", &choice) != 1)
+            printf("✖ Invalid input! Please enter a valid number.\n");
+        else if (choice < 0 || choice > (usr.accCount - 1)) {
+            printf("✖ Invalid option! Please enter a number between 0 and %d.\n", usr.accCount - 1);
+        }
+        else
+            break;
+    }
+    system("clear");    
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
+    {
+        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        return;
+    }
+    sqlite3_bind_int(stmt, 1, usr.id);
+    sqlite3_bind_int64(stmt, 2, usr.accountIds[choice]);
+    while (sqlite3_step(stmt) == SQLITE_ROW) {
+        long accNbr = sqlite3_column_int64(stmt, 0);
+        const unsigned char *created_at = sqlite3_column_text(stmt, 1);
+        const unsigned char *country = sqlite3_column_text(stmt, 2);
+        const unsigned char *phone = sqlite3_column_text(stmt, 3);
+        double balance = sqlite3_column_double(stmt, 4);
+        const unsigned char *accountType = sqlite3_column_text(stmt, 5);
+
+        printf("_____________________\n");
+        printf("Account number: %ld\n", accNbr);
+        printf("Created Date: %s\n", created_at);
+        printf("Country: %s\n", country);
+        printf("Phone: %s\n", phone);
+        printf("Balance: %.2f\n", balance);
+        printf("Account Type: %s\n", accountType);
+        printf("_____________________\n");
+       caculateInterest(accountType, balance, accNbr);
+    }
+    sqlite3_finalize(stmt);
+}
+
+void caculateInterest(char *accountType, double balance, long account_nbr) 
+{
+    if (strcmp((const char *)accountType, "Current") == 0) {
+        printf("You will not get interests because the account is of type current.\n");
+    } else {
+        double interestRate = 0.0;
+        if (strcmp((const char *)accountType, "Savings") == 0) {
+            interestRate = 0.07;
+        } else if (strcmp((const char *)accountType, "Fixed01") == 0) {
+            interestRate = 0.04;
+        } else if (strcmp((const char *)accountType, "Fixed02") == 0) {
+            interestRate = 0.05;
+        } else if (strcmp((const char *)accountType, "Fixed03") == 0) {
+            interestRate = 0.08;
+        }
+        /*For example: for an account of type savings with a deposit date of 10/10/2002 and an amount of $1023.20 the system will show
+         "You will get $5.97 as interest on day 10 of every month".*/
+        double interest = balance * interestRate;
+        printf("Interest for account number %ld is: $%.2f\n", account_nbr, interest);
+    }
 }
 
 // TODO : add your **Remove existing account** function
@@ -308,7 +375,7 @@ void getAccNbrs(User *usr, sqlite3 *db)
     sqlite3_bind_int(stmt, 1, usr->id);
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        int accNbr = sqlite3_column_int(stmt, 0);
+        long accNbr = sqlite3_column_int64(stmt, 0);
         usr->accountIds[usr->accCount] = accNbr;
         usr->accCount++;
     }

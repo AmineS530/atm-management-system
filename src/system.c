@@ -44,6 +44,7 @@ invalid:
     printf("Enter 1 to go to the main menu and 0 to exit!\n");
     scanf("%d", &option);
     system("clear");
+    clear_buffer();
 
     if (option == 1)
         mainMenu(db, usr);
@@ -52,7 +53,6 @@ invalid:
     else
     {
         printf("Insert a valid operation!\n");
-        clear_buffer();
         goto invalid;
     }
 }
@@ -77,7 +77,7 @@ void checkAllAccounts(sqlite3 *db, User *usr)
 
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        long accNbr = sqlite3_column_int(stmt, 0);
+        long accNbr = sqlite3_column_int64(stmt, 0);
         const unsigned char *created_at = sqlite3_column_text(stmt, 1);
         const unsigned char *country = sqlite3_column_text(stmt, 2);
         const unsigned char *phone = sqlite3_column_text(stmt, 3);

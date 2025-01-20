@@ -16,6 +16,7 @@
 #define STRING_TO_SCAN "%49s"
 #define MAX_STR_LEN 50
 #define MAX_ACCOUNTS 8
+#define MAX_ATTEMPTS 3
 
 // all fields for each record of an account
 typedef struct s_records
@@ -26,7 +27,7 @@ typedef struct s_records
     char country[30];
     char phone[20];
     char *accountType;
-    int accountNbr;
+    long accountNbr;
     double balance;
     char *deposit;
     struct tm *withdraw;
@@ -73,7 +74,7 @@ void sleep_sec(int seconds);
 void just_a_menu();
 
 // todo
-void UpdateAccInfo(User *usr, sqlite3 *db);
+void UpdateAccInfo(User usr, sqlite3 *db);
 void get_account_type(Record *info);
 void get_full_name(Record *info);
 void get_balance(Record *info);

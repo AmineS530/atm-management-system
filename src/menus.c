@@ -105,13 +105,12 @@ void mainMenu(sqlite3 *db, User u)
         success(db,u);
         break;
     case 2:
-        UpdateAccInfo(&u, db);
+        UpdateAccInfo(u, db);
         success(db,u);
         break;
     case 3:
-        //  TODO : add your **Check the details of existing accounts** function
-
-        // void CheckExistingaccs(User u, sqlite3 *db)
+        CheckExistingaccs(u, db);
+        success(db,u);
         break;
     case 4:
         checkAllAccounts(db, &u);
@@ -119,18 +118,18 @@ void mainMenu(sqlite3 *db, User u)
         break;
     case 5:
         //  TODO : add your **Make transaction** function
-
         // MakeTransaction(User *usr, sqlite3 *db);
+        success(db,u);
         break;
     case 6:
         // TODO : add your **Remove existing account** function
-
         // RemoveAcc(User *usr, sqlite3 *db);
+        success(db,u);
         break;
     case 7:
         //  TODO : add your **Transfer owner** function
-
         // void TransferOwnership(User *usr, sqlite3 *db)
+        success(db,u);
         break;
     case 8:
         exitErr("\t\t\tExiting the program...");
@@ -174,6 +173,7 @@ void initMenu(sqlite3 *db, User *usr)
             break;
         default:
             system("clear");
+            clear_buffer();
             printf("\t\tPlease Insert a valid operation!\n");
             printOptions(1, NULL);
             break;

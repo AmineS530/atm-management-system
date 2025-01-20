@@ -30,8 +30,12 @@ int check_country(char *country)
 {
     printf("\n\t\tPlease enter the country name:\n"
            "\t\tCountry: ");
-    scanf("%30s", country);
-    int inputLen = strlen(country);
+    fgets(country, 30, stdin);
+    size_t inputLen = strlen(country);
+    if (country[inputLen - 1] == '\n') {
+        country[inputLen - 1] = '\0';
+        inputLen--;
+    }
     if (inputLen < 4 || inputLen > 28)
         return printf("\n\n\t\tError: Invalid country name\n") * 0;
     for (int i = 0; i < inputLen; i++)
