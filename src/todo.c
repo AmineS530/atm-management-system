@@ -116,7 +116,7 @@ invalid:
     system("clear");
     printf("\t\t\t===== New record =====\n");
     printf("Enter balance: ");
-    if (scanf("%le", &info->balance) != 1 || info->balance < 0)
+    if (scanf("%le", &info->balance) != 1 || info->balance < 0 || info->balance > LONG_MAX - 1)
     {
         printf("✖ Invalid input! Please enter a valid balance.\n");
         sleep_sec(3);
@@ -323,6 +323,7 @@ void CheckExistingaccs(User usr, sqlite3 *db)
         printf("Account Type: %s\n", accountType);
         printf("_____________________\n");
        caculateInterest(accountType, balance, accNbr);
+       // make print info func and fill n print here and print all recs
     }
     sqlite3_finalize(stmt);
 }
