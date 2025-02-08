@@ -2,6 +2,8 @@ CC = gcc
 
 APP = ATM
 
+CFLAGS = -Wall -Wextra
+
 SRC = src/main.c \
 	src/menus.c \
 	src/system.c \
