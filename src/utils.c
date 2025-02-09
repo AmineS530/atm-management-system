@@ -29,7 +29,7 @@ void printOptions(int input, char *name)
 // Function to check if username already exists
 int username_exists(sqlite3 *db, User usr)
 {
-    const char *sql = "SELECT COUNT(*) FROM users WHERE username = ?";
+    const char *sql = "SELECT COUNT(*) FROM users WHERE LOWER(username) = LOWER(?)";
     sqlite3_stmt *stmt;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
