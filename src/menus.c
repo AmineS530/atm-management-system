@@ -94,48 +94,51 @@ void mainMenu(sqlite3 *db, User u)
 {
     int option;
 
-    system("clear");
-    printOptions(2, u.name);
-    scanf("%d", &option);
-
-    switch (option)
+    while (1)
     {
-    case 1:
-        createNewAcc(db, u);
-        success(db,u);
-        break;
-    case 2:
-        UpdateAccInfo(u, db);
-        success(db,u);
-        break;
-    case 3:
-        CheckExistingaccs(u, db);
-        success(db,u);
-        break;
-    case 4:
-        checkAllAccounts(db, &u);
-        success(db,u);
-        break;
-    case 5:
-        //  TODO : add your **Make transaction** function
-        // MakeTransaction(User *usr, sqlite3 *db);
-        success(db,u);
-        break;
-    case 6:
-        // TODO : add your **Remove existing account** function
-        // RemoveAcc(User *usr, sqlite3 *db);
-        success(db,u);
-        break;
-    case 7:
-        //  TODO : add your **Transfer owner** function
-        // void TransferOwnership(User *usr, sqlite3 *db)
-        success(db,u);
-        break;
-    case 8:
-        exitErr("\t\t\tExiting the program...");
-        break;
-    default:
-        printf("Invalid operation!\n");
+        printOptions(2, u.name);
+        scanf("%d", &option);
+        switch (option)
+        {
+        case 1:
+            createNewAcc(u, db);
+            success(db, u);
+            break;
+        case 2:
+            UpdateAccInfo(u, db);
+            success(db, u);
+            break;
+        case 3:
+            CheckExistingaccs(u, db);
+            success(db, u);
+            break;
+        case 4:
+            checkAllAccounts(u, db);
+            success(db, u);
+            break;
+        case 5:
+            //  TODO : add your **Make transaction** function
+            // MakeTransaction(User *usr, sqlite3 *db);
+            success(db, u);
+            break;
+        case 6:
+            // TODO : add your **Remove existing account** function
+            // RemoveAcc(User *usr, sqlite3 *db);
+            success(db, u);
+            break;
+        case 7:
+            //  TODO : add your **Transfer owner** function
+            // void TransferOwnership(User *usr, sqlite3 *db)
+            success(db, u);
+            break;
+        case 8:
+            exitErr("\t\t\tExiting the program...");
+            break;
+        default:
+            system("clear");
+            clear_buffer();
+            printf("Invalid operation!\n");
+        }
     }
 }
 

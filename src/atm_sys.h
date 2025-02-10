@@ -27,8 +27,8 @@ typedef struct s_records
     int id;
     int userId;
     char name[50];
-    char country[30];
-    char phone[20];
+    char *country;
+    char *phone;
     char *accountType;
     char *deposit;
     struct tm *withdraw;
@@ -64,8 +64,8 @@ void CheckExistingaccs(User usr, sqlite3 *db);
 
 // system function
 int registerUser(sqlite3 *db, User *usr);
-void createNewAcc(sqlite3 *db, User u);
-void checkAllAccounts(sqlite3 *db, User *usr);
+void createNewAcc(User usr, sqlite3 *db);
+void checkAllAccounts(User usr, sqlite3 *db);
 
 // other
 void exitErr(char *str);
@@ -85,6 +85,8 @@ void get_account_nbr(Record *info, sqlite3 *db);
 void getAccNbrs(User *usr, sqlite3 *db);
 int account_exists(long accNbr, sqlite3 *db);
 void caculateInterest(const unsigned char *accountType, double balance, long account_nbr);
+void printAccounts(Record rec);
+
 
 //input utils 
 int check_phone_numb(char *phone);

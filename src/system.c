@@ -59,13 +59,19 @@ invalid:
 
 
 // check all accounts for a user
-void checkAllAccounts(sqlite3 *db, User *usr)
+void checkAllAccounts(User usr, sqlite3 *db)
 {
+     if (usr.accCount == 0)
+    {
+        printf("No accounts found for user: %s\n", usr.name);
+        return;
+    }
+
     const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType FROM records WHERE userID = ?";
     sqlite3_stmt *stmt;
 
     system("clear");
-    printf("\t\t====== All accounts for user: %s =====\n\n", usr->name);
+    printf("\t\t====== All accounts for user: %s =====\n\n", usr.name);
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
@@ -73,26 +79,19 @@ void checkAllAccounts(sqlite3 *db, User *usr)
         return;
     }
 
-    sqlite3_bind_int(stmt, 1, usr->id);
+    sqlite3_bind_int(stmt, 1, usr.id);
 
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        long accNbr = sqlite3_column_int64(stmt, 0);
-        const unsigned char *created_at = sqlite3_column_text(stmt, 1);
-        const unsigned char *country = sqlite3_column_text(stmt, 2);
-        const unsigned char *phone = sqlite3_column_text(stmt, 3);
-        double balance = sqlite3_column_double(stmt, 4);
-        const unsigned char *accountType = sqlite3_column_text(stmt, 5);
+        Record info;
 
-        printf("_____________________\n");
-        printf("Account number: %ld\n", accNbr);
-        printf("Created Date: %s\n", created_at);
-        printf("Country: %s\n", country);
-        printf("Phone number: %s\n", phone);
-        printf("Balance: $%.2f\n", balance);
-        printf("Type Of Account: %s\n", accountType);
-        printf("\n");
+        info.accountNbr = sqlite3_column_int64(stmt, 0);
+        info.deposit = (char *)sqlite3_column_text(stmt, 1);
+        info.country = (char *)sqlite3_column_text(stmt, 2);
+        info.phone = (char *)sqlite3_column_text(stmt, 3);
+        info.balance = sqlite3_column_double(stmt, 4);
+        info.accountType = (char *)sqlite3_column_text(stmt, 5);
+        printAccounts(info);
     }
-
     sqlite3_finalize(stmt);
 }

@@ -98,11 +98,14 @@ void clear_buffer(void)
 }
 
 int safeInput(char *buffer) {
+    char temp[MAX_STR_LEN];
     clear_buffer();
-    if (scanf(STRING_TO_SCAN, buffer) == 1) {  
+    if (scanf(STRING_TO_SCAN, temp) == 1) {
+        strncpy(buffer, temp, MAX_STR_LEN);
         return 1;
     }
-    buffer[0] = '\0';
+
+    buffer[0] = '\0'; 
     return 0;
 }
 
@@ -189,7 +192,7 @@ invalid:
 }
 
 // //TODO : **Create new account** function
-void createNewAcc(sqlite3 *db, User usr)
+void createNewAcc(User usr, sqlite3 *db)
 {
     if (usr.accCount >= MAX_ACCOUNTS)
     {
@@ -233,6 +236,13 @@ void createNewAcc(sqlite3 *db, User usr)
 //  TODO :  **Update account information** function
 void UpdateAccInfo(User usr, sqlite3 *db)
 {
+    if (usr.accCount == 0)
+    {
+        system("clear");
+        printf("No accounts found for user: %s\n", usr.name);
+        return;
+    }
+
     char input[30];
     sqlite3_stmt *stmt;
     int prompt, choice;
@@ -337,16 +347,33 @@ invalid:
 // TODO : add your **Make transaction** function
 // void MakeTransaction(User *usr, sqlite3 *db)
 // {
+    // if (usr->accCount == 0)
+    // {
+    //     printf("No accounts found for user: %s\n", usr->name);
+    //     return;
+    // }
 // }
 
 // TODO : add your **Transfer owner** function
 // void TransferOwnership(User *usr, sqlite3 *db)
 // {
+    // if (usr->accCount == 0)
+    // {
+    //     printf("No accounts found for user: %s\n", usr->name);
+    //     return;
+    // }
 // }
 
 // TODO : add your **Check the details of existing accounts** function
 void CheckExistingaccs(User usr, sqlite3 *db)
 {
+    if (usr.accCount == 0)
+    {
+        system("clear");
+        printf("No accounts found for user: %s\n", usr.name);
+        return;
+    }
+
     const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType "
                       "FROM records WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
@@ -378,25 +405,32 @@ void CheckExistingaccs(User usr, sqlite3 *db)
     sqlite3_bind_int64(stmt, 2, usr.accountIds[choice]);
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        long accNbr = sqlite3_column_int64(stmt, 0);
-        const unsigned char *created_at = sqlite3_column_text(stmt, 1);
-        const unsigned char *country = sqlite3_column_text(stmt, 2);
-        const unsigned char *phone = sqlite3_column_text(stmt, 3);
-        double balance = sqlite3_column_double(stmt, 4);
-        const unsigned char *accountType = sqlite3_column_text(stmt, 5);
+        Record info;
+        
+        info.accountNbr = sqlite3_column_int64(stmt, 0);
+        info.deposit = (char *)sqlite3_column_text(stmt, 1);
+        info.country = (char *)sqlite3_column_text(stmt, 2);
+        info.phone = (char *)sqlite3_column_text(stmt, 3);
+        info.balance = sqlite3_column_double(stmt, 4);
+        info.accountType = (char *)sqlite3_column_text(stmt, 5);
 
-        printf("_____________________\n");
-        printf("Account number: %ld\n", accNbr);
-        printf("Created Date: %s\n", created_at);
-        printf("Country: %s\n", country);
-        printf("Phone: %s\n", phone);
-        printf("Balance: %.2f\n", balance);
-        printf("Account Type: %s\n", accountType);
-        printf("_____________________\n");
-        caculateInterest(accountType, balance, accNbr);
+        printAccounts(info);
+        caculateInterest((const unsigned char *)info.accountType, info.balance, info.accountNbr);
         // make print info func and fill n print here and print all recs
     }
     sqlite3_finalize(stmt);
+}
+
+void printAccounts(Record rec)
+{
+    printf("_____________________\n");
+    printf("Account number: %ld\n", rec.accountNbr);
+    printf("Created Date: %s\n", rec.deposit);
+    printf("Country: %s\n", rec.country);
+    printf("Phone: %s\n", rec.phone);
+    printf("Balance: %.2f\n", rec.balance);
+    printf("Account Type: %s\n", rec.accountType);
+    printf("_____________________\n");
 }
 
 void caculateInterest(const unsigned char *accountType, double balance, long account_nbr)
