@@ -93,7 +93,8 @@ invald_username:
 void mainMenu(sqlite3 *db, User u)
 {
     int option;
-
+    
+    system("clear");
     while (1)
     {
         printOptions(2, u.name);
@@ -165,10 +166,10 @@ void initMenu(sqlite3 *db, User *usr)
             break;
         case 2:
             registerMenu(db ,usr);
-            if (registerUser(db, usr)) {
-                    just_a_menu();
-                    initMenu(db, usr);
-                }
+            if (registerUser(db, usr)){
+                just_a_menu();
+                loginMenu(usr);
+            }
             r = 1;
             break;
         case 3:

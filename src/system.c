@@ -61,7 +61,8 @@ invalid:
 // check all accounts for a user
 void checkAllAccounts(User usr, sqlite3 *db)
 {
-     if (usr.accCount == 0)
+    system("clear");
+    if (usr.accCount == 0)
     {
         printf("No accounts found for user: %s\n", usr.name);
         return;
@@ -70,7 +71,6 @@ void checkAllAccounts(User usr, sqlite3 *db)
     const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType FROM records WHERE userID = ?";
     sqlite3_stmt *stmt;
 
-    system("clear");
     printf("\t\t====== All accounts for user: %s =====\n\n", usr.name);
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
@@ -87,8 +87,8 @@ void checkAllAccounts(User usr, sqlite3 *db)
 
         info.accountNbr = sqlite3_column_int64(stmt, 0);
         info.deposit = (char *)sqlite3_column_text(stmt, 1);
-        info.country = (char *)sqlite3_column_text(stmt, 2);
-        info.phone = (char *)sqlite3_column_text(stmt, 3);
+        strcpy(info.country, (const char *)sqlite3_column_text(stmt, 2));
+        strcpy(info.phone, (char *)sqlite3_column_text(stmt, 3));
         info.balance = sqlite3_column_double(stmt, 4);
         info.accountType = (char *)sqlite3_column_text(stmt, 5);
         printAccounts(info);

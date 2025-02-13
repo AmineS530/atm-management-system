@@ -27,8 +27,8 @@ typedef struct s_records
     int id;
     int userId;
     char name[50];
-    char *country;
-    char *phone;
+    char country[30];
+    char phone[20];
     char *accountType;
     char *deposit;
     struct tm *withdraw;
@@ -92,6 +92,7 @@ void printAccounts(Record rec);
 int check_phone_numb(char *phone);
 int check_country(char *country);
 char *to_upper(char *str);
+int is_alpha(int c);
 int is_digit(int c);
 int safeInput(char *buffer);
 void clear_buffer(void);

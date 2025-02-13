@@ -51,7 +51,7 @@ Record fillInfo(sqlite3 *db, User usr)
     int err;
 
     info.userId = usr.id;
-    //get_date(info.deposit);
+    // get_date(info.deposit);
 
     get_account_nbr(&info, db);
 
@@ -87,7 +87,18 @@ invalid:
     printf("\t\t\t===== New record =====\n");
     printf("Enter your full name: ");
     if (!safeInput(info->name) && strlen(info->name) > 0 && strlen(info->name) < MAX_STR_LEN)
+    {
+        printf("✖ Invalid input! Please enter a valid name.\n");
+        sleep(2);
         goto invalid;
+    }
+    for (size_t i = 0; i < strlen(info->name); i++)
+        if (!(is_alpha(info->name[i]) || info->name[i] == ' '))
+        {
+            printf("✖ Invalid input! Please enter a valid name.\n");
+            sleep(2);
+            goto invalid;
+        }
 }
 
 void clear_buffer(void)
@@ -97,15 +108,17 @@ void clear_buffer(void)
         ;
 }
 
-int safeInput(char *buffer) {
+int safeInput(char *buffer)
+{
     char temp[MAX_STR_LEN];
     clear_buffer();
-    if (scanf(STRING_TO_SCAN, temp) == 1) {
+    if (scanf(STRING_TO_SCAN, temp) == 1)
+    {
         strncpy(buffer, temp, MAX_STR_LEN);
         return 1;
     }
 
-    buffer[0] = '\0'; 
+    buffer[0] = '\0';
     return 0;
 }
 
@@ -129,13 +142,16 @@ invalid:
             goto invalid;
     errno = 0;
     accNbr = strtol(input, &endptr, 10);
-    if (*endptr || errno == ERANGE || accNbr < 0) {
+    if (*endptr || errno == ERANGE || accNbr < 0)
+    {
         printf("Invalid account number!\n");
         sleep(2);
         goto invalid;
     }
-    if (account_exists(accNbr, db)){
+    if (account_exists(accNbr, db))
+    {
         printf("\tAccount number already exists\n\n");
+        sleep(2);
         goto invalid;
     }
     info->accountNbr = accNbr;
@@ -181,9 +197,10 @@ invalid:
         printf("✖ Invalid input! Please enter a valid balance.\n");
         sleep(2);
         goto invalid;
-    } 
+    }
     balance = strtol(input, &endptr, 10);
-     if (*endptr || errno == ERANGE || balance < 0) {
+    if (*endptr || errno == ERANGE || balance < 0)
+    {
         printf("✖ Invalid input! Please enter a valid balance.\n");
         sleep(2);
         goto invalid;
@@ -347,21 +364,21 @@ invalid:
 // TODO : add your **Make transaction** function
 // void MakeTransaction(User *usr, sqlite3 *db)
 // {
-    // if (usr->accCount == 0)
-    // {
-    //     printf("No accounts found for user: %s\n", usr->name);
-    //     return;
-    // }
+// if (usr->accCount == 0)
+// {
+//     printf("No accounts found for user: %s\n", usr->name);
+//     return;
+// }
 // }
 
 // TODO : add your **Transfer owner** function
 // void TransferOwnership(User *usr, sqlite3 *db)
 // {
-    // if (usr->accCount == 0)
-    // {
-    //     printf("No accounts found for user: %s\n", usr->name);
-    //     return;
-    // }
+// if (usr->accCount == 0)
+// {
+//     printf("No accounts found for user: %s\n", usr->name);
+//     return;
+// }
 // }
 
 // TODO : add your **Check the details of existing accounts** function
@@ -406,11 +423,11 @@ void CheckExistingaccs(User usr, sqlite3 *db)
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
         Record info;
-        
+
         info.accountNbr = sqlite3_column_int64(stmt, 0);
         info.deposit = (char *)sqlite3_column_text(stmt, 1);
-        info.country = (char *)sqlite3_column_text(stmt, 2);
-        info.phone = (char *)sqlite3_column_text(stmt, 3);
+        strcpy(info.country, (const char *)sqlite3_column_text(stmt, 2));
+        strcpy(info.phone, (const char *)sqlite3_column_text(stmt, 3));
         info.balance = sqlite3_column_double(stmt, 4);
         info.accountType = (char *)sqlite3_column_text(stmt, 5);
 
