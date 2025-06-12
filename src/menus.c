@@ -119,7 +119,7 @@ void mainMenu(sqlite3 *db, User u)
             break;
         case 5:
             //  TODO : add your **Make transaction** function
-            // MakeTransaction(User *usr, sqlite3 *db);
+            MakeTransaction(db, u);
             success(db, u);
             break;
         case 6:

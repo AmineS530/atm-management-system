@@ -11,13 +11,15 @@
 #include <errno.h>
 #include "sqlite/sqlite3.h"
 
-#define DB_PATH "/home/amines/Code/zone01/C-Lang/atm-management-system/data/DATA.db"
+#define DB_PATH "./data/DATA.db"
 #define SALT_SIZE 16
 #define HASH_SIZE 32
 #define STRING_TO_SCAN "%49s"
 #define MAX_STR_LEN 50
 #define MAX_ACCOUNTS 8
 #define MAX_ATTEMPTS 3
+#define false 0
+#define true 1
 
 // all fields for each record of an account
 typedef struct s_records
@@ -43,14 +45,6 @@ typedef struct s_User
     char password[50];
 } User;
 
-
-// typedef struct s_data
-// {
-//     sqlite3 *db;
-//     Record records;
-//     User users;
-// } Data;
-
 // authentication functions
 int checkPassword(sqlite3 *db, User *usr);
 void hash_password(char *password, const unsigned char *salt, unsigned char output[HASH_SIZE]);
@@ -66,7 +60,7 @@ void CheckExistingaccs(User usr, sqlite3 *db);
 int registerUser(sqlite3 *db, User *usr);
 void createNewAcc(User usr, sqlite3 *db);
 void checkAllAccounts(User usr, sqlite3 *db);
-
+void MakeTransaction(sqlite3 *db, User usr);
 // other
 void exitErr(char *str);
 void printOptions(int input, char *name);
@@ -86,7 +80,10 @@ void getAccNbrs(User *usr, sqlite3 *db);
 int account_exists(long accNbr, sqlite3 *db);
 void caculateInterest(const unsigned char *accountType, double balance, long account_nbr);
 void printAccounts(Record rec);
-
+int getAccType (sqlite3 *db, User usr, int choice, char buffer[8]);
+int withdraw(sqlite3 *db, User usr, int choice, float balance);
+int deposit(sqlite3 *db, User usr, int choice, float balance);
+float getBalance(sqlite3 *db, User usr, int choice);
 
 //input utils 
 int check_phone_numb(char *phone);
