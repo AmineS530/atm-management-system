@@ -34,3 +34,5 @@ check if accnbr already exist or not
 
 problem with dates, fges and scan f interfere with each other, check country putting invalid everytime at the start
 check account number not working 
++++++++++++++++++++++++++++++++++++++++++
+update account info UI, and error message to be updated

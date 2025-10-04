@@ -44,7 +44,7 @@ int check_country(char *country)
         country[inputLen - 1] = '\0';
         inputLen--;
     }
-    if (inputLen < 4 || inputLen > 28)
+    if (inputLen < 2 || inputLen > 28)
         return printf("\n\n\t\tError: Invalid country name\n") * 0;
     for (size_t i = 0; i < inputLen; i++)
         if (!is_alpha(country[i]) && country[i] != ' ')

@@ -7,73 +7,104 @@ const char *accountTypes[5] = {"Current", "Savings", "Fixed01", "Fixed02", "Fixe
 //     printf("\nEnter today's date(mm/dd/yyyy):");
 //     scanf("%d/%d/%d", &r.deposit.month, &r.deposit.day, &r.deposit.year);
 
-// void get_date(char *deposit_date)
-// {
-//     struct tm set_time = {0};
-
-//     system("clear");
-//     printf("Enter the date!\n");
-
-// bad_day:
-//     printf("Day : ");
-//     scanf("%d", &set_time.tm_mday);
-//     if (set_time.tm_mday < 1 || set_time.tm_mday > 31)
-//     {
-//         printf("Invalid day! Please enter a value between 1 and 31.\n");
-//         goto bad_day;
-//     }
-// bad_month:
-//     printf("Month: ");
-//     scanf("%d", &set_time.tm_mon);
-//     if (set_time.tm_mon < 1 || set_time.tm_mon > 12)
-//     {
-//         printf("Invalid month! Please enter a value between 1 and 12.\n");
-//         goto bad_month;
-//     }
-//     set_time.tm_mon -= 1;
-// bad_year:
-//     printf("Year: ");
-//     scanf("%d", &set_time.tm_year);
-//     if (set_time.tm_year < 1980 || set_time.tm_year > 2025)
-//     {
-//         printf("Invalid year! Please enter a value between 1980 and 2025.\n");
-//         goto bad_year;
-//     }
-//     set_time.tm_year -= 1900;
-
-//     strftime(deposit_date, sizeof(deposit_date), "%a %b %d %H:%M:%S %Y", &set_time);
-//     printf("Entered Date: %s\n", deposit_date);
-// }
-
-Record fillInfo(sqlite3 *db, User usr)
+void get_date(char *deposit_date)
 {
-    Record info;
-    int err;
+    struct tm set_time = {0};
+
+    system("clear");
+    printf("Enter the date!\n");
+
+    // Day
+    while (1)
+    {
+        printf("Day: ");
+        if (scanf("%d", &set_time.tm_mday) != 1)
+        {
+            printf("Invalid input! Please enter a number.\n");
+            clear_buffer();
+            continue;
+        }
+        if (set_time.tm_mday < 1 || set_time.tm_mday > 31)
+        {
+            printf("Invalid day! Please enter a value between 1 and 31.\n");
+            continue;
+        }
+        break;
+    }
+
+    // Month
+    while (1)
+    {
+        printf("Month: ");
+        if (scanf("%d", &set_time.tm_mon) != 1)
+        {
+            printf("Invalid input! Please enter a number.\n");
+            clear_buffer();
+            continue;
+        }
+        if (set_time.tm_mon < 1 || set_time.tm_mon > 12)
+        {
+            printf("Invalid month! Please enter a value between 1 and 12.\n");
+            continue;
+        }
+        set_time.tm_mon -= 1; // tm_mon is 0-11
+        break;
+    }
+
+    // Year
+    while (1)
+    {
+        printf("Year: ");
+        if (scanf("%d", &set_time.tm_year) != 1)
+        {
+            printf("Invalid input! Please enter a number.\n");
+            clear_buffer();
+            continue;
+        }
+        if (set_time.tm_year < 1980 || set_time.tm_year > 2025)
+        {
+            printf("Invalid year! Please enter a value between 1980 and 2025.\n");
+            continue;
+        }
+        set_time.tm_year -= 1900; // tm_year is years since 1900
+        break;
+    }
+
+    // Format date into deposit_date
+    strftime(deposit_date, 30, "%a %b %d %H:%M:%S %Y", &set_time);
+    printf("Entered Date: %s\n", deposit_date);
+    sleep(2);
+}
+
+Record fill_info(sqlite3 *db, User usr)
+{
+    Record info = {0};
+    // int err;
 
     info.userId = usr.id;
-    // get_date(info.deposit);
+    get_date(info.deposit);
 
     get_account_nbr(&info, db);
-
     get_full_name(&info);
-checkphone:
-    printf("\t\t\t===== New record =====\n");
-    err = check_phone_numb(info.phone);
-    if (err == 0)
+    while (1)
     {
+        system("clear");
+        printf("\t\t\t===== New record =====\n");
+        if (check_phone_numb(info.phone))
+            break;
         system("clear");
         printf("Phone number is not valid!\n");
-        goto checkphone;
+        sleep(2);
     }
-    system("clear");
-checkcountry:
-    printf("\t\t\t===== New record =====\n");
-    err = check_country(info.country);
-    if (err == 0)
+    while (1)
     {
         system("clear");
+        printf("\t\t\t===== New record =====\n");
+        if (check_country(info.country))
+            break;
+        system("clear");
         printf("Country is not valid!\n");
-        goto checkcountry;
+        sleep(2);
     }
     get_account_type(&info);
     get_balance(&info);
@@ -111,7 +142,7 @@ void clear_buffer(void)
 int safeInput(char *buffer)
 {
     char temp[MAX_STR_LEN];
-    clear_buffer();
+    // clear_buffer();
     if (scanf(STRING_TO_SCAN, temp) == 1)
     {
         strncpy(buffer, temp, MAX_STR_LEN);
@@ -177,35 +208,38 @@ invalid:
         goto invalid;
     }
     info->accountType = (char *)accountTypes[input - 1];
-    clear_buffer();
 }
 
 void get_balance(Record *info)
 {
-    int errno;
     char input[20];
     char *endptr;
     double balance;
-invalid:
-    errno = 0;
-    clear_buffer();
-    system("clear");
-    printf("\t\t\t===== New record =====\n");
-    printf("\tEnter balance: ");
-    if (scanf("%s", input) != 1)
+
+    while (1)
     {
-        printf("✖ Invalid input! Please enter a valid balance.\n");
-        sleep(2);
-        goto invalid;
+        errno = 0;
+        clear_buffer();
+        system("clear");
+        printf("\t\t\t===== New record =====\n");
+        printf("\tEnter balance: ");
+
+        if (scanf("%49s", input) != 1)
+        {
+            printf("✖ Invalid input! Please enter a valid balance.\n");
+            sleep(2);
+            continue;
+        }
+        balance = strtod(input, &endptr);
+        if (*endptr != '\0' || errno == ERANGE || balance < 0)
+        {
+            printf("✖ Invalid input! Please enter a valid balance.\n");
+            sleep(2);
+            continue;
+        }
+        info->balance = balance;
+        break;
     }
-    balance = strtol(input, &endptr, 10);
-    if (*endptr || errno == ERANGE || balance < 0)
-    {
-        printf("✖ Invalid input! Please enter a valid balance.\n");
-        sleep(2);
-        goto invalid;
-    }
-    info->balance = balance;
 }
 
 // Create new account
@@ -231,7 +265,7 @@ void createNewAcc(User usr, sqlite3 *db)
     }
 
     // Call a helper function to fill the Record structure
-    info = fillInfo(db, usr);
+    info = fill_info(db, usr);
     printf("Account number:jkhjkhjk");
     // Bind values to the prepared statement
     sqlite3_bind_int(stmt, 1, usr.id);
@@ -455,6 +489,7 @@ int getAccType(sqlite3 *db, User usr, int choice, char buffer[8])
     sqlite3_finalize(stmt);
     return false;
 }
+
 float getBalance(sqlite3 *db, User usr, int choice)
 {
     if (!usr.accountIds[choice])
@@ -502,7 +537,7 @@ int withdraw(sqlite3 *db, User usr, int choice, float balance)
         }
         break;
     }
-      // Update balance
+    // Update balance
     balance -= withdrawAmount;
 
     // Bind parameters
@@ -511,7 +546,8 @@ int withdraw(sqlite3 *db, User usr, int choice, float balance)
     sqlite3_bind_int64(stmt, 3, usr.accountIds[choice]);
 
     // Execute
-    if (sqlite3_step(stmt) != SQLITE_DONE) {
+    if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
         fprintf(stderr, "Error executing statement: %s\n", sqlite3_errmsg(db));
         sqlite3_finalize(stmt);
         return -1;
@@ -523,47 +559,51 @@ int withdraw(sqlite3 *db, User usr, int choice, float balance)
     printf("\t\t\t===== Withdrawal Successful =====\n");
     printf("Account number: %ld\n", usr.accountIds[choice]);
     printf("Withdrawal amount: %.2f\n", withdrawAmount);
-    printf("Old balance: %.2f New balance: %.2f\n",balance + withdrawAmount, balance);
+    printf("Old balance: %.2f New balance: %.2f\n", balance + withdrawAmount, balance);
     return 0;
 }
 
-int deposit(sqlite3 *db, User usr, int choice, float balance) 
+int deposit(sqlite3 *db, User usr, int choice, float balance)
 {
     const char *sql = "UPDATE records SET balance = ? WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
-    
+
     // Prepare statement
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
+    {
         printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return -1;
     }
 
     // Get deposit amount
     double depositAmount = 0;
-    while (1) {
+    while (1)
+    {
         clear_buffer();
         printf("Enter amount to deposit: ");
-        if (scanf("%lf", &depositAmount) != 1 || depositAmount <= 0) {
+        if (scanf("%lf", &depositAmount) != 1 || depositAmount <= 0)
+        {
             printf("✖ Invalid input! Please enter a valid amount.\n");
             continue;
         }
         break;
     }
 
-    balance += depositAmount;  
+    balance += depositAmount;
 
     sqlite3_bind_double(stmt, 1, balance);
     sqlite3_bind_int(stmt, 2, usr.id);
     sqlite3_bind_int64(stmt, 3, usr.accountIds[choice]);
 
-    if (sqlite3_step(stmt) != SQLITE_DONE) {
+    if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
         printf("Error executing statement: %s\n", sqlite3_errmsg(db));
         sqlite3_finalize(stmt);
         return -1;
     }
 
     sqlite3_finalize(stmt);
-       system("clear");
+    system("clear");
     // Print success message
     printf("\t\t\t===== Deposit Successful =====\n");
     printf("Account number: %ld\n", usr.accountIds[choice]);
@@ -605,7 +645,10 @@ void CheckExistingaccs(User usr, sqlite3 *db)
         choice = -1;
         printf("Enter account number: ");
         if (scanf("%d", &choice) != 1)
+        {
             printf("✖ Invalid input! Please enter a valid number.\n");
+            clear_buffer();
+        }
         else if (choice < 0 || choice > (usr.accCount - 1))
         {
             printf("✖ Invalid option! Please enter a number between 0 and %d.\n", usr.accCount - 1);
@@ -613,29 +656,62 @@ void CheckExistingaccs(User usr, sqlite3 *db)
         else
             break;
     }
+
     system("clear");
+
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
         printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
+
     sqlite3_bind_int(stmt, 1, usr.id);
     sqlite3_bind_int64(stmt, 2, usr.accountIds[choice]);
+
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        Record info;
+        Record info = {0};
 
         info.accountNbr = sqlite3_column_int64(stmt, 0);
-        info.deposit = (char *)sqlite3_column_text(stmt, 1);
-        strcpy(info.country, (const char *)sqlite3_column_text(stmt, 2));
-        strcpy(info.phone, (const char *)sqlite3_column_text(stmt, 3));
+
+        // Copy deposit safely
+        const unsigned char *deposit_text = sqlite3_column_text(stmt, 1);
+        if (deposit_text)
+        {
+            strncpy(info.deposit, (const char *)deposit_text, sizeof(info.deposit) - 1);
+            info.deposit[sizeof(info.deposit) - 1] = '\0';
+        }
+
+        // Copy country safely
+        const unsigned char *country_text = sqlite3_column_text(stmt, 2);
+        if (country_text)
+        {
+            strncpy(info.country, (const char *)country_text, sizeof(info.country) - 1);
+            info.country[sizeof(info.country) - 1] = '\0';
+        }
+
+        // Copy phone safely
+        const unsigned char *phone_text = sqlite3_column_text(stmt, 3);
+        if (phone_text)
+        {
+            strncpy(info.phone, (const char *)phone_text, sizeof(info.phone) - 1);
+            info.phone[sizeof(info.phone) - 1] = '\0';
+        }
+
+        // Copy accountType safely
+        const unsigned char *type_text = sqlite3_column_text(stmt, 5);
+        if (type_text)
+        {
+            strncpy(info.accountType, (const char *)type_text, sizeof(info.accountType) - 1);
+            info.accountType[sizeof(info.accountType) - 1] = '\0';
+        }
+
         info.balance = sqlite3_column_double(stmt, 4);
-        info.accountType = (char *)sqlite3_column_text(stmt, 5);
 
         printAccounts(info);
         caculateInterest((const unsigned char *)info.accountType, info.balance, info.accountNbr);
-        // make print info func and fill n print here and print all recs
     }
+
     sqlite3_finalize(stmt);
 }
 
