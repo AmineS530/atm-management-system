@@ -2,7 +2,7 @@ CC = gcc
 
 APP = ATM
 
-CFLAGS = -Wall -Wextra
+CFLAGS = -g -Wall -Wextra
 
 SRC = src/main.c \
 	src/todo.c \

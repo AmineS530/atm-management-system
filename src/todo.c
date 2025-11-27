@@ -21,7 +21,7 @@ void get_date(char *deposit_date)
         if (safe_int_input(&set_time.tm_mday) != 1)
         {
             printf("Invalid input! Please enter a number.\n");
-        
+
             continue;
         }
         if (set_time.tm_mday < 1 || set_time.tm_mday > 31)
@@ -39,7 +39,7 @@ void get_date(char *deposit_date)
         if (safe_int_input(&set_time.tm_mon) != 1)
         {
             printf("Invalid input! Please enter a number.\n");
-        
+
             continue;
         }
         if (set_time.tm_mon < 1 || set_time.tm_mon > 12)
@@ -58,7 +58,7 @@ void get_date(char *deposit_date)
         if (safe_int_input(&set_time.tm_year) != 1)
         {
             printf("Invalid input! Please enter a number.\n");
-        
+
             continue;
         }
         if (set_time.tm_year < 1980 || set_time.tm_year > 2025)
@@ -186,7 +186,8 @@ invalid:
         printf("Invalid account type!\n");
         goto invalid;
     }
-    info->accountType = (char *)accountTypes[input - 1];
+    strncpy(info->accountType, accountTypes[input - 1], sizeof(info->accountType) - 1);
+    info->accountType[sizeof(info->accountType) - 1] = '\0'; /* ensure null-termination */
 }
 
 void insert_balance(Record *info)
@@ -198,7 +199,7 @@ void insert_balance(Record *info)
     while (1)
     {
         errno = 0;
-    
+
         system("clear");
         printf("\t\t\t===== New record =====\n");
         printf("\tEnter balance: ");
@@ -257,8 +258,14 @@ void create_new_acc(User usr, sqlite3 *db)
 
     if (sqlite3_step(stmt) != SQLITE_DONE)
         printf("Error executing statement: %s\n", sqlite3_errmsg(db));
-    else
+    else {
+        sqlite3_finalize(stmt);
         printf("New account created successfully!\n");
+        //todo: update account count after account creation
+        get_acc_nbrs(&usr, db);
+        usr.accCount++;
+        return;
+    }
 
     sqlite3_finalize(stmt);
 }
@@ -288,7 +295,6 @@ void update_acc_info(User usr, sqlite3 *db)
 
     while (1)
     {
-    
         choice = -1;
         printf("Enter account number: ");
         if (safe_int_input(&choice) != 1)
@@ -390,7 +396,6 @@ void make_transaction(sqlite3 *db, User usr)
 
     while (1)
     {
-    
         choice = -1;
         printf("Enter account number: ");
         if (safe_int_input(&choice) != 1)
@@ -507,7 +512,6 @@ int withdraw(sqlite3 *db, User usr, int choice, float balance)
     float withdrawAmount;
     while (1)
     {
-    
         printf("Enter amount to withdraw: ");
         if (safe_float_input(&withdrawAmount) != 1 || withdrawAmount <= 0 || withdrawAmount > balance)
         {
@@ -558,7 +562,6 @@ int deposit(sqlite3 *db, User usr, int choice, float balance)
     float depositAmount = 0;
     while (1)
     {
-    
         printf("Enter amount to deposit: ");
         if (safe_float_input(&depositAmount) != 1 || depositAmount <= 0)
         {
@@ -614,19 +617,18 @@ void check_existing_accs(User usr, sqlite3 *db)
                       "FROM records WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
     int choice;
-
-    for (int i = 0; i < usr.accCount && usr.accountIds[i]; i++)
+    // put this into helper function
+    system("clear");
+    for (int i = 0; i < usr.accCount ; i++)
         printf("[%d] Account number: %ld\n", i, usr.accountIds[i]);
 
     while (1)
     {
-    
         choice = -1;
         printf("Enter account number: ");
         if (safe_int_input(&choice) != 1)
         {
             printf("✖ Invalid input! Please enter a valid number.\n");
-        
         }
         else if (choice < 0 || choice > (usr.accCount - 1))
         {
@@ -681,7 +683,7 @@ void check_existing_accs(User usr, sqlite3 *db)
         const unsigned char *type_text = sqlite3_column_text(stmt, 5);
         if (type_text)
         {
-            strncpy(info.accountType, (const char *)type_text, sizeof(info.accountType) - 1);
+            strncpy(info.accountType, (const char *)type_text, 20 - 1);
             info.accountType[sizeof(info.accountType) - 1] = '\0';
         }
 

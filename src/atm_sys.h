@@ -31,7 +31,7 @@ typedef struct s_records
     char name[50];
     char country[30];
     char phone[20];
-    char *accountType;
+    char accountType[20];
     char deposit[30];
     struct tm *withdraw;
 } Record;

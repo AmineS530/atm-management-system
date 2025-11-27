@@ -1,3 +1,10 @@
+# new
+    make id unable to be a 0
+
+
+
+
+
 change remaining funcs to work with sqlite
     - create account
         + prompt to fill records struct before inserting in db
