@@ -1,6 +1,6 @@
-#include "atm_sys.h"
+#include "../atm_sys.h"
 
-void exitErr(char *str)
+void exit_err(char *str)
 {
     system("clear");
     printf("%s", str);

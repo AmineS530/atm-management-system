@@ -46,52 +46,52 @@ typedef struct s_User
 } User;
 
 // authentication functions
-int checkPassword(sqlite3 *db, User *usr);
+int check_password(sqlite3 *db, User *usr);
 void hash_password(char *password, const unsigned char *salt, unsigned char output[HASH_SIZE]);
 
 // menus
-void initMenu(sqlite3 *db, User *usr);
-void mainMenu(sqlite3 *db, User u);
-void loginMenu(User *usr);
-void registerMenu(sqlite3 *db, User *usr);
-void CheckExistingaccs(User usr, sqlite3 *db);
+void init_menu(sqlite3 *db, User *usr);
+void main_menu(sqlite3 *db, User u);
+void login_menu(User *usr);
+void register_menu(sqlite3 *db, User *usr);
+void check_existing_accs(User usr, sqlite3 *db);
 
 // system function
-int registerUser(sqlite3 *db, User *usr);
-void createNewAcc(User usr, sqlite3 *db);
-void checkAllAccounts(User usr, sqlite3 *db);
-void MakeTransaction(sqlite3 *db, User usr);
+int register_user(sqlite3 *db, User *usr);
+void create_new_acc(User usr, sqlite3 *db);
+void check_all_accounts(User usr, sqlite3 *db);
+void make_transaction(sqlite3 *db, User usr);
 // other
-void exitErr(char *str);
-void printOptions(int input, char *name);
+void exit_err(char *str);
+void print_options(int input, char *name);
 int username_exists(sqlite3 *db, User usr);
 void success(sqlite3 *db, User usr);
-void stayOrReturn( sqlite3 *db ,int notGood, void f(User u), User u);
+void stay_or_return(sqlite3 *db, int notGood, void f(User u), User u);
 void sleep_sec(int seconds);
 void just_a_menu();
 
 // todo
-void UpdateAccInfo(User usr, sqlite3 *db);
+void update_acc_info(User usr, sqlite3 *db);
 void get_account_type(Record *info);
 void get_full_name(Record *info);
-void get_balance(Record *info);
+void insert_balance(Record *info);
 void get_account_nbr(Record *info, sqlite3 *db);
-void getAccNbrs(User *usr, sqlite3 *db);
+void get_acc_nbrs(User *usr, sqlite3 *db);
 int account_exists(long accNbr, sqlite3 *db);
-void caculateInterest(const unsigned char *accountType, double balance, long account_nbr);
-void printAccounts(Record rec);
-int getAccType (sqlite3 *db, User usr, int choice, char buffer[8]);
+void caculate_interest(const unsigned char *accountType, double balance, long account_nbr);
+void print_accounts(Record rec);
+int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8]);
 int withdraw(sqlite3 *db, User usr, int choice, float balance);
 int deposit(sqlite3 *db, User usr, int choice, float balance);
-float getBalance(sqlite3 *db, User usr, int choice);
+float get_balance(sqlite3 *db, User usr, int choice);
 
-//input utils 
+// input utils
 int check_phone_numb(char *phone);
 int check_country(char *country);
 char *to_upper(char *str);
 int is_alpha(int c);
 int is_digit(int c);
-int safeInput(char *buffer);
-void clear_buffer(void);
-
+int safe_string_input(char *buffer, size_t size);
+int safe_int_input(int *value);
+int safe_float_input(float *value);
 #endif

@@ -20,8 +20,8 @@ int main()
     User usr;
     init();
     
-    initMenu(db, &usr);
-    mainMenu(db, usr);
+    init_menu(db, &usr);
+    main_menu(db, usr);
     return 0;
 }
 
@@ -29,5 +29,5 @@ void forexit()
 {
     //  system("clear");
     sqlite3_close(db);
-    printOptions(3, NULL);
+    print_options(3, NULL);
 }

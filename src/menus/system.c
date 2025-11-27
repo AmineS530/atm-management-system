@@ -1,6 +1,6 @@
-#include "atm_sys.h"
+#include "../atm_sys.h"
 
-void stayOrReturn( sqlite3 *db ,int notGood, void f(User u), User u)
+void stay_or_return( sqlite3 *db ,int notGood, void f(User u), User u)
 {
     int option;
     if (notGood == 0)
@@ -9,11 +9,11 @@ void stayOrReturn( sqlite3 *db ,int notGood, void f(User u), User u)
         printf("\n✖ Record not found!!\n");
     invalid:
         printf("\nEnter 0 to try again, 1 to return to main menu and 2 to exit:");
-        scanf("%d", &option);
+        safe_int_input(&option);
         if (option == 0)
             f(u);
         else if (option == 1)
-            mainMenu(db, u);
+            main_menu(db, u);
         else if (option == 2)
             exit(0);
         else
@@ -25,10 +25,10 @@ void stayOrReturn( sqlite3 *db ,int notGood, void f(User u), User u)
     else
     {
         printf("\nEnter 1 to go to the main menu and 0 to exit:");
-        scanf("%d", &option);
+        safe_int_input(&option);
     }
     if (option == 1)
-        mainMenu(db, u);
+        main_menu(db, u);
     else
     {
         system("clear");
@@ -42,12 +42,11 @@ void success(sqlite3 *db, User usr)
     printf("\n✔ Success!\n\n");
 invalid:
     printf("Enter 1 to go to the main menu and 0 to exit!\n");
-    scanf("%d", &option);
+    safe_int_input(&option);
     system("clear");
-    clear_buffer();
 
     if (option == 1)
-        mainMenu(db, usr);
+        main_menu(db, usr);
     else if (option == 0)
         exit(1);
     else
@@ -59,7 +58,7 @@ invalid:
 
 
 // check all accounts for a user
-void checkAllAccounts(User usr, sqlite3 *db)
+void check_all_accounts(User usr, sqlite3 *db)
 {
     system("clear");
     if (usr.accCount == 0)
@@ -122,7 +121,7 @@ void checkAllAccounts(User usr, sqlite3 *db)
         // Balance
         info.balance = sqlite3_column_double(stmt, 4);
 
-        printAccounts(info);
+        print_accounts(info);
     }
     sqlite3_finalize(stmt);
 }

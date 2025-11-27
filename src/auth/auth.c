@@ -1,7 +1,7 @@
-#include "atm_sys.h"
+#include "../atm_sys.h"
 
 //  gets salt and hashed password from db and compares it with the user entered password
-int checkPassword(sqlite3 *db, User *usr)
+int check_password(sqlite3 *db, User *usr)
 {
     const char *sql = "SELECT id, salt, passwd FROM users WHERE username = ?";
     sqlite3_stmt *stmt;
@@ -35,7 +35,7 @@ int checkPassword(sqlite3 *db, User *usr)
         if (memcmp(computed_hashed_password, stored_hashed_password, HASH_SIZE) == 0)
         {
             sqlite3_finalize(stmt);
-            getAccNbrs(usr, db);
+            get_acc_nbrs(usr, db);
             return 1;
         }
     }

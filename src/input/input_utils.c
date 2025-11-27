@@ -1,4 +1,4 @@
-#include "atm_sys.h"
+#include "../atm_sys.h"
 
 // check valid phone number input
 int check_phone_numb(char *phone)
@@ -6,7 +6,8 @@ int check_phone_numb(char *phone)
     printf("\n\n\t\tplease enter phone number in the following format:\n"
            "\t\t+<Country Code><phone number>\n\t\texample: +919876543210\n"
            "New Number:");
-     if (!safeInput(phone)){
+    if (!safe_string_input(phone, 20))
+    {
         return 0;
     }
     int inputLen = strlen(phone);
@@ -23,12 +24,13 @@ int check_phone_numb(char *phone)
     return 1;
 }
 
-
-int is_alpha(int c){
+int is_alpha(int c)
+{
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
 
-int is_digit(int c){
+int is_digit(int c)
+{
     return (c >= '0' && c <= '9');
 }
 
@@ -36,11 +38,13 @@ int check_country(char *country)
 {
     printf("\n\t\tPlease enter the country name:\n"
            "\t\tCountry: ");
-    if (!safeInput(country)){
+    if (!safe_string_input(country, 28))
+    {
         return 0;
     }
     size_t inputLen = strlen(country);
-    if (country[inputLen - 1] == '\n') {
+    if (country[inputLen - 1] == '\n')
+    {
         country[inputLen - 1] = '\0';
         inputLen--;
     }

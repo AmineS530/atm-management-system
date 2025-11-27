@@ -1,13 +1,13 @@
-#include "atm_sys.h"
+#include "../atm_sys.h"
 
-void loginMenu(User *usr)
+void login_menu(User *usr)
 {
     struct termios oflags, nflags;
 
     system("clear");
     printf("\n\n\t\t\t\tAccount Login\n");
     printf("\n\t\t\tBank Management System\n\n\t\t[-] User Login: ");
-    scanf(STRING_TO_SCAN, usr->name);
+    safe_string_input(usr->name, sizeof(usr->name));
 
     tcgetattr(fileno(stdin), &oflags);
     nflags = oflags;
@@ -20,7 +20,7 @@ void loginMenu(User *usr)
         return exit(1);
     }
     printf("\n\t\t[-] Enter the password to login:");
-    scanf(STRING_TO_SCAN, usr->password);
+    safe_string_input(usr->password, 0);
 
     if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
     {
@@ -29,7 +29,7 @@ void loginMenu(User *usr)
     }
 }
 
-void registerMenu(sqlite3 *db, User *usr)
+void register_menu(sqlite3 *db, User *usr)
 {
     struct termios oflags, nflags;
     char pass[50];
@@ -39,14 +39,14 @@ invald_username:
     system("clear");
     printf("\n\n\t\t\t\tNew Account Registration\n");
     printf("\n\t\t\t\tBank Management System\n\t\t\t[-] Username: ");
-    scanf(STRING_TO_SCAN, usr->name);
+    safe_string_input(usr->name, MAX_STR_LEN);
     if (username_exists(db, *usr))
     {
         system("clear");
         printf("\n\t\t\t[-] Username already exists!\n");
     invalid:
         printf("\n\t\t\t[-] enter 0 to retry or 1 to return to menu: ");
-        scanf("%d", &err_prompt);
+        safe_int_input(&err_prompt);
         switch (err_prompt)
         {
             case 0:
@@ -55,7 +55,7 @@ invald_username:
                 break;
             case 1:
                 sleep_sec(3);
-                return initMenu(db, usr);
+                return init_menu(db, usr);
                 break;
             default:
                 printf("Insert a valid operation!\n");
@@ -75,12 +75,12 @@ invald_username:
     }
 
     printf("\n\t\t\t[-] Enter the password to the new account:");
-    scanf(STRING_TO_SCAN, usr->password);
+    safe_string_input(usr->password, 0);
 
     printf("\n\t\t\t[-] Re-Enter the password:");
-    scanf(STRING_TO_SCAN, pass);
+    safe_string_input(pass, 0);
        if (!strcmp(usr->password, pass) == 0)
-                exitErr("\n\t\t[-] Passwords do not match\n");
+                exit_err("\n\t\t[-] Passwords do not match\n");
 
     // restore terminal
     if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
@@ -90,36 +90,36 @@ invald_username:
     }
 }
 
-void mainMenu(sqlite3 *db, User u)
+void main_menu(sqlite3 *db, User u)
 {
     int option;
     
     system("clear");
     while (1)
     {
-        printOptions(2, u.name);
-        scanf("%d", &option);
+        print_options(2, u.name);
+        safe_int_input(&option);
         switch (option)
         {
         case 1:
-            createNewAcc(u, db);
+            create_new_acc(u, db);
             success(db, u);
             break;
         case 2:
-            UpdateAccInfo(u, db);
+            update_acc_info(u, db);
             success(db, u);
             break;
         case 3:
-            CheckExistingaccs(u, db);
+            check_existing_accs(u, db);
             success(db, u);
             break;
         case 4:
-            checkAllAccounts(u, db);
+            check_all_accounts(u, db);
             success(db, u);
             break;
         case 5:
             //  TODO : add your **Make transaction** function
-            MakeTransaction(db, u);
+            make_transaction(db, u);
             success(db, u);
             break;
         case 6:
@@ -133,53 +133,51 @@ void mainMenu(sqlite3 *db, User u)
             success(db, u);
             break;
         case 8:
-            exitErr("\t\t\tExiting the program...");
+            exit_err("\t\t\tExiting the program...");
             break;
         default:
             system("clear");
-            clear_buffer();
             printf("Invalid operation!\n");
         }
     }
 }
 
 // first menu
-void initMenu(sqlite3 *db, User *usr)
+void init_menu(sqlite3 *db, User *usr)
 {
     int r = 0;
     int option;
 
     system("clear");
-    printOptions(1, NULL);
+    print_options(1, NULL);
     while (!r)
     {
-        scanf("%d", &option);
+        safe_int_input(&option);
         switch (option)
         {
         case 1:
-            loginMenu(usr);
-            if (checkPassword(db, usr))
+            login_menu(usr);
+            if (check_password(db, usr))
                 printf("\n\nLogin successful!");
             else
-                exitErr("\n\t\tWrong password!! or User Name\n");
+                exit_err("\n\t\tWrong password!! or User Name\n");
             r = 1;
             break;
         case 2:
-            registerMenu(db ,usr);
-            if (registerUser(db, usr)){
+            register_menu(db ,usr);
+            if (register_user(db, usr)){
                 just_a_menu();
-                loginMenu(usr);
+                login_menu(usr);
             }
             r = 1;
             break;
         case 3:
-            exitErr("\t\t\t[-] Exiting the program...");
+            exit_err("\t\t\t[-] Exiting the program...");
             break;
         default:
             system("clear");
-            clear_buffer();
             printf("\t\tPlease Insert a valid operation!\n");
-            printOptions(1, NULL);
+            print_options(1, NULL);
             break;
         }
     }

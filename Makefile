@@ -5,14 +5,15 @@ APP = ATM
 CFLAGS = -Wall -Wextra
 
 SRC = src/main.c \
-	src/menus.c \
-	src/system.c \
-	src/auth.c \
-	src/errors.c \
-	src/encrypt.c \
-	src/utils.c \
-	src/input_utils.c \
-	src/todo.c
+	src/todo.c \
+	src/auth/auth.c \
+	src/auth/encrypt.c \
+	src/helpers/errors.c \
+	src/helpers/utils.c \
+	src/input/input_utils.c \
+	src/input/safe_input_utils.c \
+	src/menus/system.c \
+	src/menus/menus.c 
 
 SQLITE3_PATH = src/sqlite
 

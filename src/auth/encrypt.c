@@ -1,4 +1,4 @@
-#include "atm_sys.h"
+#include "../atm_sys.h"
 
 // generate randomized salt
 void generate_salt(unsigned char salt[SALT_SIZE])
@@ -23,7 +23,7 @@ void hash_password(char *password, const unsigned char *salt, unsigned char outp
 }
 
 // Register a new user
-int registerUser(sqlite3 *db, User *usr)
+int register_user(sqlite3 *db, User *usr)
 {
     unsigned char salt[SALT_SIZE];
     unsigned char hashed_password[HASH_SIZE];

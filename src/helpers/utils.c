@@ -1,6 +1,6 @@
-#include "atm_sys.h"
+#include "../atm_sys.h"
 
-void printOptions(int input, char *name)
+void print_options(int input, char *name)
 {
     if (input == 1)
         printf("\n\t\t============== ATM ==============\n"
