@@ -12,8 +12,15 @@ SRC = src/main.c \
 	src/helpers/utils.c \
 	src/input/input_utils.c \
 	src/input/safe_input_utils.c \
-	src/menus/system.c \
-	src/menus/menus.c 
+	src/helpers/system.c \
+	src/helpers/query_helpers.c \
+	src/menus/menus.c \
+	src/menus/create_account.c \
+	src/menus/check_existing_accs.c \
+	src/menus/check_all_accs.c \
+	src/menus/make_transaction.c \
+	src/menus/update_acc.c
+
 
 SQLITE3_PATH = src/sqlite
 

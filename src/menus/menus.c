@@ -17,7 +17,7 @@ void login_menu(User *usr)
     if (tcsetattr(fileno(stdin), TCSANOW, &nflags) != 0)
     {
         perror("tcsetattr");
-        return exit(1);
+        exit(1);
     }
     printf("\n\t\t[-] Enter the password to login:");
     safe_string_input(usr->password, 0);
@@ -25,11 +25,11 @@ void login_menu(User *usr)
     if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
     {
         perror("tcsetattr");
-        return exit(1);
+        exit(1);
     }
 }
 
-void register_menu(sqlite3 *db, User *usr)
+int register_menu(sqlite3 *db, User *usr)
 {
     struct termios oflags, nflags;
     char pass[50];
@@ -49,17 +49,17 @@ invald_username:
         safe_int_input(&err_prompt);
         switch (err_prompt)
         {
-            case 0:
-                sleep_sec(3);
-                goto invald_username;
-                break;
-            case 1:
-                sleep_sec(3);
-                return init_menu(db, usr);
-                break;
-            default:
-                printf("Insert a valid operation!\n");
-                goto invalid;
+        case 0:
+            sleep_sec(3);
+            goto invald_username;
+            break;
+        case 1:
+            sleep_sec(3);
+            return -1;
+            break;
+        default:
+            printf("Insert a valid operation!\n");
+            goto invalid;
         }
     }
 
@@ -71,7 +71,7 @@ invald_username:
     if (tcsetattr(fileno(stdin), TCSANOW, &nflags) != 0)
     {
         perror("tcsetattr");
-        return exit(1);
+        exit(1);
     }
 
     printf("\n\t\t\t[-] Enter the password to the new account:");
@@ -79,21 +79,23 @@ invald_username:
 
     printf("\n\t\t\t[-] Re-Enter the password:");
     safe_string_input(pass, 0);
-       if (!strcmp(usr->password, pass) == 0)
-                exit_err("\n\t\t[-] Passwords do not match\n");
+    if (!strcmp(usr->password, pass) == 0)
+        exit_err("\n\t\t[-] Passwords do not match\n");
 
     // restore terminal
     if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
     {
         perror("tcsetattr");
-        return exit(1);
+        exit(1);
     }
+
+    return 1;
 }
 
 void main_menu(sqlite3 *db, User u)
 {
     int option;
-    
+
     system("clear");
     while (1)
     {
@@ -143,14 +145,14 @@ void main_menu(sqlite3 *db, User u)
 }
 
 // first menu
-void init_menu(sqlite3 *db, User *usr)
+int init_menu(sqlite3 *db, User *usr)
 {
-    int r = 0;
+    // int r = 0;
     int option;
 
     system("clear");
     print_options(1, NULL);
-    while (!r)
+    while (1)
     {
         safe_int_input(&option);
         switch (option)
@@ -158,18 +160,24 @@ void init_menu(sqlite3 *db, User *usr)
         case 1:
             login_menu(usr);
             if (check_password(db, usr))
-                printf("\n\nLogin successful!");
+            {
+                printf("\n\nLogin successful!\n");
+                return 1;
+            }
             else
-                exit_err("\n\t\tWrong password!! or User Name\n");
-            r = 1;
+                exit_err("\n\t\tWrong password!! or User Name\n"); // to replace with repromt
+            // r = 1;
             break;
         case 2:
-            register_menu(db ,usr);
-            if (register_user(db, usr)){
-                just_a_menu();
-                login_menu(usr);
-            }
-            r = 1;
+            if (register_menu(db, usr) == 1)
+                if (register_user(db, usr))
+                {
+                    just_a_menu();
+                    login_menu(usr);
+                    // r = 1;
+                    return 1;
+                }
+            option = -1;
             break;
         case 3:
             exit_err("\t\t\t[-] Exiting the program...");
@@ -181,6 +189,7 @@ void init_menu(sqlite3 *db, User *usr)
             break;
         }
     }
+    return 0;
 }
 
 void just_a_menu()
@@ -198,7 +207,7 @@ void sleep_sec(int seconds)
         sleep(1);
     while (seconds-- > 0)
     {
-        printf("\t\t [-] Redirecting in %d seconds...\n", seconds+1);
+        printf("\t\t [-] Redirecting in %d seconds...\n", seconds + 1);
         sleep(1);
     }
 }

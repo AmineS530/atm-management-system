@@ -36,6 +36,7 @@ int check_password(sqlite3 *db, User *usr)
         {
             sqlite3_finalize(stmt);
             get_acc_nbrs(usr, db);
+            explicit_bzero(usr->password, strlen(usr->password));
             return 1;
         }
     }

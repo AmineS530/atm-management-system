@@ -25,6 +25,12 @@ void hash_password(char *password, const unsigned char *salt, unsigned char outp
 // Register a new user
 int register_user(sqlite3 *db, User *usr)
 {
+    if (usr->name[0] == '\0' || usr->password[0] == '\0')
+    {
+        printf("Invalid user data\n");
+        return 0;
+    }
+
     unsigned char salt[SALT_SIZE];
     unsigned char hashed_password[HASH_SIZE];
 
@@ -42,11 +48,14 @@ int register_user(sqlite3 *db, User *usr)
     sqlite3_bind_blob(stmt, 2, salt, SALT_SIZE, SQLITE_STATIC);
     sqlite3_bind_blob(stmt, 3, hashed_password, HASH_SIZE, SQLITE_STATIC);
 
+    explicit_bzero(usr->password, strlen(usr->password));
     if (sqlite3_step(stmt) != SQLITE_DONE)
+    {
         printf("Failed to insert user: %s\n", sqlite3_errmsg(db));
-    else
-        printf("User successfully registered!\n");
-
+        sqlite3_finalize(stmt);
+        return 0;
+    }
+    printf("User successfully registered!\n");
     sqlite3_finalize(stmt);
     return 1;
 }

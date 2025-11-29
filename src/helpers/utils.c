@@ -26,26 +26,24 @@ void print_options(int input, char *name)
                "\n\t\t The ATM System Have Been Closed\n");
 }
 
-// Function to check if username already exists
-int username_exists(sqlite3 *db, User usr)
+void print_accounts(Record rec)
 {
-    const char *sql = "SELECT COUNT(*) FROM users WHERE LOWER(username) = LOWER(?)";
-    sqlite3_stmt *stmt;
+    printf("_____________________\n");
+    printf("Account number: %ld\n", rec.accountNbr);
+    printf("Created Date: %s\n", rec.deposit);
+    printf("Country: %s\n", rec.country);
+    printf("Phone: %s\n", rec.phone);
+    printf("Balance: %.2f\n", rec.balance);
+    printf("Account Type: %s\n", rec.accountType);
+    printf("_____________________\n");
+}
 
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
-    {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
-        return -1;
-    }
-
-    sqlite3_bind_text(stmt, 1, usr.name, -1, SQLITE_STATIC);
-
-    int exists = 0;
-    if (sqlite3_step(stmt) == SQLITE_ROW)
-        exists = sqlite3_column_int(stmt, 0);
-
-    sqlite3_finalize(stmt);
-    return exists > 0;
+User init_user(void)
+{
+    User u;
+    memset(&u, 0, sizeof(User));
+    u.id = -1;
+    return u;
 }
 
 char *to_upper(char *str)

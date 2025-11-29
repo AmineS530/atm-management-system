@@ -48,12 +48,13 @@ typedef struct s_User
 // authentication functions
 int check_password(sqlite3 *db, User *usr);
 void hash_password(char *password, const unsigned char *salt, unsigned char output[HASH_SIZE]);
+User init_user(void);
 
 // menus
-void init_menu(sqlite3 *db, User *usr);
+int init_menu(sqlite3 *db, User *usr);
 void main_menu(sqlite3 *db, User u);
 void login_menu(User *usr);
-void register_menu(sqlite3 *db, User *usr);
+int register_menu(sqlite3 *db, User *usr);
 void check_existing_accs(User usr, sqlite3 *db);
 
 // system function
@@ -69,6 +70,7 @@ void success(sqlite3 *db, User usr);
 void stay_or_return(sqlite3 *db, int notGood, void f(User u), User u);
 void sleep_sec(int seconds);
 void just_a_menu();
+void get_date(char *deposit_date);
 
 // todo
 void update_acc_info(User usr, sqlite3 *db);
@@ -84,6 +86,7 @@ int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8]);
 int withdraw(sqlite3 *db, User usr, int choice, float balance);
 int deposit(sqlite3 *db, User usr, int choice, float balance);
 float get_balance(sqlite3 *db, User usr, int choice);
+Record fill_info(sqlite3 *db, User usr);
 
 // input utils
 int check_phone_numb(char *phone);
