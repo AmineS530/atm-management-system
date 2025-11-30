@@ -1,34 +1,19 @@
 #include "atm_sys.h"
 
-void forexit();
-
-sqlite3 *db;
-
-void init()
-{
-    int resCode = sqlite3_open(DB_PATH, &db);
-    if (resCode != SQLITE_OK)
-    {
-        fprintf(stderr, "error: %s", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        exit(EXIT_FAILURE);
-    }
-    atexit(forexit);
-}
-
 int main()
 {
+    sqlite3 *db = init();
     User usr = init_user();
-    init();
+    while (1) {
+        int rc = init_menu(db, &usr);
 
-    if (init_menu(db, &usr))
-        main_menu(db, usr);
+        if (rc == INIT_MENU_GO)
+        {
+            main_menu(db, usr);
+            continue;
+        }
+        break;
+    }
 
     return 0;
-}
-
-void forexit()
-{
-    sqlite3_close(db);
-    print_options(3, NULL);
 }

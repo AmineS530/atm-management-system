@@ -7,7 +7,9 @@ void login_menu(User *usr)
     system("clear");
     printf("\n\n\t\t\t\tAccount Login\n");
     printf("\n\t\t\tBank Management System\n\n\t\t[-] User Login: ");
-    safe_string_input(usr->name, sizeof(usr->name));
+    if (!safe_string_input(usr->name, sizeof(usr->name))){
+       exit(1);
+    }
 
     tcgetattr(fileno(stdin), &oflags);
     nflags = oflags;
@@ -20,7 +22,9 @@ void login_menu(User *usr)
         exit(1);
     }
     printf("\n\t\t[-] Enter the password to login:");
-    safe_string_input(usr->password, 0);
+    if (!safe_string_input(usr->password, 0)){
+       exit(1);
+    }
 
     if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
     {
@@ -39,7 +43,9 @@ invald_username:
     system("clear");
     printf("\n\n\t\t\t\tNew Account Registration\n");
     printf("\n\t\t\t\tBank Management System\n\t\t\t[-] Username: ");
-    safe_string_input(usr->name, MAX_STR_LEN);
+    if (!safe_string_input(usr->name, MAX_STR_LEN)){
+       exit(1);
+    }
     if (username_exists(db, *usr))
     {
         system("clear");
@@ -75,10 +81,14 @@ invald_username:
     }
 
     printf("\n\t\t\t[-] Enter the password to the new account:");
-    safe_string_input(usr->password, 0);
+    if (!safe_string_input(usr->password, 0)){
+       exit(1);
+    }
 
     printf("\n\t\t\t[-] Re-Enter the password:");
-    safe_string_input(pass, 0);
+    if (!safe_string_input(pass, 0)){
+       exit(1);
+    }
     if (!strcmp(usr->password, pass) == 0)
         exit_err("\n\t\t[-] Passwords do not match\n");
 
@@ -92,47 +102,46 @@ invald_username:
     return 1;
 }
 
-void main_menu(sqlite3 *db, User u)
+void main_menu(sqlite3 *db, User usr)
 {
-    int option;
+    int option = -1;
 
     system("clear");
     while (1)
     {
-        print_options(2, u.name);
+        print_options(2, usr.name);
         safe_int_input(&option);
         switch (option)
         {
         case 1:
-            create_new_acc(u, db);
-            success(db, u);
+            create_new_acc(usr, db);
+            success(db, usr);
             break;
         case 2:
-            update_acc_info(u, db);
-            success(db, u);
+            update_acc_info(usr, db);
+            success(db, usr);
             break;
         case 3:
-            check_existing_accs(u, db);
-            success(db, u);
+            check_existing_accs(usr, db);
+            success(db, usr);
             break;
         case 4:
-            check_all_accounts(u, db);
-            success(db, u);
+            check_all_accounts(usr, db);
+            success(db, usr);
             break;
         case 5:
-            //  TODO : add your **Make transaction** function
-            make_transaction(db, u);
-            success(db, u);
+            make_transaction(db, usr);
+            success(db, usr);
             break;
         case 6:
             // TODO : add your **Remove existing account** function
             // RemoveAcc(User *usr, sqlite3 *db);
-            success(db, u);
+            success(db, usr);
             break;
         case 7:
             //  TODO : add your **Transfer owner** function
             // void TransferOwnership(User *usr, sqlite3 *db)
-            success(db, u);
+            success(db, usr);
             break;
         case 8:
             exit_err("\t\t\tExiting the program...");
@@ -147,14 +156,20 @@ void main_menu(sqlite3 *db, User u)
 // first menu
 int init_menu(sqlite3 *db, User *usr)
 {
-    // int r = 0;
-    int option;
+    if (!db || !usr)
+        return INIT_MENU_EXIT;
+
+    int option = -1;
 
     system("clear");
     print_options(1, NULL);
     while (1)
     {
-        safe_int_input(&option);
+        if (!safe_int_input(&option))
+        {
+            fprintf(stderr, "Input error. Exiting.\n");
+            return INIT_MENU_EXIT;
+        }
         switch (option)
         {
         case 1:
@@ -165,8 +180,7 @@ int init_menu(sqlite3 *db, User *usr)
                 return 1;
             }
             else
-                exit_err("\n\t\tWrong password!! or User Name\n"); // to replace with repromt
-            // r = 1;
+                printf("\n\t\tWrong password!! or User Name\n"); // to replace with repromt
             break;
         case 2:
             if (register_menu(db, usr) == 1)
@@ -174,10 +188,8 @@ int init_menu(sqlite3 *db, User *usr)
                 {
                     just_a_menu();
                     login_menu(usr);
-                    // r = 1;
-                    return 1;
+                    return INIT_MENU_GO;
                 }
-            option = -1;
             break;
         case 3:
             exit_err("\t\t\t[-] Exiting the program...");
@@ -186,10 +198,9 @@ int init_menu(sqlite3 *db, User *usr)
             system("clear");
             printf("\t\tPlease Insert a valid operation!\n");
             print_options(1, NULL);
-            break;
         }
     }
-    return 0;
+    return INIT_MENU_EXIT;
 }
 
 void just_a_menu()

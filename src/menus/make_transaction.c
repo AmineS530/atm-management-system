@@ -30,6 +30,7 @@ void make_transaction(sqlite3 *db, User usr)
     char accType[8];
     get_acc_type(db, usr, choice - 1, accType);
     float balance = get_balance(db, usr, choice - 1);
+    sleep_sec(2);
 invalid:
     prompt = -1;
 
@@ -48,13 +49,9 @@ invalid:
         return;
     }
     if (prompt == 1)
-    {
         withdraw(db, usr, choice, balance);
-    }
     else if (prompt == 2)
-    {
         deposit(db, usr, choice, balance);
-    }
     else if (prompt == 3)
         main_menu(db, usr);
     else
@@ -76,11 +73,14 @@ int withdraw(sqlite3 *db, User usr, int choice, float balance)
         return -1;
     }
     float withdrawAmount;
+    system("clear");
+    //todo: make transaction banner + withdrawing
     while (1)
     {
         printf("Enter amount to withdraw: ");
-        if (safe_float_input(&withdrawAmount) != 1 || withdrawAmount <= 0 || withdrawAmount > balance)
+        if (!safe_float_input(&withdrawAmount) || withdrawAmount <= 0.0 || withdrawAmount > balance)
         {
+            printf("%f\n balance: %f", withdrawAmount, balance);
             printf("✖ Invalid input! Please enter a valid amount.\n");
             continue;
         }

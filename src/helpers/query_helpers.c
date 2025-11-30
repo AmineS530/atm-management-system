@@ -69,11 +69,10 @@ float get_balance(sqlite3 *db, User usr, int choice)
 		return balance;
 	}
 	sqlite3_bind_int(stmt, 1, usr.id);
-	sqlite3_bind_int(stmt, 2, usr.accountIds[choice]);
+	sqlite3_bind_double(stmt, 2, usr.accountIds[choice]);
 	if (sqlite3_step(stmt) == SQLITE_ROW)
-	{
 		balance = sqlite3_column_double(stmt, 0);
-	}
+
 	sqlite3_finalize(stmt);
 	return balance;
 }
@@ -81,7 +80,7 @@ float get_balance(sqlite3 *db, User usr, int choice)
 // Function to check if username already exists
 int username_exists(sqlite3 *db, User usr)
 {
-	if (!usr.name)
+	if (!usr.name || strlen(usr.name) == 0)
 		return 0;
 	const char *sql =
 		"SELECT COUNT(*) FROM users WHERE LOWER(username) = LOWER(?)";

@@ -3,7 +3,7 @@
 //  gets salt and hashed password from db and compares it with the user entered password
 int check_password(sqlite3 *db, User *usr)
 {
-    const char *sql = "SELECT id, salt, passwd FROM users WHERE username = ?";
+    const char *sql = "SELECT id, salt, passwd FROM users WHERE username = LOWER(?)";
     sqlite3_stmt *stmt;
     unsigned char salt[SALT_SIZE];
     unsigned char stored_hashed_password[HASH_SIZE];

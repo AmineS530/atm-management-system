@@ -12,6 +12,8 @@
 #include "sqlite/sqlite3.h"
 
 #define DB_PATH "./data/DATA.db"
+#define SCHEMA_PATH "./data/schema.sql"
+
 #define SALT_SIZE 16
 #define HASH_SIZE 32
 #define STRING_TO_SCAN "%49s"
@@ -20,6 +22,12 @@
 #define MAX_ATTEMPTS 3
 #define false 0
 #define true 1
+
+enum
+{
+    INIT_MENU_EXIT = 0,
+    INIT_MENU_GO
+};
 
 // all fields for each record of an account
 typedef struct s_records
@@ -87,6 +95,7 @@ int withdraw(sqlite3 *db, User usr, int choice, float balance);
 int deposit(sqlite3 *db, User usr, int choice, float balance);
 float get_balance(sqlite3 *db, User usr, int choice);
 Record fill_info(sqlite3 *db, User usr);
+sqlite3 *init();
 
 // input utils
 int check_phone_numb(char *phone);
