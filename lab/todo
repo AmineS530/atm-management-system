@@ -5,6 +5,9 @@
 
 check for //todo
 
+
+need better formatting to the printing
+
 change remaining funcs to work with sqlite
     - create account
         + prompt to fill records struct before inserting in db

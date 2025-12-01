@@ -20,6 +20,7 @@ SRC = src/main.c \
 	src/menus/check_existing_accs.c \
 	src/menus/check_all_accs.c \
 	src/menus/make_transaction.c \
+	src/menus/remove_acc.c \
 	src/menus/update_acc.c
 
 

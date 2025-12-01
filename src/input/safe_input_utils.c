@@ -15,7 +15,7 @@ int safe_string_input(char *buffer, size_t size)
 		return 0;
 	}
 
-	buffer[strcspn(buffer, "\n")] = '\0'; // remove newline
+	buffer[strcspn(buffer, "\n")] = '\0';
 	return 1;
 }
 
@@ -24,13 +24,13 @@ int safe_int_input(int *value)
 {
 	char temp[50];
 	if (!safe_string_input(temp, sizeof(temp)))
-		return 0;
+		return -1;
 
 	char *endptr;
 	long val = strtol(temp, &endptr, 10);
 
 	if (*endptr != '\0')
-		return 0;
+		return -1;
 
 	*value = (int)val;
 	return 1;
@@ -79,4 +79,11 @@ static int prompt_until_valid(Record *info, int (*validator)(Record *),
 	}
 	/* reached max attempts */
 	return 0;
+}
+
+char confirm_char()
+{
+	char buf[2];
+	safe_string_input(buf, sizeof(buf));
+	return buf[0];
 }

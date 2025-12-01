@@ -5,24 +5,32 @@
 //     printf("\nEnter today's date(mm/dd/yyyy):");
 //     scanf("%d/%d/%d", &r.deposit.month, &r.deposit.day, &r.deposit.year);
 
-// TODO : add your **Transfer owner** function
-void TransferOwnership(User usr, sqlite3 *db)
+//  **Transfer owner** function
+void transfer_ownership(sqlite3 *db, User *usr)
 {
-    if (usr.accCount == 0)
+    if (usr->accCount == 0)
     {
-        printf("No accounts found for user: %s\n", usr.name);
+        printf("No accounts found for user: %s\n", usr->name);
         return;
     }
-    int choice = select_account(usr);
+    int choice = select_account(*usr);
+    const char *sql = "UPDATE records SET userID = ? WHERE userID = ? AND accNbr = ?";
 }
 
-// **Remove existing account** function
-void RemoveAcc(User usr, sqlite3 *db)
+static int get_recepient_uid(sqlite3 *db, char *username)
 {
-    if (usr.accCount == 0)
+    const char *sql = "SELECT userID FROM users WHERE username = ?";
+    sqlite3_stmt *stmt;
+    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("No accounts found for user: %s\n", usr.name);
-        return;
+        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        return -1;
     }
-    int choice = select_account(usr);
+    sqlite3_bind_text(stmt, 1, username, -1, SQLITE_STATIC);
+
+    if (sqlite3_step(stmt) == SQLITE_ROW)
+        return sqlite3_column_int(stmt, 0);
+    
+    sqlite3_finalize(stmt);
+    return -1;
 }

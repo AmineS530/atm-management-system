@@ -70,16 +70,18 @@ int register_user(sqlite3 *db, User *usr);
 void create_new_acc(User usr, sqlite3 *db);
 void check_all_accounts(User usr, sqlite3 *db);
 void make_transaction(sqlite3 *db, User usr);
+void remove_acc(sqlite3 *db, User *usr);
+void transfer_ownership(sqlite3 *db, User *usr);
 // other
 void exit_err(char *str);
 void print_options(int input, char *name);
 int username_exists(sqlite3 *db, User usr);
 void success(sqlite3 *db, User usr);
-void stay_or_return(sqlite3 *db, int notGood, void f(User u), User u);
+void stay_or_return(sqlite3 *db, int notGood, void f(sqlite3 *db, User u), User u);
 void sleep_sec(int seconds);
 void just_a_menu();
 void get_date(char *deposit_date);
-
+char confirm_char();
 // todo
 void update_acc_info(User usr, sqlite3 *db);
 void get_account_type(Record *info);

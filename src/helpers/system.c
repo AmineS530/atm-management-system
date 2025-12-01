@@ -1,6 +1,6 @@
 #include "../atm_sys.h"
 
-void stay_or_return(sqlite3 *db, int notGood, void f(User u), User u)
+void stay_or_return(sqlite3 *db, int notGood, void f(sqlite3 *db, User u), User u)
 {
     int option;
     if (notGood == 0)
@@ -11,7 +11,7 @@ void stay_or_return(sqlite3 *db, int notGood, void f(User u), User u)
         printf("\nEnter 0 to try again, 1 to return to main menu and 2 to exit:");
         safe_int_input(&option);
         if (option == 0)
-            f(u);
+            f(db, u);
         else if (option == 1)
             main_menu(db, u);
         else if (option == 2)
@@ -38,17 +38,19 @@ void stay_or_return(sqlite3 *db, int notGood, void f(User u), User u)
 
 void success(sqlite3 *db, User usr)
 {
-    int option;
+    //todo: rework
+    int option = -1;
     printf("\n✔ Success!\n\n");
 invalid:
     printf("Enter 1 to go to the main menu and 0 to exit!\n");
     safe_int_input(&option);
     system("clear");
-
+    printf("\noption: %d\n", option);
+    sleep_sec(2);
     if (option == 1)
-        main_menu(db, usr);
+        return;
     else if (option == 0)
-        exit(1);
+        exit(0);
     else
     {
         printf("Insert a valid operation!\n");

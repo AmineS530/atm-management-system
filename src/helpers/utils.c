@@ -25,7 +25,7 @@ void print_options(int input, char *name)
         printf("\n\n\t\t============== ATM ==============\n"
                "\n\t\t The ATM System Have Been Closed\n");
 }
-
+// repeat spaces after welcome X for consistency
 void print_accounts(Record rec)
 {
     printf("_____________________\n");

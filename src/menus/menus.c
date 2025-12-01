@@ -7,8 +7,9 @@ void login_menu(User *usr)
     system("clear");
     printf("\n\n\t\t\t\tAccount Login\n");
     printf("\n\t\t\tBank Management System\n\n\t\t[-] User Login: ");
-    if (!safe_string_input(usr->name, sizeof(usr->name))){
-       exit(1);
+    if (!safe_string_input(usr->name, sizeof(usr->name)))
+    {
+        exit(1);
     }
 
     tcgetattr(fileno(stdin), &oflags);
@@ -22,8 +23,9 @@ void login_menu(User *usr)
         exit(1);
     }
     printf("\n\t\t[-] Enter the password to login:");
-    if (!safe_string_input(usr->password, 0)){
-       exit(1);
+    if (!safe_string_input(usr->password, 0))
+    {
+        exit(1);
     }
 
     if (tcsetattr(fileno(stdin), TCSANOW, &oflags) != 0)
@@ -43,8 +45,9 @@ invald_username:
     system("clear");
     printf("\n\n\t\t\t\tNew Account Registration\n");
     printf("\n\t\t\t\tBank Management System\n\t\t\t[-] Username: ");
-    if (!safe_string_input(usr->name, MAX_STR_LEN)){
-       exit(1);
+    if (!safe_string_input(usr->name, MAX_STR_LEN))
+    {
+        exit(1);
     }
     if (username_exists(db, *usr))
     {
@@ -81,13 +84,15 @@ invald_username:
     }
 
     printf("\n\t\t\t[-] Enter the password to the new account:");
-    if (!safe_string_input(usr->password, 0)){
-       exit(1);
+    if (!safe_string_input(usr->password, 0))
+    {
+        exit(1);
     }
 
     printf("\n\t\t\t[-] Re-Enter the password:");
-    if (!safe_string_input(pass, 0)){
-       exit(1);
+    if (!safe_string_input(pass, 0))
+    {
+        exit(1);
     }
     if (!strcmp(usr->password, pass) == 0)
         exit_err("\n\t\t[-] Passwords do not match\n");
@@ -134,13 +139,11 @@ void main_menu(sqlite3 *db, User usr)
             success(db, usr);
             break;
         case 6:
-            // TODO : add your **Remove existing account** function
-            // RemoveAcc(User *usr, sqlite3 *db);
+            remove_acc(db, &usr);
             success(db, usr);
             break;
         case 7:
-            //  TODO : add your **Transfer owner** function
-            // void TransferOwnership(User *usr, sqlite3 *db)
+            transfer_ownership(db, &usr);
             success(db, usr);
             break;
         case 8:
