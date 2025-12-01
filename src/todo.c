@@ -6,21 +6,23 @@
 //     scanf("%d/%d/%d", &r.deposit.month, &r.deposit.day, &r.deposit.year);
 
 // TODO : add your **Transfer owner** function
-void TransferOwnership(User *usr, sqlite3 *db)
+void TransferOwnership(User usr, sqlite3 *db)
 {
-    if (usr->accCount == 0)
+    if (usr.accCount == 0)
     {
-        printf("No accounts found for user: %s\n", usr->name);
+        printf("No accounts found for user: %s\n", usr.name);
         return;
     }
+    int choice = select_account(usr);
 }
 
-// TODO : add your **Remove existing account** function
-void RemoveAcc(User *usr, sqlite3 *db)
+// **Remove existing account** function
+void RemoveAcc(User usr, sqlite3 *db)
 {
-    if (usr->accCount == 0)
+    if (usr.accCount == 0)
     {
-        printf("No accounts found for user: %s\n", usr->name);
+        printf("No accounts found for user: %s\n", usr.name);
         return;
     }
+    int choice = select_account(usr);
 }

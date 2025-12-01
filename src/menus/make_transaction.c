@@ -10,27 +10,16 @@ void make_transaction(sqlite3 *db, User usr)
         return;
     }
     int choice, prompt;
-    for (int i = 0; i < usr.accCount; i++)
-        printf("[%d] Account number: %ld\n", i + 1, usr.accountIds[i]);
-
-    while (1)
-    {
-        choice = -1;
-        printf("Enter account number: ");
-        if (safe_int_input(&choice) != 1)
-            printf("✖ Invalid input! Please enter a valid number.\n");
-        else if (choice < 1 || choice > usr.accCount)
-        {
-            printf("✖ Invalid option! Please enter a number between 1 and %d.\n", usr.accCount);
-        }
-        else
-            break;
-    }
-    system("clear");
+    choice = select_account(usr);
     char accType[8];
-    get_acc_type(db, usr, choice - 1, accType);
-    float balance = get_balance(db, usr, choice - 1);
-    sleep_sec(2);
+    printf("\n user id: %d, account id: %ld, choice: %d", usr.id, usr.accountIds[choice], choice);
+    if (!get_acc_type(db, usr, choice, accType)){
+        system("clear");
+        printf("No accounts found for user: %s\n", usr.name);
+        return;
+    }
+    printf("\n account type: %s\n", accType);
+    float balance = get_balance(db, usr, choice);
 invalid:
     prompt = -1;
 
@@ -41,11 +30,15 @@ invalid:
            "[2] Diposit\n\n\t\t"
            "[3] Back to menu\n\n\t\t"
            "Your input: ");
+        // printf("\n account type: %s , cmp: %d\n", *accType, strncasecmp(accType, "Fixed", 6));
     safe_int_input(&prompt);
 
-    if (strncasecmp(accType, "fixed", 5) == 0)
+    if (strncasecmp(accType, "Fixed", 5) == 0)
     {
-        printf("\nERROR: Cannot modify balance on FIXED accounts.\n");
+        system("clear");
+        printf("\t\t====== Make Transaction ======\n\n");
+        printf("ERROR: Cannot modify balance on FIXED accounts.\n");
+        sleep_sec(2);
         return;
     }
     if (prompt == 1)
@@ -74,7 +67,7 @@ int withdraw(sqlite3 *db, User usr, int choice, float balance)
     }
     float withdrawAmount;
     system("clear");
-    //todo: make transaction banner + withdrawing
+    // todo: make transaction banner + withdrawing
     while (1)
     {
         printf("Enter amount to withdraw: ");
@@ -122,7 +115,7 @@ int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8])
     }
 
     sqlite3_bind_int(stmt, 1, usr.id);
-    sqlite3_bind_int(stmt, 2, usr.accountIds[choice]);
+    sqlite3_bind_int64(stmt, 2, usr.accountIds[choice]);
     if (sqlite3_step(stmt) == SQLITE_ROW)
     {
         const char *temp = (const char *)sqlite3_column_text(stmt, 0);

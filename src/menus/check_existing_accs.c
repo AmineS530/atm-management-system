@@ -13,29 +13,7 @@ void check_existing_accs(User usr, sqlite3 *db)
     const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType "
                       "FROM records WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
-    int choice;
-    // put this into helper function
-    system("clear");
-    for (int i = 0; i < usr.accCount; i++)
-        printf("[%d] Account number: %ld\n", i + 1, usr.accountIds[i]);
-
-    while (1)
-    {
-        choice = -1;
-        printf("Enter account number: ");
-        if (safe_int_input(&choice) != 1)
-        {
-            printf("✖ Invalid input! Please enter a valid number.\n");
-        }
-        else if (choice < 1 || choice > (usr.accCount))
-        {
-            printf("✖ Invalid option! Please enter a number between 1 and %d.\n", usr.accCount );
-        }
-        else
-            break;
-    }
-
-    system("clear");
+    int choice = select_account(usr);
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
@@ -44,7 +22,7 @@ void check_existing_accs(User usr, sqlite3 *db)
     }
 
     sqlite3_bind_int(stmt, 1, usr.id);
-    sqlite3_bind_int64(stmt, 2, usr.accountIds[choice - 1]);
+    sqlite3_bind_int64(stmt, 2, usr.accountIds[choice]);
 
     while (sqlite3_step(stmt) == SQLITE_ROW)
     {

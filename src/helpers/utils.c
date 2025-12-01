@@ -38,14 +38,6 @@ void print_accounts(Record rec)
     printf("_____________________\n");
 }
 
-User init_user(void)
-{
-    User u;
-    memset(&u, 0, sizeof(User));
-    u.id = -1;
-    return u;
-}
-
 char *to_upper(char *str)
 {
     for (size_t i = 0; i < strlen(str); i++)
@@ -54,4 +46,36 @@ char *to_upper(char *str)
             str[i] -= 32;
     }
     return (str);
+}
+
+int select_account(User usr)
+{
+    int choice = -1;
+
+    system("clear");
+    for (int i = 0; i < usr.accCount; i++)
+        printf("[%d] Account number: %ld\n", i + 1, usr.accountIds[i]);
+
+    while (1)
+    {
+        printf("Enter account number: ");
+
+        if (safe_int_input(&choice) != 1)
+        {
+            printf("✖ Invalid input! Please enter a valid number.\n");
+            continue;
+        }
+
+        if (choice < 1 || choice > usr.accCount)
+        {
+            printf("✖ Invalid option! Please enter a number between 1 and %d.\n",
+                   usr.accCount);
+            continue;
+        }
+
+        break;
+    }
+    system("clear");
+
+    return choice - 1;
 }

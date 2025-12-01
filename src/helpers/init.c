@@ -74,6 +74,14 @@ sqlite3 *init()
     return db;
 }
 
+User init_user(void)
+{
+    User u;
+    memset(&u, 0, sizeof(User));
+    u.id = -1;
+    return u;
+}
+
 static void forexit()
 {
     sqlite3_close(db);

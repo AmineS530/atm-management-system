@@ -18,30 +18,13 @@ void update_acc_info(User usr, sqlite3 *db)
     const char *query = NULL;
     char old_val[MAX_STR_LEN];
     memset(old_val, 0, MAX_STR_LEN);
-    system("clear");
+   choice = select_account(usr);
 
-    for (int i = 0; i < usr.accCount; i++)
-        printf("[%d] Account number: %ld\n", i + 1, usr.accountIds[i]);
-
-    while (1)
-    {
-        choice = -1;
-        printf("Enter account number: ");
-        if (safe_int_input(&choice) != 1)
-            printf("✖ Invalid input! Please enter a valid number.\n");
-        else if (choice < 1 || choice > (usr.accCount))
-        {
-            printf("✖ Invalid option! Please enter a number between 1 and %d.\n", usr.accCount);
-        }
-        else
-            break;
-    }
-    system("clear");
 invalid:
     prompt = -1;
 
     printf("\t\t====== Update Account Informations ======\n\n");
-    printf("\t\tselected account number: %ld\n", usr.accountIds[choice - 1]);
+    printf("\t\tselected account number: %ld\n", usr.accountIds[choice]);
     printf("\t\tOptions:\n\n\t\t"
            "[1] Update Country\n\t\t"
            "[2] Update Phone-Number\n\n\t\t"
@@ -102,6 +85,8 @@ invalid:
     {
         system("clear");
         fprintf(stderr, "\t\tExecution failed\n");
+        sqlite3_finalize(stmt);
+        return;
     }
     sqlite3_finalize(stmt);
     printf("Account information updated successfully!\n"

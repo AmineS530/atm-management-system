@@ -96,6 +96,7 @@ int deposit(sqlite3 *db, User usr, int choice, float balance);
 float get_balance(sqlite3 *db, User usr, int choice);
 Record fill_info(sqlite3 *db, User usr);
 sqlite3 *init();
+int select_account(User usr);
 
 // input utils
 int check_phone_numb(char *phone);

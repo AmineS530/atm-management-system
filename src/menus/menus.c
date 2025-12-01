@@ -216,6 +216,7 @@ void sleep_sec(int seconds)
 {
     if (seconds < 0)
         sleep(1);
+    printf("\n\n");
     while (seconds-- > 0)
     {
         printf("\t\t [-] Redirecting in %d seconds...\n", seconds + 1);
