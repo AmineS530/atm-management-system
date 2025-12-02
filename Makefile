@@ -5,7 +5,6 @@ APP = ATM
 CFLAGS = -g -Wall -Wextra
 
 SRC = src/main.c \
-	src/todo.c \
 	src/auth/auth.c \
 	src/auth/encrypt.c \
 	src/helpers/errors.c \
@@ -21,6 +20,7 @@ SRC = src/main.c \
 	src/menus/check_all_accs.c \
 	src/menus/make_transaction.c \
 	src/menus/remove_acc.c \
+	src/menus/transfer_ownership.c \
 	src/menus/update_acc.c
 
 

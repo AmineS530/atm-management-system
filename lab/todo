@@ -5,6 +5,15 @@
 
 check for //todo
 
+clean up code, delete lab folder, split header and use static funcs in
+the files that require the use of a func,
+consider adding a simple txt logger,
+add comfirm on recipient end when transfering acc ownership
+put the default alice/micheal data into the fake sql data
+look when to exit on when not where input invalid
+removing repeated code blocks, and the recursion with gotos
+check audit requirement
+
 
 need better formatting to the printing
 

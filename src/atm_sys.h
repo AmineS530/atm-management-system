@@ -16,7 +16,6 @@
 
 #define SALT_SIZE 16
 #define HASH_SIZE 32
-#define STRING_TO_SCAN "%49s"
 #define MAX_STR_LEN 50
 #define MAX_ACCOUNTS 8
 #define MAX_ATTEMPTS 3
