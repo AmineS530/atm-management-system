@@ -4,3 +4,5 @@
 
 //     printf("\nEnter today's date(mm/dd/yyyy):");
 //     scanf("%d/%d/%d", &r.deposit.month, &r.deposit.day, &r.deposit.year);
+
+static user_status users[MAX_USERS];

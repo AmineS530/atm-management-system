@@ -32,14 +32,8 @@ update the header
 sanitize input and redo sqlite functions
     -no injection working for now
 
-print error if no account for the user
-    - wip
-
 add logs
     -to-to do
-
-remove extra library imports and create functions manually if possible
-    - arry
 
 check if accnbr already exist or not
 

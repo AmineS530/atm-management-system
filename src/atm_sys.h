@@ -17,6 +17,9 @@
 #define SALT_SIZE 16
 #define HASH_SIZE 32
 #define MAX_STR_LEN 50
+#define MSG_LEN 128
+#define MAX_USERS 64
+#define MAX_PENDING 4
 #define MAX_ACCOUNTS 8
 #define MAX_ATTEMPTS 3
 #define false 0
@@ -28,6 +31,11 @@ enum
     INIT_MENU_GO
 };
 
+enum
+{
+    OFFLINE = 0,
+    ONLINE
+};
 // all fields for each record of an account
 typedef struct s_records
 {
@@ -51,6 +59,16 @@ typedef struct s_User
     char name[50];
     char password[50];
 } User;
+typedef struct s_notif {
+    char text[128];
+} notif_t;
+typedef struct s_user_status
+{
+    int id;
+    int is_online; // to remove
+    notif_t pending[MAX_PENDING];
+    int pending_count;
+} user_status;
 
 // authentication functions
 int check_password(sqlite3 *db, User *usr);
