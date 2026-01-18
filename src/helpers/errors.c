@@ -1,4 +1,4 @@
-#include "../atm_sys.h"
+#include "helpers.h"
 
 void exit_err(char *str)
 {

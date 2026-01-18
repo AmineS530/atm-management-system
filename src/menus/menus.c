@@ -1,4 +1,4 @@
-#include "../atm_sys.h"
+#include "menus.h"
 
 void login_menu(User *usr)
 {
@@ -103,7 +103,6 @@ invald_username:
         perror("tcsetattr");
         exit(1);
     }
-
     return 1;
 }
 
@@ -213,16 +212,4 @@ void just_a_menu()
            "\n\t\t  Account Created Successfully\n"
            "\n\t Login to acess your new account\n\n");
     sleep_sec(3);
-}
-
-void sleep_sec(int seconds)
-{
-    if (seconds < 0)
-        sleep(1);
-    printf("\n\n");
-    while (seconds-- > 0)
-    {
-        printf("\t\t [-] Redirecting in %d seconds...\n", seconds + 1);
-        sleep(1);
-    }
 }

@@ -7,12 +7,20 @@ check for //todo
 
 clean up code, delete lab folder, split header and use static funcs in
 the files that require the use of a func,
+
 consider adding a simple txt logger,
+
 add comfirm on recipient end when transfering acc ownership
+
 put the default alice/micheal data into the fake sql data
+
 look when to exit on when not where input invalid
+
 removing repeated code blocks, and the recursion with gotos
+
 check audit requirement
+
+prompt until valid usage
 
 
 need better formatting to the printing
@@ -20,14 +28,14 @@ need better formatting to the printing
 change remaining funcs to work with sqlite
     - create account
         + prompt to fill records struct before inserting in db
-        + functions to check each input
-
+        + error testing
 
 figure the use of stay or return and success
     - situational
 
 update the header
     - lmfao forgor what to update
+    - create multiple per folder 
 
 sanitize input and redo sqlite functions
     -no injection working for now

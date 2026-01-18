@@ -1,8 +1,7 @@
-#include "../atm_sys.h"
+#include "menus.h"
 
 static int get_recepient_uid(sqlite3 *db, char *username);
 
-//  **Transfer owner** function
 void transfer_ownership(sqlite3 *db, User *usr)
 {
     if (usr->accCount == 0)

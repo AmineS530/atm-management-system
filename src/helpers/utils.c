@@ -1,4 +1,4 @@
-#include "../atm_sys.h"
+#include "helpers.h"
 
 void print_options(int input, char *name)
 {
@@ -78,4 +78,16 @@ int select_account(User usr)
     system("clear");
 
     return choice - 1;
+}
+
+void sleep_sec(int seconds)
+{
+    if (seconds < 0)
+        sleep(1);
+    printf("\n\n");
+    while (seconds-- > 0)
+    {
+        printf("\t\t [-] Redirecting in %d seconds...\n", seconds + 1);
+        sleep(1);
+    }
 }

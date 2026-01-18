@@ -1,6 +1,15 @@
-#include "../atm_sys.h"
+#include "menus.h"
 
 const char *accountTypes[5] = {"Current", "Savings", "Fixed01", "Fixed02", "Fixed03"};
+
+static Record fill_info(sqlite3 *db, User usr);
+static void get_full_name(Record *info);
+static void get_account_nbr(Record *info, sqlite3 *db);
+static void get_account_type(Record *info);
+static void insert_balance(Record *info);
+static int read_number(const char *label, int *out, int min, int max);
+static void get_date(char *deposit_date);
+
 
 // Create new account
 void create_new_acc(User usr, sqlite3 *db)
@@ -49,7 +58,7 @@ void create_new_acc(User usr, sqlite3 *db)
     sqlite3_finalize(stmt);
 }
 
-Record fill_info(sqlite3 *db, User usr)
+static Record fill_info(sqlite3 *db, User usr)
 {
     Record info = {0};
 
@@ -66,7 +75,7 @@ Record fill_info(sqlite3 *db, User usr)
             break;
         system("clear");
         printf("Phone number is not valid!\n");
-        sleep(2);
+        sleep_sec(2);
     }
     while (1)
     {
@@ -76,14 +85,14 @@ Record fill_info(sqlite3 *db, User usr)
             break;
         system("clear");
         printf("Country is not valid!\n");
-        sleep(2);
+        sleep_sec(2);
     }
     get_account_type(&info);
     insert_balance(&info);
     return info;
 }
 
-void get_full_name(Record *info)
+static void get_full_name(Record *info)
 {
 invalid:
     system("clear");
@@ -104,7 +113,7 @@ invalid:
         }
 }
 
-void get_account_nbr(Record *info, sqlite3 *db)
+static void get_account_nbr(Record *info, sqlite3 *db)
 {
     char input[20];
     long accNbr;
@@ -139,7 +148,7 @@ invalid:
     info->accountNbr = accNbr;
 }
 
-void get_account_type(Record *info)
+static void get_account_type(Record *info)
 {
     int input = 0;
 invalid:
@@ -162,7 +171,7 @@ invalid:
     info->accountType[sizeof(info->accountType) - 1] = '\0'; /* ensure null-termination */
 }
 
-void insert_balance(Record *info)
+static void insert_balance(Record *info)
 {
     char input[20];
     char *endptr;
@@ -202,12 +211,14 @@ static int read_number(const char *label, int *out, int min, int max)
 
         if (!safe_int_input(out))
         {
+            system("clear");
             printf("Invalid input! Please enter a number.\n");
             continue;
         }
 
         if (*out < min || *out > max)
         {
+            system("clear");
             printf("Invalid %s! Enter a value between %d and %d.\n", label, min, max);
             continue;
         }
@@ -216,7 +227,7 @@ static int read_number(const char *label, int *out, int min, int max)
     }
 }
 
-void get_date(char *deposit_date)
+static void get_date(char *deposit_date)
 {
     struct tm set_time = {0};
 

@@ -1,4 +1,4 @@
-#include "../atm_sys.h"
+#include "menus.h"
 
 // **Remove existing account** function
 void remove_acc(sqlite3 *db, User *usr)

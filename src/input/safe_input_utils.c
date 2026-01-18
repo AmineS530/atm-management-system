@@ -1,4 +1,4 @@
-#include "../atm_sys.h"
+#include "input.h"
 
 // Safe string input
 int safe_string_input(char *buffer, size_t size)
@@ -58,7 +58,7 @@ int safe_float_input(float *value)
 	return 1;
 }
 
-static int prompt_until_valid(Record *info, int (*validator)(Record *),
+int prompt_until_valid(Record *info, int (*validator)(Record *),
 							  const char *err_msg)
 {
 	int attempts = 0;

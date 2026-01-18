@@ -1,4 +1,8 @@
-#include "../atm_sys.h"
+#include "menus.h"
+
+static int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8]);
+static int withdraw(sqlite3 *db, User usr, int choice, float balance);
+static int deposit(sqlite3 *db, User usr, int choice, float balance);
 
 // **Make transaction** function
 void make_transaction(sqlite3 *db, User usr)
@@ -56,7 +60,7 @@ invalid:
     sleep_sec(2);
 }
 
-int withdraw(sqlite3 *db, User usr, int choice, float balance)
+static int withdraw(sqlite3 *db, User usr, int choice, float balance)
 {
     const char *sql = "UPDATE records SET balance = ? WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
@@ -104,7 +108,8 @@ int withdraw(sqlite3 *db, User usr, int choice, float balance)
     printf("Old balance: %.2f New balance: %.2f\n", balance + withdrawAmount, balance);
     return 0;
 }
-int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8])
+
+static int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8])
 {
     const char *sql = "SELECT accType FROM records WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
@@ -130,7 +135,8 @@ int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8])
     sqlite3_finalize(stmt);
     return false;
 }
-int deposit(sqlite3 *db, User usr, int choice, float balance)
+
+static int deposit(sqlite3 *db, User usr, int choice, float balance)
 {
     const char *sql = "UPDATE records SET balance = ? WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;

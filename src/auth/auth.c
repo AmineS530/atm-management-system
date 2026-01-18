@@ -1,4 +1,4 @@
-#include "../atm_sys.h"
+#include "auth.h"
 
 //  gets salt and hashed password from db and compares it with the user entered password
 int check_password(sqlite3 *db, User *usr)

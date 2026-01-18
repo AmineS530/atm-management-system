@@ -1,4 +1,6 @@
-#include "../atm_sys.h"
+#include "menus.h"
+
+static void caculate_interest(const unsigned char *accountType, double balance, long account_nbr);
 
 // TODO : add your **Check the details of existing accounts** function
 void check_existing_accs(User usr, sqlite3 *db)
@@ -71,7 +73,7 @@ void check_existing_accs(User usr, sqlite3 *db)
     sqlite3_finalize(stmt);
 }
 
-void caculate_interest(const unsigned char *accountType, double balance, long account_nbr)
+static void caculate_interest(const unsigned char *accountType, double balance, long account_nbr)
 {
     if (strcmp((const char *)accountType, "Current") == 0)
     {

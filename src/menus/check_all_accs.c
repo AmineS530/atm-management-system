@@ -1,5 +1,5 @@
 // check all accounts for a user
-#include "../atm_sys.h"
+#include "menus.h"
 
 void check_all_accounts(User usr, sqlite3 *db)
 {

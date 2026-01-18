@@ -1,4 +1,4 @@
-#include "../atm_sys.h"
+#include "helpers.h"
 
 void stay_or_return(sqlite3 *db, int notGood, void f(sqlite3 *db, User u), User u)
 {
@@ -36,7 +36,7 @@ void stay_or_return(sqlite3 *db, int notGood, void f(sqlite3 *db, User u), User 
     }
 }
 
-void success(sqlite3 *db, User usr)
+void success()
 {
     //todo: rework
     int option = -1;

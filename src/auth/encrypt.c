@@ -1,7 +1,7 @@
-#include "../atm_sys.h"
+#include "auth.h"
 
 // generate randomized salt
-void generate_salt(unsigned char salt[SALT_SIZE])
+static void generate_salt(unsigned char salt[SALT_SIZE])
 {
     srand(time(NULL)); // Seed the random number generator
     for (int i = 0; i < SALT_SIZE; i++)

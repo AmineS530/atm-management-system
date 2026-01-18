@@ -1,4 +1,4 @@
-#include "../atm_sys.h"
+#include "input.h"
 
 // check valid phone number input
 int check_phone_numb(char *phone)
