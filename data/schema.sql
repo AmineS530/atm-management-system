@@ -7,7 +7,7 @@ CREATE TABLE records (
     phone TEXT NOT NULL UNIQUE,
     accType TEXT NOT NULL CHECK (accType IN ('Current','Savings','Fixed01','Fixed02','Fixed03')),
     balance DOUBLE NOT NULL,
-    created_at DATE DEFAULT CURRENT_TIMESTAMP,
+    deposit_date DATE NOT NULL,
     FOREIGN KEY (userID) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -28,23 +28,23 @@ INSERT INTO users (username, salt, passwd) VALUES
 ('jamal',  X'9C6E56384CA8BCF4CA7AE69417A0DEFF', X'9C6E56384CA8BCF4CA7AE69417A0DEFF71317732653372347435793600000000'),
 ('marie',  X'9C6E56384CA8BCF4CA7AE69417A0DEFF', X'9C6E56384CA8BCF4CA7AE69417A0DEFF71317732653372347435793600000000');
 
-INSERT INTO records (userID, accNbr, fullname, country, phone, accType, balance)
+INSERT INTO records
+(userID, accNbr, fullname, country, phone, accType, balance, deposit_date)
 VALUES
--- Alice (userID = 1)
-(1, 10000000001, 'Alice Moreau',   'France',   '+33123456001', 'Savings',  1520.75),
-(1, 10000000002, 'Alice Moreau',   'France',   '+33123456002', 'Current',  840.20),
+(1, 10000000001, 'Alice Moreau',  'Africa',   '+33123456001', 'Savings', 1520.75, '15/06/2023'),
+(1, 10000000002, 'Alice Moreau',  'France',   '+33123456002', 'Current',  840.20, '10/01/2024'),
 
 -- Michel (userID = 2)
-(2, 10000000003, 'Michel Durand',  'Belgium',  '+32400000003', 'Fixed01',  5000.00),
-(2, 10000000004, 'Michel Durand',  'Belgium',  '+32400000004', 'Savings',  300.10),
+(2, 10000000003, 'Michel Durand', 'Portugal', '+32400000003', 'Fixed01', 5000.00, '01/09/2022'),
+(2, 10000000004, 'Michel Durand', 'UK',       '+32400000004', 'Savings',  300.10, '20/03/2023'),
 
 -- Sara (userID = 3)
-(3, 10000000005, 'Sara Khalid',    'Morocco',  '+212612300005', 'Current',  120.00),
-(3, 10000000006, 'Sara Khalid',    'Morocco',  '+212612300006', 'Fixed02',  2200.00),
+(3, 10000000005, 'Sara Khalid',   'Morocco',  '+212612300005', 'Current', 120.00, '05/02/2024'),
+(3, 10000000006, 'Sara Khalid',   'Morocco',  '+212612300006', 'Fixed02', 2200.00, '30/11/2021'),
 
 -- Jamal (userID = 4)
-(4, 10000000007, 'Jamal Idrissi',  'Morocco',  '+212612300007', 'Savings',  999.99),
+(4, 10000000007, 'Jamal Idrissi', 'Morocco',  '+212612300007', 'Savings', 999.99, '18/08/2023'),
 
 -- Marie (userID = 5)
-(5, 10000000008, 'Marie Laurent',  'France',   '+33123456008', 'Fixed03',  7200.55),
-(5, 10000000009, 'Marie Laurent',  'France',   '+33123456009', 'Current',   150.00);
+(5, 10000000008, 'Marie Laurent', 'France',   '+33123456008', 'Fixed03', 7200.55, '12/05/2020'),
+(5, 10000000009, 'Marie Laurent', 'France',   '+33123456009', 'Current',  150.00, '01/04/2024');

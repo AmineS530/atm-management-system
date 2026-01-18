@@ -5,7 +5,7 @@
       "name": "Debug ATM (make)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/ATM.exec",
+      "program": "${workspaceFolder}/z1_ATM.exec",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",

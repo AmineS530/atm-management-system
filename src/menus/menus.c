@@ -118,7 +118,7 @@ void main_menu(sqlite3 *db, User usr)
         switch (option)
         {
         case 1:
-            create_new_acc(usr, db);
+            create_new_acc(&usr, db);
             success(db, usr);
             break;
         case 2:
@@ -208,7 +208,7 @@ int init_menu(sqlite3 *db, User *usr)
 void just_a_menu()
 {
     system("clear");
-    printf("\n\t\t============== ATM ==============\n"
+    printf("\n\t\t============== z1 ATM ==============\n"
            "\n\t\t  Account Created Successfully\n"
            "\n\t Login to acess your new account\n\n");
     sleep_sec(3);

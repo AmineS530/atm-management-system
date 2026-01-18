@@ -3,6 +3,7 @@
 
 #include "../helpers/helpers.h"
 #include "../auth/auth.h"
+#include <math.h>
 
 /* menus.c*/
 void login_menu(User *usr);
@@ -12,7 +13,7 @@ int init_menu(sqlite3 *db, User *usr);
 void just_a_menu();
 
 
-void create_new_acc(User usr, sqlite3 *db);
+void create_new_acc(User *usr, sqlite3 *db);
 
 void update_acc_info(User usr, sqlite3 *db);
 

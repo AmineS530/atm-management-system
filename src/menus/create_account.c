@@ -10,11 +10,10 @@ static void insert_balance(Record *info);
 static int read_number(const char *label, int *out, int min, int max);
 static void get_date(char *deposit_date);
 
-
 // Create new account
-void create_new_acc(User usr, sqlite3 *db)
+void create_new_acc(User *usr, sqlite3 *db)
 {
-    if (usr.accCount >= MAX_ACCOUNTS)
+    if (usr->accCount >= MAX_ACCOUNTS)
     {
         printf("You have reached the maximum number of accounts you can create.\n");
         sleep_sec(3);
@@ -22,40 +21,43 @@ void create_new_acc(User usr, sqlite3 *db)
     }
 
     // SQL query to insert data into the `records` table
-    const char *sql = "INSERT INTO records (userID, accNbr, fullname, country, phone, balance, accType) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    const char *sql = "INSERT INTO records (userID, accNbr, fullname, country, phone, balance, accType, deposit_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     sqlite3_stmt *stmt;
     Record info;
 
     // Prepare the SQL statement
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        // printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr->name, "Failed to prepare statement: %s", sqlite3_errmsg(db));
         return;
     }
 
     // Call a helper function to fill the Record structure
-    info = fill_info(db, usr);
+    info = fill_info(db, *usr);
     // Bind values to the prepared statement
-    sqlite3_bind_int(stmt, 1, usr.id);
+    sqlite3_bind_int(stmt, 1, usr->id);
     sqlite3_bind_int64(stmt, 2, info.accountNbr);
     sqlite3_bind_text(stmt, 3, info.name, -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 4, info.country, -1, SQLITE_STATIC);
     sqlite3_bind_text(stmt, 5, info.phone, -1, SQLITE_STATIC);
     sqlite3_bind_double(stmt, 6, info.balance);
     sqlite3_bind_text(stmt, 7, info.accountType, -1, SQLITE_STATIC);
+    sqlite3_bind_text(stmt, 8, info.deposit, -1, SQLITE_STATIC);
 
     if (sqlite3_step(stmt) != SQLITE_DONE)
-        printf("Error executing statement: %s\n", sqlite3_errmsg(db));
+    {
+        sqlite3_finalize(stmt);
+        log_error(usr->name, "Error executing statement: %s", sqlite3_errmsg(db));
+    }
     else
     {
         sqlite3_finalize(stmt);
         printf("New account created successfully!\n");
-        // todo: update account count after account creation
-        // get_acc_nbrs(&usr, db);
-        usr.accCount++;
+        log_info(usr->name, "New account created number: %ld", info.accountNbr);
+        get_acc_nbrs(usr, db);
+        return;
     }
-
-    sqlite3_finalize(stmt);
 }
 
 static Record fill_info(sqlite3 *db, User usr)
@@ -241,7 +243,7 @@ static void get_date(char *deposit_date)
     set_time.tm_mon -= 1;     // 0–11
     set_time.tm_year -= 1900; // years since 1900
 
-    strftime(deposit_date, 30, "%a %b %d %H:%M:%S %Y", &set_time);
+    strftime(deposit_date, 30, "%d/%m/%Y", &set_time);
 
     printf("Entered Date: %s\n", deposit_date);
     sleep(2);

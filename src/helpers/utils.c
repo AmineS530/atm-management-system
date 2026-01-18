@@ -3,13 +3,13 @@
 void print_options(int input, char *name)
 {
     if (input == 1)
-        printf("\n\t\t============== ATM ==============\n"
+        printf("\n\t\t============== z1 ATM ==============\n"
                "\n\t\t  -->>  login / register <<--\n"
                "\n\t\t[1]- login\n"
                "\n\t\t[2]- register\n"
                "\n\t\t[3]- exit\n");
     if (input == 2)
-        printf("\n\t\t============== ATM ==============\n\t\t"
+        printf("\n\t\t============== z1 ATM ==============\n\t\t"
                "\n\t\t||\t Welcome %s!\t ||\n"
                "\n\t\t-->> Choose one of the options below <<--\n"
                "\n\t\t[1]- Create a new account\n"
@@ -22,7 +22,7 @@ void print_options(int input, char *name)
                "\n\t\t[8]- Exit\n",
                to_upper(name));
     if (input == 3)
-        printf("\n\n\t\t============== ATM ==============\n"
+        printf("\n\n\t\t============== z1 ATM ==============\n"
                "\n\t\t The ATM System Have Been Closed\n");
 }
 // repeat spaces after welcome X for consistency
@@ -30,7 +30,7 @@ void print_accounts(Record rec)
 {
     printf("_____________________\n");
     printf("Account number: %ld\n", rec.accountNbr);
-    printf("Created Date: %s\n", rec.deposit);
+    printf("Deposit Date: %s\n", rec.deposit);
     printf("Country: %s\n", rec.country);
     printf("Phone: %s\n", rec.phone);
     printf("Balance: %.2f\n", rec.balance);

@@ -64,7 +64,6 @@ typedef struct s_User
 // other
 void main_menu(sqlite3 *db, User u);
 
-
 /* init.c */
 sqlite3 *init();
 User init_user(void);
@@ -87,8 +86,11 @@ void sleep_sec(int seconds);
 void stay_or_return(sqlite3 *db, int notGood, void f(sqlite3 *db, User u), User u);
 void success();
 
+/* logs.c */
+void log_info(const char *user, const char *fmt, ...);
+void log_error(const char *user, const char *fmt, ...);
+
 /* errors.c */
 void exit_err(char *str);
-
 
 #endif

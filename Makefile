@@ -1,8 +1,8 @@
 CC = gcc
 
-APP = ATM
+APP = z1_ATM
 
-CFLAGS = -g -Wall -Wextra
+CFLAGS = -g -Wall -Wextra 
 
 SRC = src/main.c \
 	src/auth/auth.c \
@@ -12,6 +12,7 @@ SRC = src/main.c \
 	src/input/input_utils.c \
 	src/input/safe_input_utils.c \
 	src/helpers/init.c \
+	src/helpers/logs.c \
 	src/helpers/system.c \
 	src/helpers/query_helpers.c \
 	src/menus/menus.c \
@@ -51,9 +52,11 @@ clean:
 
 fclean: clean
 	@echo "\033[1;38;5;196mRemoving The ATM Management System from path...\033[0m"
-	@make -C $(SQLITE3_PATH) fclean --silent
 	@rm -fr $(APP).exec
 
 re: fclean all
 
-.PHONY: clean fclean re
+rea: fclean all
+	@make -C $(SQLITE3_PATH) fclean --silent
+
+.PHONY: clean fclean re rea

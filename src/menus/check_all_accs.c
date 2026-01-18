@@ -10,7 +10,7 @@ void check_all_accounts(User usr, sqlite3 *db)
         return;
     }
 
-    const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType FROM records WHERE userID = ?";
+    const char *sql = "SELECT accNbr, deposit_date, country, phone, balance, accType FROM records WHERE userID = ?";
     sqlite3_stmt *stmt;
 
     printf("\t\t====== All accounts for user: %s =====\n\n", usr.name);

@@ -20,9 +20,6 @@ static int table_exists(sqlite3 *db, const char *name)
 /* load SQL file and exec it */
 static int exec_sql_file(sqlite3 *db, const char *path)
 {
-    char cwd[512];
-    getcwd(cwd, sizeof(cwd));
-    printf("Current working directory: %s\n", cwd);
     FILE *f = fopen(path, "rb");
     if (!f)
         return 0;

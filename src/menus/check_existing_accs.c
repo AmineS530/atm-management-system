@@ -1,8 +1,9 @@
 #include "menus.h"
 
-static void caculate_interest(const unsigned char *accountType, double balance, long account_nbr);
+static void caculate_interest(const unsigned char *accountType, double balance, const char *deposit);
+static int get_day(const char *deposit_date);
 
-// TODO : add your **Check the details of existing accounts** function
+//  **Check the details of existing accounts** function
 void check_existing_accs(User usr, sqlite3 *db)
 {
     if (usr.accCount == 0)
@@ -12,7 +13,7 @@ void check_existing_accs(User usr, sqlite3 *db)
         return;
     }
 
-    const char *sql = "SELECT accNbr, created_at, country, phone, balance, accType "
+    const char *sql = "SELECT accNbr, deposit_date, country, phone, balance, accType "
                       "FROM records WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
     int choice = select_account(usr);
@@ -67,13 +68,13 @@ void check_existing_accs(User usr, sqlite3 *db)
         info.balance = sqlite3_column_double(stmt, 4);
 
         print_accounts(info);
-        caculate_interest((const unsigned char *)info.accountType, info.balance, info.accountNbr);
+        caculate_interest((const unsigned char *)info.accountType, info.balance, info.deposit);
     }
 
     sqlite3_finalize(stmt);
 }
 
-static void caculate_interest(const unsigned char *accountType, double balance, long account_nbr)
+static void caculate_interest(const unsigned char *accountType, double balance, const char *deposit)
 {
     if (strcmp((const char *)accountType, "Current") == 0)
     {
@@ -101,6 +102,16 @@ static void caculate_interest(const unsigned char *accountType, double balance, 
         /*For example: for an account of type savings with a deposit date of 10/10/2002 and an amount of $1023.20 the system will show
          "You will get $5.97 as interest on day 10 of every month".*/
         double interest = balance * interestRate;
-        printf("Interest for account number %ld is: $%.2f\n", account_nbr, interest);
+
+        printf(
+            "You will get $%.2f as interest on day %d of every month.\n", interest / 12.0,
+            get_day(deposit));
     }
+}
+
+static int get_day(const char *deposit_date)
+{
+    int day = 0;
+    sscanf((const char *)deposit_date, "%d/", &day);
+    return day;
 }
