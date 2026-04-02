@@ -1,13 +1,12 @@
 # new
 
     Menu exits when enter pressed while in a sub-menu
-
-    make id unable to be a 0
     
     Add a ncurses compliming makefile
 
     check if possible to use generic type to make a global getter for specefic type for all to remore repition
             / tricky for sqlite get type
+            
 Account creation
     - get deposite day to add to interest phrase when checking account
     -interest rate should be split by 12 and round up

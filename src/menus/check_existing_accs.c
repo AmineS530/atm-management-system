@@ -84,23 +84,14 @@ static void caculate_interest(const unsigned char *accountType, double balance, 
     {
         double interestRate = 0.0;
         if (strcmp((const char *)accountType, "Savings") == 0)
-        {
             interestRate = 0.07;
-        }
         else if (strcmp((const char *)accountType, "Fixed01") == 0)
-        {
             interestRate = 0.04;
-        }
         else if (strcmp((const char *)accountType, "Fixed02") == 0)
-        {
             interestRate = 0.05;
-        }
         else if (strcmp((const char *)accountType, "Fixed03") == 0)
-        {
             interestRate = 0.08;
-        }
-        /*For example: for an account of type savings with a deposit date of 10/10/2002 and an amount of $1023.20 the system will show
-         "You will get $5.97 as interest on day 10 of every month".*/
+            
         double interest = balance * interestRate;
 
         printf(
