@@ -11,7 +11,7 @@ int check_password(sqlite3 *db, User *usr)
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr->name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return 0;
     }
 

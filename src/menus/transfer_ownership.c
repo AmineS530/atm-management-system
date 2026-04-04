@@ -15,7 +15,7 @@ void transfer_ownership(sqlite3 *db, User *usr)
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr->name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
     char username[20];
@@ -44,12 +44,14 @@ void transfer_ownership(sqlite3 *db, User *usr)
     sqlite3_bind_int64(stmt, 3, usr->accountIds[choice]);
     if (sqlite3_step(stmt) != SQLITE_DONE)
     {
-        printf("Failed to update record: %s\n", sqlite3_errmsg(db));
+        log_error(usr->name, "Failed to update record: %s\n", sqlite3_errmsg(db));
         sqlite3_finalize(stmt);
         return;
     }
     printf("\t\t====== Transfer Ownership ======\n\n");
     printf("\nRecord updated successfully.\n");
+    log_info(usr->name, "Transferred ownership of account %ld to user %s (id: %d)",
+             usr->accountIds[choice], username, recepient_id);
     sqlite3_finalize(stmt);
     get_acc_nbrs(usr, db);
 }
@@ -60,7 +62,7 @@ static int get_recepient_uid(sqlite3 *db, char *username)
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(username, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return -1;
     }
     sqlite3_bind_text(stmt, 1, username, -1, SQLITE_STATIC);

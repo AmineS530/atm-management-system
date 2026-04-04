@@ -25,12 +25,12 @@ void remove_acc(sqlite3 *db, User *usr)
         sleep_sec(3);
         return;
     }
-
+    Record copy = get_record_by_accNbr(db, usr->accountIds[choice]);
     const char *sql = "DELETE FROM records WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr->name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
 
@@ -39,11 +39,28 @@ void remove_acc(sqlite3 *db, User *usr)
 
     if (sqlite3_step(stmt) != SQLITE_DONE)
     {
-        printf("Failed to remove account: %s\n", sqlite3_errmsg(db));
+        log_error(usr->name, "Failed to remove account: %s\n", sqlite3_errmsg(db));
         sqlite3_finalize(stmt);
         return;
     }
     sqlite3_finalize(stmt);
     printf("Account number: %ld removed successfully.\n", usr->accountIds[choice]);
+
+    char *formatted = format_account(copy);
+    if (formatted)
+    {
+        log_info(usr->name,
+                 "Removed account number: %ld with information: %s",
+                 usr->accountIds[choice],
+                 formatted ? formatted : "NULL");
+    
+        free(formatted);
+    } else {
+        log_info(usr->name,
+                 "Removed account number: %ld with information: [failed to format]",
+                 usr->accountIds[choice]);
+    }
+    
+
     get_acc_nbrs(usr, db);
 }

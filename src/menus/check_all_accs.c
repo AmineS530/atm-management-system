@@ -6,7 +6,7 @@ void check_all_accounts(User usr, sqlite3 *db)
     system("clear");
     if (usr.accCount == 0)
     {
-        printf("No accounts found for user: %s\n", usr.name);
+        log_error(usr.name, "No accounts found to check for user: %s\n", usr.name);
         return;
     }
 

@@ -66,7 +66,7 @@ static int withdraw(sqlite3 *db, User usr, int choice, float balance)
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return -1;
     }
     float withdrawAmount;
@@ -106,6 +106,8 @@ static int withdraw(sqlite3 *db, User usr, int choice, float balance)
     printf("Account number: %ld\n", usr.accountIds[choice]);
     printf("Withdrawal amount: %.2f\n", withdrawAmount);
     printf("Old balance: %.2f New balance: %.2f\n", balance + withdrawAmount, balance);
+    log_info(usr.name, "Withdrew %.2f from account %ld. Old balance: %.2f, New balance: %.2f",
+             withdrawAmount, usr.accountIds[choice], balance + withdrawAmount, balance);
     return 0;
 }
 
@@ -115,7 +117,7 @@ static int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8])
     sqlite3_stmt *stmt;
     if (!buffer || sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return false;
     }
 
@@ -144,7 +146,7 @@ static int deposit(sqlite3 *db, User usr, int choice, float balance)
     // Prepare statement
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return -1;
     }
 
@@ -181,5 +183,7 @@ static int deposit(sqlite3 *db, User usr, int choice, float balance)
     printf("Account number: %ld\n", usr.accountIds[choice]);
     printf("Deposit amount: %.2f\n", depositAmount);
     printf("Old balance: %.2f New balance: %.2f\n", balance - depositAmount, balance);
+    log_info(usr.name, "Deposited %.2f to account %ld. Old balance: %.2f, New balance: %.2f",
+             depositAmount, usr.accountIds[choice], balance - depositAmount, balance);
     return 0;
 }

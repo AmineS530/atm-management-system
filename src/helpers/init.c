@@ -2,6 +2,7 @@
 
 static sqlite3 *db = NULL;
 static void forexit();
+
 /* check if a table exists */
 static int table_exists(sqlite3 *db, const char *name)
 {
@@ -17,6 +18,7 @@ static int table_exists(sqlite3 *db, const char *name)
     sqlite3_finalize(stmt);
     return exists;
 }
+
 /* load SQL file and exec it */
 static int exec_sql_file(sqlite3 *db, const char *path)
 {

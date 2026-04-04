@@ -11,6 +11,7 @@ SRC = src/main.c \
 	src/helpers/utils.c \
 	src/input/input_utils.c \
 	src/input/safe_input_utils.c \
+	src/helpers/account_logging.c \
 	src/helpers/init.c \
 	src/helpers/logs.c \
 	src/helpers/system.c \

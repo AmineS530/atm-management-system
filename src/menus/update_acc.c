@@ -63,7 +63,7 @@ invalid:
     snprintf(sqlold, sizeof(sqlold), "SELECT %s FROM records WHERE accNbr = ?", query);
     if (sqlite3_prepare_v2(db, sqlold, -1, &stmt, NULL) != SQLITE_OK)
     {
-        fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
     sqlite3_bind_int64(stmt, 1, usr.accountIds[choice]);
@@ -76,7 +76,7 @@ invalid:
     snprintf(sql, sizeof(sql), "UPDATE records SET %s = ? WHERE accNbr = ?", query);
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
     sqlite3_bind_text(stmt, 1, input, -1, SQLITE_STATIC);
@@ -84,7 +84,7 @@ invalid:
     if (sqlite3_step(stmt) != SQLITE_DONE || err == 0)
     {
         system("clear");
-        fprintf(stderr, "\t\tExecution failed\n");
+        log_error(usr.name, "Execution failed: %s\n", sqlite3_errmsg(db));
         sqlite3_finalize(stmt);
         return;
     }
@@ -93,5 +93,7 @@ invalid:
            "old value: %s\n"
            "new value: %s\n",
            old_val, input);
+    log_info(usr.name, "Updated account %ld: set %s from '%s' to '%s'",
+             usr.accountIds[choice], query, old_val, input);
     sleep_sec(3);
 }

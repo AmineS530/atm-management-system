@@ -20,7 +20,7 @@ void check_existing_accs(User usr, sqlite3 *db)
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return;
     }
 
