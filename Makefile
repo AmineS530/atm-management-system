@@ -3,6 +3,7 @@ CC = gcc
 APP = z1_ATM
 
 CFLAGS = -g -Wall -Wextra 
+LDFLAGS = -lncurses
 
 SRC = src/main.c \
 	src/auth/auth.c \
@@ -23,7 +24,8 @@ SRC = src/main.c \
 	src/menus/make_transaction.c \
 	src/menus/remove_acc.c \
 	src/menus/transfer_ownership.c \
-	src/menus/update_acc.c
+	src/menus/update_acc.c \
+	src/ui/ui.c
 
 
 SQLITE3_PATH = src/sqlite
@@ -44,7 +46,7 @@ sqlite:
 
 $(APP): $(OBJ)
 	@echo "\033[1;38;5;155mBuilding $@... \033[0m"
-	$(CC) $(CFLAGS) -o $@.exec $(OBJ) $(SQLITE3_PATH)/libsqlite3.a
+	$(CC) $(CFLAGS) -o $@.exec $(OBJ) $(SQLITE3_PATH)/libsqlite3.a $(LDFLAGS)
 
 clean:
 	@echo "\033[1;38;5;196mDeleting object files from the directory...\033[0m"

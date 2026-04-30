@@ -1,99 +1,56 @@
 #include "menus.h"
 
-//  **Update account information** function
 void update_acc_info(User usr, sqlite3 *db)
 {
     if (usr.accCount == 0)
     {
-        system("clear");
-        printf("No accounts found for user: %s\n", usr.name);
+        show_error("No accounts found.");
         return;
     }
 
-    char input[30];
+    int choice = select_account(usr);
+    if (choice < 0) return;
+
+    const char *options[] = {"Update Country", "Update Phone Number", "Back"};
+    int prompt = show_menu("Update Account Information", options, 3);
+    
+    if (prompt >= 2) return;
+
+    const char *query = (prompt == 0) ? "country" : "phone";
+    char input[MAX_STR_LEN];
+    
+    while (1) {
+        if (prompt == 0) { // Country
+            get_input_field("Enter New Country (Letters and spaces only)", input, sizeof(input), 0);
+            if (strlen(input) == 0) return;
+            if (check_country(input)) break;
+            show_error("Invalid country! Use letters and spaces only.");
+        } else { // Phone
+            get_input_field("New Phone: +<Code><Number> (Ex: +33123456)", input, sizeof(input), 0);
+            if (strlen(input) == 0) return;
+            if (check_phone_numb(input)) break;
+            show_error("Invalid format! Use + followed by 9-18 digits.");
+        }
+    }
+
+    char final_sql[200];
+    snprintf(final_sql, sizeof(final_sql), "UPDATE records SET %s = ? WHERE accNbr = ?", query);
+
     sqlite3_stmt *stmt;
-    int prompt, choice;
-    int err = 0;
-    char sql[MAX_STR_LEN], sqlold[MAX_STR_LEN];
-    const char *query = NULL;
-    char old_val[MAX_STR_LEN];
-    memset(old_val, 0, MAX_STR_LEN);
-   choice = select_account(usr);
-
-invalid:
-    prompt = -1;
-
-    printf("\t\t====== Update Account Informations ======\n\n");
-    printf("\t\tselected account number: %ld\n", usr.accountIds[choice]);
-    printf("\t\tOptions:\n\n\t\t"
-           "[1] Update Country\n\t\t"
-           "[2] Update Phone-Number\n\n\t\t"
-           "[3] Exit\n\n\t\t"
-           "Your input: ");
-    safe_int_input(&prompt);
-    if (prompt == 1)
+    if (sqlite3_prepare_v2(db, final_sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        query = "country";
-        do
-        {
-            err = check_country(input);
-            system("clear");
-            printf("\t\t\t===== New record =====\n");
-        } while (err != 1);
-    }
-    else if (prompt == 2)
-    {
-        query = "phone";
-        do
-        {
-            err = check_phone_numb(input);
-            system("clear");
-            printf("\t\t\t===== New record =====\n");
-        } while (err != 1);
-    }
-    else if (prompt == 3)
-        main_menu(db, usr);
-    else
-    {
-        system("clear");
-        // can store this in a var that start empty so its appear under update acc info txt or re add text here
-        printf("\n   | [+] Non-Valid input |\n\n");
-        goto invalid;
-    }
-    snprintf(sqlold, sizeof(sqlold), "SELECT %s FROM records WHERE accNbr = ?", query);
-    if (sqlite3_prepare_v2(db, sqlold, -1, &stmt, NULL) != SQLITE_OK)
-    {
-        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        show_error("Database error.");
         return;
     }
-    sqlite3_bind_int64(stmt, 1, usr.accountIds[choice]);
-    if (sqlite3_step(stmt) == SQLITE_ROW)
-    {
-        const unsigned char *old = sqlite3_column_text(stmt, 0);
-        strncpy(old_val, (const char *)old, sizeof(old_val) - 1);
-    }
-    sqlite3_finalize(stmt);
-    snprintf(sql, sizeof(sql), "UPDATE records SET %s = ? WHERE accNbr = ?", query);
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
-    {
-        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
-        return;
-    }
+
     sqlite3_bind_text(stmt, 1, input, -1, SQLITE_STATIC);
     sqlite3_bind_int64(stmt, 2, usr.accountIds[choice]);
-    if (sqlite3_step(stmt) != SQLITE_DONE || err == 0)
+
+    if (sqlite3_step(stmt) != SQLITE_DONE)
     {
-        system("clear");
-        log_error(usr.name, "Execution failed: %s\n", sqlite3_errmsg(db));
-        sqlite3_finalize(stmt);
-        return;
+        show_error("Failed to update account.");
+    } else {
+        show_message("Account updated successfully.");
     }
     sqlite3_finalize(stmt);
-    printf("Account information updated successfully!\n"
-           "old value: %s\n"
-           "new value: %s\n",
-           old_val, input);
-    log_info(usr.name, "Updated account %ld: set %s from '%s' to '%s'",
-             usr.accountIds[choice], query, old_val, input);
-    sleep_sec(3);
 }

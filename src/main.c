@@ -2,6 +2,7 @@
 
 int main()
 {
+    init_ui();
     sqlite3 *db = init();
     User usr = init_user();
     while (1) {
@@ -15,5 +16,6 @@ int main()
         break;
     }
 
+    end_ui();
     return 0;
 }

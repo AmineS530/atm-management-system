@@ -3,10 +3,11 @@
 
 #include "../helpers/helpers.h"
 #include "../auth/auth.h"
+#include "../ui/ui.h"
 #include <math.h>
 
 /* menus.c*/
-void login_menu(User *usr);
+int login_menu(User *usr);
 int register_menu(sqlite3 *db, User *usr);
 void main_menu(sqlite3 *db, User usr);
 int init_menu(sqlite3 *db, User *usr);

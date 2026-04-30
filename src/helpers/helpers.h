@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include "../input/input.h"
+#include "../ui/ui.h"
 
 #define SALT_SIZE 16
 #define HASH_SIZE 32

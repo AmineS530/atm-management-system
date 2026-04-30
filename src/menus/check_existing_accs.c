@@ -1,102 +1,103 @@
 #include "menus.h"
 
-static void caculate_interest(const unsigned char *accountType, double balance, const char *deposit);
+static void caculate_interest(WINDOW *win, const unsigned char *accountType, double balance, const char *deposit);
 static int get_day(const char *deposit_date);
 
-//  **Check the details of existing accounts** function
 void check_existing_accs(User usr, sqlite3 *db)
 {
     if (usr.accCount == 0)
     {
-        system("clear");
-        printf("No accounts found for user: %s\n", usr.name);
+        show_error("No accounts found for user.");
         return;
     }
+
+    int choice = select_account(usr);
+    if (choice < 0) return;
 
     const char *sql = "SELECT accNbr, deposit_date, country, phone, balance, accType "
                       "FROM records WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
-    int choice = select_account(usr);
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        show_error("Database error.");
         return;
     }
 
     sqlite3_bind_int(stmt, 1, usr.id);
     sqlite3_bind_int64(stmt, 2, usr.accountIds[choice]);
 
-    while (sqlite3_step(stmt) == SQLITE_ROW)
+    if (sqlite3_step(stmt) == SQLITE_ROW)
     {
-        Record info = {0};
+        WINDOW *info_win = newwin(15, 60, (LINES - 15) / 2, (COLS - 60) / 2);
+        draw_box(info_win, "Account Details");
 
-        info.accountNbr = sqlite3_column_int64(stmt, 0);
+        wattron(info_win, A_BOLD | COLOR_PAIR(1));
+        mvwprintw(info_win, 2, 2, "Account Number:");
+        mvwprintw(info_win, 3, 2, "Deposit Date:  ");
+        mvwprintw(info_win, 4, 2, "Country:       ");
+        mvwprintw(info_win, 5, 2, "Phone:         ");
+        mvwprintw(info_win, 6, 2, "Balance:       ");
+        mvwprintw(info_win, 7, 2, "Account Type:  ");
+        wattroff(info_win, A_BOLD | COLOR_PAIR(1));
 
-        // Copy deposit safely
-        const unsigned char *deposit_text = sqlite3_column_text(stmt, 1);
-        if (deposit_text)
-        {
-            strncpy(info.deposit, (const char *)deposit_text, sizeof(info.deposit) - 1);
-            info.deposit[sizeof(info.deposit) - 1] = '\0';
-        }
+        mvwprintw(info_win, 2, 18, "%lld", (long long)sqlite3_column_int64(stmt, 0));
+        mvwprintw(info_win, 3, 18, "%s", sqlite3_column_text(stmt, 1));
+        mvwprintw(info_win, 4, 18, "%s", sqlite3_column_text(stmt, 2));
+        mvwprintw(info_win, 5, 18, "%s", sqlite3_column_text(stmt, 3));
+        mvwprintw(info_win, 6, 18, "$%.2f", sqlite3_column_double(stmt, 4));
+        mvwprintw(info_win, 7, 18, "%s", sqlite3_column_text(stmt, 5));
 
-        // Copy country safely
-        const unsigned char *country_text = sqlite3_column_text(stmt, 2);
-        if (country_text)
-        {
-            strncpy(info.country, (const char *)country_text, sizeof(info.country) - 1);
-            info.country[sizeof(info.country) - 1] = '\0';
-        }
+        caculate_interest(info_win, sqlite3_column_text(stmt, 5), 
+                         sqlite3_column_double(stmt, 4), 
+                         (const char *)sqlite3_column_text(stmt, 1));
 
-        // Copy phone safely
-        const unsigned char *phone_text = sqlite3_column_text(stmt, 3);
-        if (phone_text)
-        {
-            strncpy(info.phone, (const char *)phone_text, sizeof(info.phone) - 1);
-            info.phone[sizeof(info.phone) - 1] = '\0';
-        }
-
-        // Copy accountType safely
-        const unsigned char *type_text = sqlite3_column_text(stmt, 5);
-        if (type_text)
-        {
-            strncpy(info.accountType, (const char *)type_text, 20 - 1);
-            info.accountType[sizeof(info.accountType) - 1] = '\0';
-        }
-
-        info.balance = sqlite3_column_double(stmt, 4);
-
-        print_accounts(info);
-        caculate_interest((const unsigned char *)info.accountType, info.balance, info.deposit);
+        mvwprintw(info_win, 13, 2, "Press any key to return...");
+        wrefresh(info_win);
+        wgetch(info_win);
+        delwin(info_win);
     }
 
     sqlite3_finalize(stmt);
+    clear_screen();
 }
 
-static void caculate_interest(const unsigned char *accountType, double balance, const char *deposit)
+static void caculate_interest(WINDOW *win, const unsigned char *accountType, double balance, const char *deposit)
 {
     if (strcmp((const char *)accountType, "Current") == 0)
     {
-        printf("You will not get interests because the account is of type current.\n");
+        mvwprintw(win, 9, 2, "Interest: No interest for Current accounts.");
     }
     else
     {
         double interestRate = 0.0;
-        if (strcmp((const char *)accountType, "Savings") == 0)
-            interestRate = 0.07;
-        else if (strcmp((const char *)accountType, "Fixed01") == 0)
-            interestRate = 0.04;
-        else if (strcmp((const char *)accountType, "Fixed02") == 0)
-            interestRate = 0.05;
-        else if (strcmp((const char *)accountType, "Fixed03") == 0)
-            interestRate = 0.08;
+        int years = 0;
+        if (strcmp((const char *)accountType, "Savings") == 0) interestRate = 0.07;
+        else if (strcmp((const char *)accountType, "Fixed01") == 0) { interestRate = 0.04; years = 1; }
+        else if (strcmp((const char *)accountType, "Fixed02") == 0) { interestRate = 0.05; years = 2; }
+        else if (strcmp((const char *)accountType, "Fixed03") == 0) { interestRate = 0.08; years = 3; }
             
-        double interest = balance * interestRate;
-
-        printf(
-            "You will get $%.2f as interest on day %d of every month.\n", interest / 12.0,
-            get_day(deposit));
+        wattron(win, A_BOLD | COLOR_PAIR(4));
+        mvwprintw(win, 9, 2, "Interest info:");
+        wattroff(win, A_BOLD | COLOR_PAIR(4));
+        
+        if (years == 0) { // Savings
+            double interest = (balance * interestRate) / 12.0;
+            mvwprintw(win, 10, 4, "You will get ");
+            wattron(win, A_BOLD | COLOR_PAIR(3));
+            wprintw(win, "$%.2f", interest);
+            wattroff(win, A_BOLD | COLOR_PAIR(3));
+            wprintw(win, " as interest on day %d of every month.", get_day(deposit));
+        } else {
+            double total_interest = balance * interestRate * years;
+            int day, month, year;
+            sscanf(deposit, "%d/%d/%d", &day, &month, &year);
+            mvwprintw(win, 10, 4, "You will get ");
+            wattron(win, A_BOLD | COLOR_PAIR(3));
+            wprintw(win, "$%.2f", total_interest);
+            wattroff(win, A_BOLD | COLOR_PAIR(3));
+            wprintw(win, " as interest on %02d/%02d/%04d.", day, month, year + years);
+        }
     }
 }
 

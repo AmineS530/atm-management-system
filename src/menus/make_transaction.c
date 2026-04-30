@@ -4,122 +4,130 @@ static int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8]);
 static int withdraw(sqlite3 *db, User usr, int choice, float balance);
 static int deposit(sqlite3 *db, User usr, int choice, float balance);
 
-// **Make transaction** function
 void make_transaction(sqlite3 *db, User usr)
 {
-    system("clear");
     if (usr.accCount == 0)
     {
-        printf("No accounts found for user: %s\n", usr.name);
+        show_error("No accounts found.");
         return;
     }
-    int choice, prompt;
-    choice = select_account(usr);
-    char accType[8];
-    printf("\n user id: %d, account id: %ld, choice: %d", usr.id, usr.accountIds[choice], choice);
-    if (!get_acc_type(db, usr, choice, accType)){
-        system("clear");
-        printf("No accounts found for user: %s\n", usr.name);
-        return;
-    }
-    printf("\n account type: %s\n", accType);
-    float balance = get_balance(db, usr, choice);
-invalid:
-    prompt = -1;
+    int choice = select_account(usr);
+    if (choice < 0) return;
 
-    printf("\t\t====== Make Transaction ======\n\n");
-    printf("\t\tselected account number: %ld\n", usr.accountIds[choice]);
-    printf("\t\tOptions:\n\n\t\t"
-           "[1] Withdraw\n\t\t"
-           "[2] Diposit\n\n\t\t"
-           "[3] Back to menu\n\n\t\t"
-           "Your input: ");
-        // printf("\n account type: %s , cmp: %d\n", *accType, strncasecmp(accType, "Fixed", 6));
-    safe_int_input(&prompt);
+    char accType[8];
+    if (!get_acc_type(db, usr, choice, accType)){
+        show_error("Could not retrieve account type.");
+        return;
+    }
 
     if (strncasecmp(accType, "Fixed", 5) == 0)
     {
-        system("clear");
-        printf("\t\t====== Make Transaction ======\n\n");
-        printf("ERROR: Cannot modify balance on FIXED accounts.\n");
-        sleep_sec(2);
+        show_error("ERROR: Cannot modify balance on FIXED accounts.");
         return;
     }
-    if (prompt == 1)
-        withdraw(db, usr, choice, balance);
-    else if (prompt == 2)
-        deposit(db, usr, choice, balance);
-    else if (prompt == 3)
-        main_menu(db, usr);
-    else
-    {
-        system("clear");
-        printf("\n   | [+] Non-Valid input |\n\n");
-        goto invalid;
+
+    float balance = get_balance(db, usr, choice);
+    const char *options[] = {"Withdraw", "Deposit", "Back to menu"};
+
+    while (1) {
+        char title[100];
+        snprintf(title, sizeof(title), "Transaction - Account: %ld", usr.accountIds[choice]);
+        int prompt = show_menu(title, options, 3);
+
+        if (prompt == 0) {
+            if (withdraw(db, usr, choice, balance) == 0) break;
+        } else if (prompt == 1) {
+            if (deposit(db, usr, choice, balance) == 0) break;
+        } else {
+            break;
+        }
     }
-    sleep_sec(2);
 }
 
 static int withdraw(sqlite3 *db, User usr, int choice, float balance)
 {
-    const char *sql = "UPDATE records SET balance = ? WHERE userID = ? AND accNbr = ?";
-    sqlite3_stmt *stmt;
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
-    {
-        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
-        return -1;
-    }
-    float withdrawAmount;
-    system("clear");
-    // todo: make transaction banner + withdrawing
-    while (1)
-    {
-        printf("Enter amount to withdraw: ");
-        if (!safe_float_input(&withdrawAmount) || withdrawAmount <= 0.0 || withdrawAmount > balance)
+    char input[20];
+    char *endptr;
+
+    while (1) {
+        get_input_field("Withdraw - Enter amount", input, sizeof(input), 0);
+        if (strlen(input) == 0) return -1;
+
+        errno = 0;
+        float withdrawAmount = strtof(input, &endptr);
+
+        if (errno == ERANGE || *endptr != '\0' || withdrawAmount <= 0.0 || withdrawAmount > balance)
         {
-            printf("%f\n balance: %f", withdrawAmount, balance);
-            printf("✖ Invalid input! Please enter a valid amount.\n");
+            show_error("Invalid amount or insufficient balance.");
             continue;
         }
-        break;
-    }
-    // Update balance
-    balance -= withdrawAmount;
 
-    // Bind parameters
-    sqlite3_bind_double(stmt, 1, balance);
-    sqlite3_bind_int(stmt, 2, usr.id);
-    sqlite3_bind_int64(stmt, 3, usr.accountIds[choice]);
+        const char *sql = "UPDATE records SET balance = ? WHERE userID = ? AND accNbr = ?";
+        sqlite3_stmt *stmt;
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return -1;
 
-    // Execute
-    if (sqlite3_step(stmt) != SQLITE_DONE)
-    {
-        fprintf(stderr, "Error executing statement: %s\n", sqlite3_errmsg(db));
+        balance -= withdrawAmount;
+        sqlite3_bind_double(stmt, 1, balance);
+        sqlite3_bind_int(stmt, 2, usr.id);
+        sqlite3_bind_int64(stmt, 3, usr.accountIds[choice]);
+
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            return -1;
+        }
         sqlite3_finalize(stmt);
-        return -1;
-    }
 
-    sqlite3_finalize(stmt);
-    system("clear");
-    // Print success message
-    printf("\t\t\t===== Withdrawal Successful =====\n");
-    printf("Account number: %ld\n", usr.accountIds[choice]);
-    printf("Withdrawal amount: %.2f\n", withdrawAmount);
-    printf("Old balance: %.2f New balance: %.2f\n", balance + withdrawAmount, balance);
-    log_info(usr.name, "Withdrew %.2f from account %ld. Old balance: %.2f, New balance: %.2f",
-             withdrawAmount, usr.accountIds[choice], balance + withdrawAmount, balance);
-    return 0;
+        char msg[100];
+        snprintf(msg, sizeof(msg), "Withdrew %.2f. New balance: %.2f", withdrawAmount, balance);
+        show_message(msg);
+        return 0;
+    }
 }
 
+static int deposit(sqlite3 *db, User usr, int choice, float balance)
+{
+    char input[20];
+    char *endptr;
+
+    while (1) {
+        get_input_field("Deposit - Enter amount", input, sizeof(input), 0);
+        if (strlen(input) == 0) return -1;
+
+        errno = 0;
+        float depositAmount = strtof(input, &endptr);
+
+        if (errno == ERANGE || *endptr != '\0' || depositAmount <= 0)
+        {
+            show_error("Invalid amount.");
+            continue;
+        }
+
+        const char *sql = "UPDATE records SET balance = ? WHERE userID = ? AND accNbr = ?";
+        sqlite3_stmt *stmt;
+        if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return -1;
+
+        balance += depositAmount;
+        sqlite3_bind_double(stmt, 1, balance);
+        sqlite3_bind_int(stmt, 2, usr.id);
+        sqlite3_bind_int64(stmt, 3, usr.accountIds[choice]);
+
+        if (sqlite3_step(stmt) != SQLITE_DONE) {
+            sqlite3_finalize(stmt);
+            return -1;
+        }
+        sqlite3_finalize(stmt);
+
+        char msg[100];
+        snprintf(msg, sizeof(msg), "Deposited %.2f. New balance: %.2f", depositAmount, balance);
+        show_message(msg);
+        return 0;
+    }
+}
 static int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8])
 {
     const char *sql = "SELECT accType FROM records WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
-    if (!buffer || sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
-    {
-        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
-        return false;
-    }
+    if (!buffer || sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) return 0;
 
     sqlite3_bind_int(stmt, 1, usr.id);
     sqlite3_bind_int64(stmt, 2, usr.accountIds[choice]);
@@ -130,60 +138,9 @@ static int get_acc_type(sqlite3 *db, User usr, int choice, char buffer[8])
         {
             strcpy(buffer, temp);
             sqlite3_finalize(stmt);
-            return true;
+            return 1;
         }
     }
-
     sqlite3_finalize(stmt);
-    return false;
-}
-
-static int deposit(sqlite3 *db, User usr, int choice, float balance)
-{
-    const char *sql = "UPDATE records SET balance = ? WHERE userID = ? AND accNbr = ?";
-    sqlite3_stmt *stmt;
-
-    // Prepare statement
-    if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
-    {
-        log_error(usr.name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
-        return -1;
-    }
-
-    // Get deposit amount
-    float depositAmount = 0;
-    while (1)
-    {
-        printf("Enter amount to deposit: ");
-        if (safe_float_input(&depositAmount) != 1 || depositAmount <= 0)
-        {
-            printf("✖ Invalid input! Please enter a valid amount.\n");
-            continue;
-        }
-        break;
-    }
-
-    balance += depositAmount;
-
-    sqlite3_bind_double(stmt, 1, balance);
-    sqlite3_bind_int(stmt, 2, usr.id);
-    sqlite3_bind_int64(stmt, 3, usr.accountIds[choice]);
-
-    if (sqlite3_step(stmt) != SQLITE_DONE)
-    {
-        printf("Error executing statement: %s\n", sqlite3_errmsg(db));
-        sqlite3_finalize(stmt);
-        return -1;
-    }
-
-    sqlite3_finalize(stmt);
-    system("clear");
-    // Print success message
-    printf("\t\t\t===== Deposit Successful =====\n");
-    printf("Account number: %ld\n", usr.accountIds[choice]);
-    printf("Deposit amount: %.2f\n", depositAmount);
-    printf("Old balance: %.2f New balance: %.2f\n", balance - depositAmount, balance);
-    log_info(usr.name, "Deposited %.2f to account %ld. Old balance: %.2f, New balance: %.2f",
-             depositAmount, usr.accountIds[choice], balance - depositAmount, balance);
     return 0;
 }

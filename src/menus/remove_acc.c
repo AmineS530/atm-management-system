@@ -1,36 +1,31 @@
 #include "menus.h"
 
-// **Remove existing account** function
 void remove_acc(sqlite3 *db, User *usr)
 {
-    system("clear");
-    printf("\t\t====== Remove Account ======\n\n");
     if (usr->accCount == 0)
     {
-        printf("No accounts found for user: %s\n", usr->name);
+        show_error("No accounts found.");
         return;
     }
-    system("clear");
-    printf("\t\t====== Remove Account ======\n\n");
-    int choice = select_account(*usr);
-    printf("\t\t====== Remove Account ======\n\n");
-    printf("\t\tselected account number: %ld\n", usr->accountIds[choice]);
-    printf("\n\t\tAre you sure you want to delete this account?\n\t\t"
-           "this action cannot be undone.(y/n): ");
-    char c = confirm_char();
 
-    if (c != 'y' && c != 'Y')
+    int choice = select_account(*usr);
+    if (choice < 0) return;
+
+    const char *options[] = {"No, Cancel", "Yes, Delete"};
+    char title[100];
+    snprintf(title, sizeof(title), "Are you sure you want to delete account %ld?", usr->accountIds[choice]);
+    int confirm = show_menu(title, options, 2);
+
+    if (confirm != 1)
     {
-        printf("Account removal canceled.\n");
-        sleep_sec(3);
         return;
     }
-    Record copy = get_record_by_accNbr(db, usr->accountIds[choice]);
+
     const char *sql = "DELETE FROM records WHERE userID = ? AND accNbr = ?";
     sqlite3_stmt *stmt;
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
     {
-        log_error(usr->name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+        show_error("Database error.");
         return;
     }
 
@@ -39,28 +34,10 @@ void remove_acc(sqlite3 *db, User *usr)
 
     if (sqlite3_step(stmt) != SQLITE_DONE)
     {
-        log_error(usr->name, "Failed to remove account: %s\n", sqlite3_errmsg(db));
-        sqlite3_finalize(stmt);
-        return;
+        show_error("Failed to remove account.");
+    } else {
+        show_message("Account removed successfully.");
     }
     sqlite3_finalize(stmt);
-    printf("Account number: %ld removed successfully.\n", usr->accountIds[choice]);
-
-    char *formatted = format_account(copy);
-    if (formatted)
-    {
-        log_info(usr->name,
-                 "Removed account number: %ld with information: %s",
-                 usr->accountIds[choice],
-                 formatted ? formatted : "NULL");
-    
-        free(formatted);
-    } else {
-        log_info(usr->name,
-                 "Removed account number: %ld with information: [failed to format]",
-                 usr->accountIds[choice]);
-    }
-    
-
     get_acc_nbrs(usr, db);
 }

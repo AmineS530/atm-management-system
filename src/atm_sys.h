@@ -6,5 +6,6 @@
 #include "helpers/helpers.h"
 #include "input/input.h"
 #include "auth/auth.h"
+#include "ui/ui.h"
 
 #endif

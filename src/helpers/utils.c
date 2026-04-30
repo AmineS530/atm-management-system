@@ -50,34 +50,22 @@ char *to_upper(char *str)
 
 int select_account(User usr)
 {
-    int choice = -1;
+    if (usr.accCount == 0) return -1;
 
-    system("clear");
-    for (int i = 0; i < usr.accCount; i++)
-        printf("[%d] Account number: %ld\n", i + 1, usr.accountIds[i]);
-
-    while (1)
-    {
-        printf("Enter account number: ");
-
-        if (safe_int_input(&choice) != 1)
-        {
-            printf("✖ Invalid input! Please enter a valid number.\n");
-            continue;
-        }
-
-        if (choice < 1 || choice > usr.accCount)
-        {
-            printf("✖ Invalid option! Please enter a number between 1 and %d.\n",
-                   usr.accCount);
-            continue;
-        }
-
-        break;
+    const char **options = malloc(usr.accCount * sizeof(char *));
+    for (int i = 0; i < usr.accCount; i++) {
+        options[i] = malloc(50);
+        snprintf((char *)options[i], 50, "Account: %ld", usr.accountIds[i]);
     }
-    system("clear");
 
-    return choice - 1;
+    int choice = show_menu("Select Account", options, usr.accCount);
+
+    for (int i = 0; i < usr.accCount; i++) {
+        free((void *)options[i]);
+    }
+    free(options);
+
+    return choice;
 }
 
 void sleep_sec(int seconds)
