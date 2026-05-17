@@ -1,7 +1,7 @@
 #ifndef UI_H
 #define UI_H
 
-#include <ncurses.h>
+#include "ncurses.h"
 #include <string.h>
 #include <stdlib.h>
 
