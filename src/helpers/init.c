@@ -84,5 +84,7 @@ User init_user(void)
 static void forexit()
 {
     sqlite3_close(db);
-    print_options(3, NULL);
+    printf("\n\n\t\t============== z1 ATM ==============\n"
+              "\n\t\t   The ATM System Has Been Closed"
+           "\n\n\t\t====================================\n\n");
 }

@@ -26,18 +26,18 @@ getNcurses:
 build:
 	@if [ ! -f "$(LIB)" ]; then \
 		echo "\033[1;38;5;155mBuilding Ncurses locally...\033[0m"; \
-		cd $(DIR) && \
-		./configure --without-shared --with-normal --enable-static --prefix=$$(pwd)/build > /dev/null && \
+		(cd $(DIR) && \
+		./configure --without-shared --enable-static --prefix=$$(pwd)/build --with-default-terminfo-dir=/usr/share/terminfo --with-terminfo-dirs=/etc/terminfo:/lib/terminfo:/usr/share/terminfo > /dev/null && \
 		make -j$$(nproc) > /dev/null && \
 		(cp lib/libncurses.a ../$(LIB) 2>/dev/null || cp lib/libncursesw.a ../$(LIB)) && \
-		cp include/*.h ../ ; \
+		cp include/*.h ../) && \
 		rm -rf $(DIR); \
 		echo "\033[1;38;5;155m$(LIB) Created\033[0m"; \
 	fi
 
 clean:
-	@if [ -d "$(DIR)" ]; then \
-		cd $(DIR) && make clean > /dev/null; \
+	@if [ -d "$(DIR)" ] && [ -f "$(DIR)/Makefile" ]; then \
+		cd $(DIR) && make clean > /dev/null 2>&1 || true; \
 	fi
 
 fclean: clean

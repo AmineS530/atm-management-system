@@ -1,30 +1,5 @@
 #include "helpers.h"
 
-void print_options(int input, char *name)
-{
-    if (input == 1)
-        printf("\n\t\t============== z1 ATM ==============\n"
-               "\n\t\t  -->>  login / register <<--\n"
-               "\n\t\t[1]- login\n"
-               "\n\t\t[2]- register\n"
-               "\n\t\t[3]- exit\n");
-    if (input == 2)
-        printf("\n\t\t============== z1 ATM ==============\n\t\t"
-               "\n\t\t||\t Welcome %s!\t ||\n"
-               "\n\t\t-->> Choose one of the options below <<--\n"
-               "\n\t\t[1]- Create a new account\n"
-               "\n\t\t[2]- Update account information\n"
-               "\n\t\t[3]- Check accounts\n"
-               "\n\t\t[4]- Check list of owned account\n"
-               "\n\t\t[5]- Make Transaction\n"
-               "\n\t\t[6]- Remove existing account\n"
-               "\n\t\t[7]- Transfer ownership\n"
-               "\n\t\t[8]- Exit\n",
-               to_upper(name));
-    if (input == 3)
-        printf("\n\n\t\t============== z1 ATM ==============\n"
-               "\n\t\t The ATM System Have Been Closed\n");
-}
 // repeat spaces after welcome X for consistency
 void print_accounts(Record rec)
 {

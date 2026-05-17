@@ -77,7 +77,6 @@ int username_exists(sqlite3 *db, User usr);
 
 /* utils.c */
 //todo: to be removed
-void print_options(int input, char *name);
 void print_accounts(Record rec);
 char *to_upper(char *str);
 int select_account(User usr);
