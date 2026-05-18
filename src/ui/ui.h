@@ -4,6 +4,7 @@
 #include "ncurses.h"
 #include <string.h>
 #include <stdlib.h>
+#include <locale.h>
 
 typedef struct {
     int start_y, start_x;

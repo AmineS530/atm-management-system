@@ -36,10 +36,11 @@ int check_password(sqlite3 *db, User *usr)
         {
             sqlite3_finalize(stmt);
             get_acc_nbrs(usr, db);
-            explicit_bzero(usr->password, strlen(usr->password));
+            explicit_bzero(usr->password, sizeof(usr->password));
             return 1;
         }
     }
     sqlite3_finalize(stmt);
+    explicit_bzero(usr->password, sizeof(usr->password));
     return 0;
 }

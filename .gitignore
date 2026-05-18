@@ -1,6 +1,7 @@
 src/sqlite/shell.c
 src/sqlite/sqlite3.c
 src/ncurses/*.h
+*.log
 # Prerequisites
 *.d
 

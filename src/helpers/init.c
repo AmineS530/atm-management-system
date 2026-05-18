@@ -47,7 +47,7 @@ static int exec_sql_file(sqlite3 *db, const char *path)
 
     if (rc != SQLITE_OK)
     {
-        fprintf(stderr, "%s\n", err);
+        log_error(NULL, "%s", err);
         sqlite3_free(err);
         return 0;
     }
@@ -58,15 +58,12 @@ sqlite3 *init()
 {
     if (sqlite3_open(DB_PATH, &db) != SQLITE_OK)
     {
-        fprintf(stderr, "error: %s", sqlite3_errmsg(db));
-        sqlite3_close(db);
-        exit(EXIT_FAILURE);
+        log_error(NULL, "error: %s", sqlite3_errmsg(db));
     }
     if (!table_exists(db, "users"))
         if (!exec_sql_file(db, SCHEMA_PATH))
         {
-            fprintf(stderr, "Failed to load schema.sql\n");
-            exit(EXIT_FAILURE);
+            log_error(NULL, "Failed to load schema.sql");
         }
 
     atexit(forexit);

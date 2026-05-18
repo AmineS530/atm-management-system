@@ -42,7 +42,7 @@ invald_username:
     }
 
     while (1) {
-        get_input_field("New Registration - Re-Enter Password (Empty to cancel)", pass, sizeof(pass), 1);
+        get_input_field("New Registration - Confirm Password (Empty to cancel)", pass, sizeof(pass), 1);
         if (strlen(pass) > 0) break;
         return -1;
     }
@@ -134,6 +134,8 @@ int init_menu(sqlite3 *db, User *usr)
             if (register_menu(db, usr) == 1) {
                 if (register_user(db, usr)) {
                     show_message("Account Created Successfully! Please login.");
+                } else {
+                    show_error("Failed to create account. Please try again.");
                 }
             }
             break;

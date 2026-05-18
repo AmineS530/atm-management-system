@@ -14,6 +14,9 @@ CREATE TABLE records (
 CREATE INDEX idx_records_userid ON records(userID);
 ANALYZE;
 
+-- 0 Alice q1w2e3r4t5y6
+-- 1 Michel q1w2e3r4t5y6
+
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,

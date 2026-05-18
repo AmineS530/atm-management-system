@@ -76,19 +76,7 @@ float get_balance(sqlite3 *db, User usr, int choice);
 int username_exists(sqlite3 *db, User usr);
 
 /* utils.c */
-//todo: to be removed
-void print_accounts(Record rec);
-char *to_upper(char *str);
 int select_account(User usr);
-void sleep_sec(int seconds);
-
-/* account_logging.c */
-char *format_account(Record rec);
-Record get_record_by_accNbr(sqlite3 *db, long accNbr);
-
-/* system.c */
-void stay_or_return(sqlite3 *db, int notGood, void f(sqlite3 *db, User u), User u);
-void success();
 
 /* logs.c */
 void log_info(const char *user, const char *fmt, ...);

@@ -6,7 +6,7 @@ void get_acc_nbrs(User *usr, sqlite3 *db)
 	usr->accCount = 0;
 	if (usr == NULL)
 	{
-		printf("Error: User pointer is NULL.\n");
+		log_error(NULL, "Error: User pointer is NULL.");
 		return;
 	}
 
@@ -14,7 +14,7 @@ void get_acc_nbrs(User *usr, sqlite3 *db)
 	const char *sql = "SELECT accNbr FROM records WHERE userID = ?";
 	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
 	{
-		printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+		log_error(usr->name, "Failed to prepare statement: %s", sqlite3_errmsg(db));
 		return;
 	}
 
@@ -37,7 +37,7 @@ int account_exists(long accNbr, sqlite3 *db)
 
 	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
 	{
-		printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+		log_error(NULL, "Failed to prepare statement: %s", sqlite3_errmsg(db));
 		return -1;
 	}
 
@@ -55,7 +55,7 @@ float get_balance(sqlite3 *db, User usr, int choice)
 {
 	if (!usr.accountIds[choice])
 	{
-		printf("No accounts found for user: %s\n", usr.name);
+		log_error(usr.name, "No accounts found for user: %s", usr.name);
 		return -1;
 	}
 
@@ -65,7 +65,7 @@ float get_balance(sqlite3 *db, User usr, int choice)
 	float balance = 0.0;
 	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
 	{
-		printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+		log_error(usr.name, "Failed to prepare statement: %s", sqlite3_errmsg(db));
 		return balance;
 	}
 	sqlite3_bind_int(stmt, 1, usr.id);
@@ -88,7 +88,7 @@ int username_exists(sqlite3 *db, User usr)
 
 	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK)
 	{
-		printf("Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+		log_error(usr.name, "Failed to prepare statement: %s", sqlite3_errmsg(db));
 		return -1;
 	}
 

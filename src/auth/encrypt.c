@@ -27,7 +27,6 @@ int register_user(sqlite3 *db, User *usr)
 {
     if (usr->name[0] == '\0' || usr->password[0] == '\0')
     {
-        printf("Invalid user data\n");
         return 0;
     }
 
@@ -42,7 +41,6 @@ int register_user(sqlite3 *db, User *usr)
     sqlite3_stmt *stmt;
 
     if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK){
-        log_error(usr->name, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
         return 0;
     }
 
@@ -50,15 +48,13 @@ int register_user(sqlite3 *db, User *usr)
     sqlite3_bind_blob(stmt, 2, salt, SALT_SIZE, SQLITE_STATIC);
     sqlite3_bind_blob(stmt, 3, hashed_password, HASH_SIZE, SQLITE_STATIC);
 
-    explicit_bzero(usr->password, strlen(usr->password));
+    explicit_bzero(usr->password, sizeof(usr->password));
     if (sqlite3_step(stmt) != SQLITE_DONE)
     {
-        log_error(usr->name, "Failed to insert user: %s\n", sqlite3_errmsg(db));
         sqlite3_finalize(stmt);
         return 0;
     }
-    printf("User successfully registered!\n");
-    log_info(usr->name, "Registered new user: %s", usr->name);
+    
     sqlite3_finalize(stmt);
     return 1;
 }

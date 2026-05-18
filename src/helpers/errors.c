@@ -2,7 +2,5 @@
 
 void exit_err(char *str)
 {
-    system("clear");
-    printf("%s", str);
-    exit(1);
+    log_error(NULL, "%s", str);
 }
