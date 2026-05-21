@@ -85,7 +85,7 @@ static Record fill_info(sqlite3 *db, User usr)
 
         errno = 0;
         long accNbr = strtol(buffer, &endptr, 10);
-        if (errno == ERANGE || *endptr != '\0' || accNbr <= 0) {
+        if (errno == ERANGE || *endptr != '\0' || accNbr <= 0 || accNbr > MAX_ACCOUNT_NUMBER) {
             show_error("Invalid account number value.");
             continue;
         }
@@ -153,7 +153,7 @@ static Record fill_info(sqlite3 *db, User usr)
         get_input_field("Enter Initial Balance", buffer, sizeof(buffer), 0);
         errno = 0;
         double bal = strtod(buffer, &endptr);
-        if (errno == ERANGE || *endptr != '\0' || bal < 0) {
+        if (errno == ERANGE || *endptr != '\0' || bal < 0 || bal > MAX_BALANCE) {
             show_error("Invalid balance amount.");
             continue;
         }

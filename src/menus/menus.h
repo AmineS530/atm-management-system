@@ -6,6 +6,8 @@
 #include "../ui/ui.h"
 #include <math.h>
 
+#define MAX_BALANCE 1000000000.0
+#define MAX_ACCOUNT_NUMBER 999999999999999
 /* menus.c*/
 int login_menu(User *usr);
 int register_menu(sqlite3 *db, User *usr);
