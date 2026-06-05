@@ -96,7 +96,7 @@ static int deposit(sqlite3 *db, User usr, int choice, float balance)
         errno = 0;
         float depositAmount = strtof(input, &endptr);
 
-        if (errno == ERANGE || *endptr != '\0' || depositAmount <= 0)
+        if (errno == ERANGE || *endptr != '\0' || depositAmount >= MAX_BALANCE - balance || depositAmount <= 0)
         {
             show_error("Invalid amount.");
             continue;
